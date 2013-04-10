@@ -14,12 +14,12 @@ clean_DOCS=$(addprefix clean_,$(DOCS))
 all: $(DOCS)
 clean: $(clean_DOCS)
 
-.PHONY: force
+.PHONY: $(DOCS) $(clean_DOCS)
 
-$(DOCS): force
+$(DOCS):
 	$(MAKE) -C $@ 
 
-$(clean_DOCS): force
+$(clean_DOCS):
 	- $(MAKE) -C $(patsubst clean_%,%,$@) clean
 
 

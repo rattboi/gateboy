@@ -9,7 +9,7 @@
 %Make sure you have the file ShumanNote.scy in the same directory as
 %this one. It has contains the style sheet for ECE111, and is needed
 %to standardize the layout of LateX documents created for the class.
-\usepackage{ShumanNotes} 
+\input{../Uncore.sty} 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{tikz}
@@ -36,9 +36,10 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
 %% \renewcommand\thesubsection{\alph{subsection})}
 %% \renewcommand\thesection{\arabic{section})}
-\lhead{Homework 1}
+
 \begin{document}
 
+\createtitle{Design Spec}
 %% These commands allow me to use cursive letter for things such as
 %% length.  Note that on ubuntu linux, this required installation of
 %% the package 'texlive-fonts-extra'. 
@@ -50,55 +51,19 @@
 
 
 
-\begin{titlepage}
- 
-\begin{center}
- 
- 
-\textsc{\LARGE ECE 510 System Verilog}\\[1.5cm]
- 
-\textsc{\Large Portland State University}\\[0.5cm]
- 
- 
-% Title
-\HRule \\[0.4cm] { \huge \bfseries Homework 1}\\[0.4cm]
- 
-\HRule \\[1.5cm]
- 
-% Author and supervisor
-\begin{minipage}{0.4\textwidth}
-\begin{center} \large
-Andy \textsc{Goetz}\\
-\end{center}
-\end{minipage}
-
-\vspace{1cm}
-%\includegraphics[height=4.75in]{sh_landing_gear.png}
- 
- 
-\end{center}
-\vfill
-\begin{center}
-% Bottom of the page
-{\large \today}
-
-\end{center} 
-\end{titlepage}
-
-\newpage
-\thispagestyle{empty}
-\vspace*{0.6\paperheight}
-\begin{center}\textit{This page intentionally left blank.}\end{center}
-
-\newpage
-\setcounter{page}{1}
 
 \section{Overview}
-This project consists of a finite state machine to control the landing
-gear on an airplane. The state transition diagram can be seen in
-figure \ref{std}. A key for the transition logic can be seen in table
-\ref{key}, and the per-state outputs can be seen in figure
-\ref{outputs}.
+
+Your project proposal should be brief but describe the work you
+propose doing and the names of all team members .  I dentify any
+existing design work you intend to use and its source. Be clear about
+yo ur contribution. Briefly describe your verification approach and
+identify the Veloce mode you intend to employ.  Note that if you’re
+starting with a working HDL design, the only errors your testbench
+will find are those that you accidentally introduced in the design
+when translating to SystemVerilog. You may need to intentionally
+inject a few erro rs into the design in this case in order to exercise
+your testbench.
 
 
 \end{document}

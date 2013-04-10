@@ -2,16 +2,15 @@
 %%section for details.
 
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
-\ProvidesPackage{ShumanNotes}[2009/08/11]
 
 %% load up the fancy box making package
-\RequirePackage{fancybox}
-\RequirePackage{graphicx}
-\RequirePackage{float}
+\usepackage{fancybox}
+\usepackage{graphicx}
+\usepackage{float}
 \usepackage[colorlinks=true,linkcolor=black, urlcolor=black,linkcolor=black]{hyperref}
-\RequirePackage[letterpaper, portrait]{geometry}
+\usepackage[letterpaper, portrait]{geometry}
 %% Load up PS insertion package
-\RequirePackage{psboxit}
+\usepackage{psboxit}
 \PScommands
 \textheight = 9in
 \footskip = 20pt
@@ -27,7 +26,7 @@
 % \renewcommand{\rmdefault}{phv} % Arial
 %\renewcommand{\sfdefault}{phv} % Arial
 %% Load up fancy headers and footers package
-\RequirePackage{fancyhdr}
+\usepackage{fancyhdr}
 
 %% now reset the headers and footers
 \fancyhead{}
@@ -90,12 +89,62 @@
 }{#2}{#3}
 }
 
+
+\newcommand{\createtitle}[1]{
 %% bring the style into effect
 \pagestyle{fancy}
 
 \lfoot{ECE510}
 \rfoot{\thepage}
-\rhead{Andy Goetz}
+\rhead{A. Goetz, P. Lamb, K. Riedl}
+\lhead{#1}
+
+\begin{titlepage}
+ 
+\begin{center}
+ 
+ 
+\textsc{\LARGE ECE 510 System Verilog}\\[1.5cm]
+ 
+\textsc{\Large Portland State University}\\[0.5cm]
+ 
+ 
+% Title
+\HRule \\[0.4cm] { \huge \bfseries #1}\\[0.4cm]
+ 
+\HRule \\[1.5cm]
+ 
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{center} \large
+Andy \textsc{Goetz} \& Phil \textsc{Lamb} \& Kevin \textsc{Riedl}\\
+\end{center}
+\end{minipage}
+
+\vspace{1cm}
+%\includegraphics[height=4.75in]{sh_landing_gear.png}
+ 
+ 
+\end{center}
+\vfill
+\begin{center}
+% Bottom of the page
+{\large \today}
+
+\end{center} 
+\end{titlepage}
+
+\newpage
+\thispagestyle{empty}
+\vspace*{0.6\paperheight}
+\begin{center}\textit{This page intentionally left blank.}\end{center}
+
+\newpage
+\setcounter{page}{1}
+
+
+
+}
 
 %%
 %% End of file `phdthesis.sty`
