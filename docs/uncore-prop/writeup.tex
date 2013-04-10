@@ -1,0 +1,105 @@
+%%MaD.tex - Notes taken for Materials and Devices Lecture
+%%Author: Andy Goetz
+%%Date Modified: 10-7-09
+%%License: Ask me before reproducing/modifying, etc.
+
+
+\documentclass{article}
+
+%Make sure you have the file ShumanNote.scy in the same directory as
+%this one. It has contains the style sheet for ECE111, and is needed
+%to standardize the layout of LateX documents created for the class.
+\usepackage{ShumanNotes} 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{program}
+\usepackage{listings}
+\pdfpagewidth 8.5in 
+\pdfpageheight 11in
+\usepackage{titlesec}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+%% \titleformat{\section}{\bfseries}{\thesection}{1em}{}
+%% \titleformat{\subsection}{\bfseries}{\thesubsection}{1em}{}
+%This package is used to line up pictures 
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage{listings}
+%allows cursive font
+%\usepackage{amsmath}
+
+%allows hyperlinks 
+\usepackage{hyperref}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+%% \renewcommand\thesubsection{\alph{subsection})}
+%% \renewcommand\thesection{\arabic{section})}
+\lhead{Homework 1}
+\begin{document}
+
+%% These commands allow me to use cursive letter for things such as
+%% length.  Note that on ubuntu linux, this required installation of
+%% the package 'texlive-fonts-extra'. 
+%% Taken from
+%% http://www.latex-community.org/forum/viewtopic.php?f=5&t=1404&start=0
+\newenvironment{frcseries}{\fontfamily{frc}\selectfont}{}
+\newcommand{\textfrc}[1]{{\frcseries#1}}
+\newcommand{\mathfrc}[1]{\text{\textfrc{#1}}}
+
+
+
+\begin{titlepage}
+ 
+\begin{center}
+ 
+ 
+\textsc{\LARGE ECE 510 System Verilog}\\[1.5cm]
+ 
+\textsc{\Large Portland State University}\\[0.5cm]
+ 
+ 
+% Title
+\HRule \\[0.4cm] { \huge \bfseries Homework 1}\\[0.4cm]
+ 
+\HRule \\[1.5cm]
+ 
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{center} \large
+Andy \textsc{Goetz}\\
+\end{center}
+\end{minipage}
+
+\vspace{1cm}
+%\includegraphics[height=4.75in]{sh_landing_gear.png}
+ 
+ 
+\end{center}
+\vfill
+\begin{center}
+% Bottom of the page
+{\large \today}
+
+\end{center} 
+\end{titlepage}
+
+\newpage
+\thispagestyle{empty}
+\vspace*{0.6\paperheight}
+\begin{center}\textit{This page intentionally left blank.}\end{center}
+
+\newpage
+\setcounter{page}{1}
+
+\section{Overview}
+This project consists of a finite state machine to control the landing
+gear on an airplane. The state transition diagram can be seen in
+figure \ref{std}. A key for the transition logic can be seen in table
+\ref{key}, and the per-state outputs can be seen in figure
+\ref{outputs}.
+
+
+\end{document}
+
