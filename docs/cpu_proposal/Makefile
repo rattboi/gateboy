@@ -4,7 +4,7 @@ all: 1masterdoc.pdf
 
 
 %.pdf: %.tex
-	pdflatex $^
+	pdflatex -shell-escape $^
 
 
 clean: 
