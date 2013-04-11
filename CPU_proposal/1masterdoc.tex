@@ -1,11 +1,56 @@
-% ECE 510 Final Project
+\documentclass[twocolumn]{article}
+\usepackage{fancyhdr}
+\usepackage{pgf}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage[top=2in, bottom=1.5in, left=1in, right=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{tabularx} 
+\usepackage{url}
 
+\lstset{
+	tabsize=4,
+        basicstyle=\scriptsize,
+        aboveskip={1.5\baselineskip},
+        columns=fixed,
+        showstringspaces=false,
+        breaklines=true,
+        prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	frame=none,
+        showtabs=false,
+        showspaces=false,
+        showstringspaces=false,
+        identifierstyle=\ttfamily,
+        keywordstyle=\color[rgb]{0,0,1},
+        commentstyle=\color[rgb]{0.133,0.545,0.133},
+        stringstyle=\color[rgb]{0.627,0.126,0.941},
+	language=C++
+}
 
-\documentclass{report}
+\def\SUBJECT{ECE 510}
+\def\TOPIC{Final Project\\ Gameboy Modified Z80 Verification}
+\def\AUTHOR{Vernon \textsc{Jones} \\ Tyler \textsc{Tricker}}
+\def\INSTRUCTOR{Mark \textsc{Faust}}
+
+%*******************Page layout
+\pagestyle{fancy}
+\lhead{\AUTHOR}
+\chead{\SUBJECT: \TOPIC}
+\rhead{\thepage}
+\fancyfoot{}
 
 
 \begin{document}
-\section{Intro}
+\input{../latex_common/title}
 
+\input{s1-introduction}
+
+\input{s2-method}
+
+\input{s3-design}
+
+\input{s4-topic}
 
 \end{document}
