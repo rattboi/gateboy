@@ -5,4 +5,4 @@ all:
 	echo "No actions"
 
 clean:
-	rf -f *.pdf
+	rm -f *.pdf
