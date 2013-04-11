@@ -5,7 +5,7 @@ all: $(DOC).pdf
 ShumanNotes.sty: $(DOC).pdf
 
 clean:
-	rm $(DOC).log \
+	rm -f $(DOC).log \
 	$(DOC).pdf \
 	$(DOC).aux \
 	$(DOC).out
