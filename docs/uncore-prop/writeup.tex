@@ -58,7 +58,7 @@
 \section{Overview}
 We plan on implementing the sprite-based graphics of the original
 gameboy. The gameboy used raster graphics accessed through a simple,
-memory mapped interface. We plan on creating an implmentation of these
+memory mapped interface. We plan on creating an implementation of these
 graphics, and leveraging the new validation features of System Verilog
 to accelerate the testing process. 
 
@@ -67,7 +67,7 @@ The internet is full of gameboy emulators. In addition, several
 emulators have been created for FPGAs (i.e.
 \url{https://github.com/trun/fpgaboy}). However, none of these designs
 use System Verilog. We plan on using these designs as a jumping-off
-point for our own implmentation.
+point for our own implementation.
 
 While there is no publicly released design documentation for the 
 Gameboy there are a number of resources created by hobbyists who 
@@ -89,6 +89,12 @@ video output to VGA.
 
 
 \section{Testing Methodology}
+The testing will be implemented with the transaction based
+emulation mode on the Veloce hardware emulator. Since the 
+actual Gameboy specifications are closed source, the test 
+bench will verify the behavior of the graphics module as
+described in the documentation from the Existing Work 
+section.
 
 
 
