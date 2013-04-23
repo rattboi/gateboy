@@ -8,9 +8,13 @@ The synthesis target we will be focusing on will be on an Altera Cyclone II
 FPGA kit available in FAB 60-04\footnote{Part Number DK-CYCII-2C20N}.
 
 Testing will use two modes from the Veloce Solo tools; the synthesizeable 
-testbench and the TBX modes. For testbench data, there are test ROMs created 
+testbench and the TBX modes. The sythesizable testbench model will be used for 
+automated module fuzz testing, while the TBX modes are going to be used for 
+directed tests. For testbench data, there are test ROMs created 
 for testing gameboy emulators, which we can use to verify that our instruction 
 set simulation is accurate. There are also timing tests within the test ROMs. 
 
-For additional tests, we will be able to create test programs using the GBDK development kit and Gameboy assembler.
+
+For additional tests, we will be able to create test programs using the GBDK 
+development kit and Gameboy assembler. The ultimate test will be the testing of released commercial roms after the two teams have intergrated the synthesizable code.
 
