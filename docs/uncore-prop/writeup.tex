@@ -57,13 +57,13 @@
 
 \section{Overview}
 We plan on implementing the sprite-based graphics of the original
-gameboy. The gameboy used raster graphics accessed through a simple,
+Gameboy. The Gameboy used raster graphics accessed through a simple,
 memory mapped interface. We plan on creating an implementation of these
 graphics, and leveraging the new validation features of System Verilog
 to accelerate the testing process. 
 
 \section{Existing Work}
-The internet is full of gameboy emulators. In addition, several
+The internet is full of Gameboy emulators. In addition, several
 emulators have been created for FPGAs (i.e.
 \url{https://github.com/trun/fpgaboy}). However, none of these designs
 use System Verilog. We plan on using these designs as a jumping-off
@@ -75,16 +75,16 @@ have reverse engineered the Gameboy hardware and software.
 
 \section{Requirements}
 
-We plan on implementing the original gameboy's sprite-based raster
+We plan on implementing the original Gameboy's sprite-based raster
 graphics engine. In addition to accepting draw commands from the
-gameboy cpu, the graphics engine needs to provide interrupt signals to
+Gameboy cpu, the graphics engine needs to provide interrupt signals to
 the CPU. 
 
 The graphics module will be implemented and tested in isolation, 
 but we plan to integrate our module with another group's Gameboy CPU 
 implementation if time allows.  In addition, we plan to synthesize
 the full design on an Altera Cyclone II if time allows.
-For video output this may include writing a module to conver our 
+For video output this may include writing a module to convert our 
 video output to VGA.
 
 
