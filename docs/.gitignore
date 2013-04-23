@@ -2,3 +2,5 @@
 *.out
 *.aux
 *.synctex.gz
+*.pdf
+

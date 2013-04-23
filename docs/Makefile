@@ -5,8 +5,7 @@
 # targets. Then add the name of the folder to the 'DOCS' line.
 
 
-DOCS=uncore-prop
-
+DOCS=$(shell find * -type d)
 
 clean_DOCS=$(addprefix clean_,$(DOCS))
 
