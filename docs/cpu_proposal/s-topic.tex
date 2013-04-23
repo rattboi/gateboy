@@ -1,11 +1,25 @@
 \section{Project Focus}
-Our project will focus on the CPU core of a gameboy using a previous project,
-FPGABOY \footnote{FPGABOY - an implementation of a gameboy system onto an FPGA 
+Our project will focus on the CPU core of a Gameboy using a previous project,
+FPGABOY \footnote{FPGABOY - an implementation of a Gameboy system onto an FPGA 
 writen in Verilog}. Another team will be focusing on peripherals for our project 
 so that they can operate as a complete system. The CPU core, originally writen 
 in Verilog, will be ported to use a synthesizable subset of System Verilog.
 The synthesis target we will be focusing on will be on an Altera Cyclone II 
 FPGA kit available in FAB 60-04\footnote{Part Number DK-CYCII-2C20N}.
 
-Testing will use two modes from the Veloce Solo tools; the synthesizeable testbench and the TBX modes. 
+Testing will use two modes from the Veloce Solo tools; the synthesizeable 
+testbench and the TBX modes. The sythesizable testbench model will be used for 
+automated module fuzz testing, while the TBX modes are going to be used for 
+directed tests. For testbench data, there are test ROMs created 
+for testing Gameboy emulators, which we can use to verify that our instruction 
+set simulation is accurate. There are also timing tests within the test ROMs. 
 
+For additional tests, we will be able to create test programs using the GBDK 
+development kit and Gameboy assembler. The ultimate test will be the testing 
+of released commercial roms after the two teams have intergrated the 
+synthesizable code. set simulation is accurate. There are also timing tests 
+within the test ROMs. For additional tests, we will be able to create test 
+programs using the GBDK development kit and Gameboy assembler.
+We also intend to use high-level testing constructs provided by SystemVerilog 
+(e.g., assertions) to further verify the design, once these concepts are 
+covered in class. 
