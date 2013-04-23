@@ -1,3 +1,4 @@
+
 \section{Project Focus}
 Our project will focus on the CPU core of a Gameboy using a previous project,
 FPGABOY \footnote{FPGABOY - an implementation of a Gameboy system onto an FPGA 
@@ -6,6 +7,8 @@ so that they can operate as a complete system. The CPU core, originally writen
 in Verilog, will be ported to use a synthesizable subset of System Verilog.
 The synthesis target we will be focusing on will be on an Altera Cyclone II 
 FPGA kit available in FAB 60-04\footnote{Part Number DK-CYCII-2C20N}.
+
+\section{Testing}
 
 Testing will use two modes from the Veloce Solo tools; the synthesizeable 
 testbench and the TBX modes. The sythesizable testbench model will be used for 
@@ -23,3 +26,8 @@ programs using the GBDK development kit and Gameboy assembler.
 We also intend to use high-level testing constructs provided by SystemVerilog 
 (e.g., assertions) to further verify the design, once these concepts are 
 covered in class. 
+
+\section{Integration and Other Group}
+Both groups will be using different branches on the same git repository for 
+quick integration. The sythesis project file will be shared between groups in 
+an attempt to reduce the amount of redundant groups.
