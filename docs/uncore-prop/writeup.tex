@@ -64,22 +64,24 @@ leverage the validation features of System Verilog to
 accelerate the testing process.
 
 \section{Existing Work}
-The internet is full of Gameboy emulators. In addition, several
-emulators have been created for FPGAs (e.g.
-\url{https://github.com/trun/fpgaboy}). However, none of these designs
-use System Verilog. We plan on using these designs as a jumping-off
-point for our own implementation.
+The internet is full of Gameboy emulators which we can use
+as reference. In addition, several emulators have been 
+created for FPGAs (e.g.  
+\url{https://github.com/trun/fpgaboy}). However, none of 
+these designs use System Verilog. We plan on using these
+designs as a reference for use in our own implementation.
 
-While there is no publicly released design documentation for the 
-Gameboy there are a number of resources created by hobbyists who 
-have reverse engineered the Gameboy hardware and software.
+While there is no publicly released design documentation 
+for the Gameboy, there are a number of resources created 
+by hobbyists who have reverse engineered the Gameboy's
+hardware and software.
 
 \section{Requirements}
 
 We plan on implementing the original Gameboy's sprite-based raster
 graphics engine. In addition to accepting draw commands from the
-Gameboy cpu, the graphics engine needs to provide interrupt signals to
-the CPU. 
+Gameboy CPU, the graphics engine will need to provide interrupt 
+signals to the CPU. 
 
 The graphics module will be implemented and tested in isolation, 
 but we plan to integrate our module with another group's Gameboy CPU 
@@ -96,8 +98,6 @@ actual Gameboy specifications are closed source, the test
 bench will verify the behavior of the graphics module as
 described in the documentation from the Existing Work 
 section.
-
-
 
 \end{document}
 
