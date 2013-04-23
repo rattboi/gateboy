@@ -33,6 +33,9 @@
 %allows hyperlinks 
 \usepackage{hyperref}
 
+%use newlines instead of indentation between paragraphs
+\usepackage[parfill]{parskip}
+
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
 %% \renewcommand\thesubsection{\alph{subsection})}
 %% \renewcommand\thesection{\arabic{section})}
@@ -72,6 +75,8 @@ We plan on implementing the original gameboy's sprite-based raster
 graphics engine. In addition to accepting draw commands from the
 gameboy cpu, the graphics engine needs to provide interrupt signals to
 the CPU. 
+
+The graphics module will be implemented and tested in isolation, but we plan to integrate our module with another group's Gameboy CPU implementation if time allows.
 
 \section{Testing Methodology}
 
