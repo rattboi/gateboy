@@ -1,0 +1,5 @@
+# the db folder is optional and can be removed
+db
+# output_files contains temporory build files
+output_files
+
