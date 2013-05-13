@@ -12,3 +12,4 @@ output_files
 # user settings file
 *.qws
 *.dpf
+*.jdi

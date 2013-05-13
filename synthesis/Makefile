@@ -23,7 +23,7 @@ system_src=$(wildcard system\*.sv)
 all: 
 	echo "TODO - ALL"
 
-#This could use some work - maybe cmake would be better
+#This area could use some work - maybe cmake would be better for this
 
 .PHONY: synth
 synth: $(outdir)\$(project).done
