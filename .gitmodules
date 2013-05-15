@@ -1,0 +1,3 @@
+[submodule "fpgaboy"]
+	path = fpgaboy
+	url = git@github.com:trun/fpgaboy.git

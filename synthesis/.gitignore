@@ -1,0 +1,15 @@
+# the db folder is optional and can be removed
+db
+incremental_db
+simulation
+# output_files contains temporory build files
+output_files
+# reports from quartus
+*.rpt
+# backup editor files
+*.swp
+*.bak
+# user settings file
+*.qws
+*.dpf
+*.jdi
