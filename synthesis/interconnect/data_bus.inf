@@ -1,0 +1,48 @@
+// This file contains the main interface to describe the data bus that
+// connects the gameboy's cpu to its peripherals
+
+interface DataBus ();
+   parameter ADDR_SIZE = 16;
+   parameter DATA_SIZE = 8;   
+   logic [ADDR_SIZE-1:0] addr; 
+   wire  [DATA_SIZE-1: 0] data;
+   bit [DATA_SIZE-1: 0]   data_reg;
+      // write enable, and output enable. All these signals are active low. 
+   bit 			we;
+   bit 			oe;
+
+   assign data = writing() ? data_reg : 'z;
+
+
+   modport cpu(import read, import write);
+
+   modport peripheral(input addr, inout data, input we, input oe,
+                import selected, import writing, import reading);
+
+   task write(input bit[DATA_SIZE-1:0] d, input bit [ADDR_SIZE-1:0] a);
+      addr = a;
+      data_reg = d;
+      we = 0;
+      oe = 1;        
+   endtask
+
+   function bit[DATA_SIZE-1:0] read(input bit [ADDR_SIZE-1:0] a);
+      addr = a;
+      we = 1;
+      oe = 0;
+      read = data;
+   endfunction
+
+   function bit selected(input bit [ADDR_SIZE-1:0] address, input bit [ADDR_SIZE-1:0] mask);
+      selected = ((addr & mask) == (address & mask));
+   endfunction // selected
+
+   function bit writing();
+      writing = oe & !we;
+   endfunction
+
+   function bit reading();
+      reading = !oe & we;
+   endfunction
+   
+endinterface
