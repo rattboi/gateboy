@@ -10,18 +10,15 @@ typedef byte unsigned       bits8;  // 8 bit registers
 typedef byte unsigned [1:0] bits16; // 16 bit registers
 
 // Status Flags
-typedef struct packed{
-    bit S;
+typedef struct packed {
     bit Z;
-    bit Y;
-    bit H;
-    bit X;
-    bit P;
     bit N;
+    bit H;
     bit C;
+    bit [3:0] not_used;
 } Flags;
 
-// 16bit Register version
+// 8bit Register version
 typedef struct packed {
     bits8 A; Flags F;
     bits8 B; bits8 C;
@@ -32,7 +29,7 @@ typedef struct packed {
     bits16 SP;
 } RegisterSet8bit;
 
-// 8bit Register version
+// 16bit Register version
 typedef struct packed {
     bits16 AF;
     bits16 BC;
