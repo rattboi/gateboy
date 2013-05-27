@@ -3,7 +3,7 @@
 module Memory (interface db);
    parameter SIZE_BITS = 4;
    parameter BASE_ADDR = 16'h5000;
-   localparam DECODER_MASK = 16'h000f;
+   localparam DECODER_MASK = (1 < SIZE_BITS) - 1;
    localparam SIZE = (1 << SIZE_BITS);
    bit [db.DATA_SIZE-1:0] tx_reg;
    bit  [db.DATA_SIZE-1:0] memory [SIZE];
