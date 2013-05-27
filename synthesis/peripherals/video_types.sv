@@ -2,24 +2,24 @@ package video_types;
 
     typedef union 
     {
-        bit [0:7] raw;
+        bit [7:0] raw;
         struct packed
         {
-            bit BackgroundDisplay;
-            bit SpriteEnable;
-            bit SpriteSize;
-            bit TileMapSelect;
-            bit TileDataSelect;
-            bit WindowEnable;
-            bit WindowTileMapSelect;
             bit LCDEnable;
+            bit WindowTileMapSelect;
+            bit WindowEnable;
+            bit TileDataSelect;
+            bit TileMapSelect;
+            bit SpriteSize;
+            bit SpriteEnable;
+            bit BackgroundDisplay;
 
         } Fields;
     } LcdControl;
 
     typedef union
     {
-        bit [0:7] raw;
+        bit [7:0] raw;
         struct packed
         {
             bit [0:2] Mode;
