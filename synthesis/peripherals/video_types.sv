@@ -1,46 +1,61 @@
 package video_types;
 
-
-    typedef struct packed
+    typedef union 
     {
-        bit BackgroundDisplay;
-        bit SpriteEnable;
-        bit SpriteSize;
-        bit TileMapSelect;
-        bit TileDataSelect;
-        bit WindowEnable;
-        bit WindowTileMapSelect;
-        bit LCDEnable;
+        bit [0:7] raw;
+        struct packed
+        {
+            bit BackgroundDisplay;
+            bit SpriteEnable;
+            bit SpriteSize;
+            bit TileMapSelect;
+            bit TileDataSelect;
+            bit WindowEnable;
+            bit WindowTileMapSelect;
+            bit LCDEnable;
 
+        } Fields;
     } LcdControl;
 
-    typedef struct packed
+    typedef union
     {
-        bit [0:2] Mode;
-        bit Concidence;
-        bit Mode0Interrupt;
-        bit Mode1Interrupt;
-        bit Mode2Interrupt;
-        bit CoincidenceInterrupt;
+        bit [0:7] raw;
+        struct packed
+        {
+            bit [0:2] Mode;
+            bit Concidence;
+            bit Mode0Interrupt;
+            bit Mode1Interrupt;
+            bit Mode2Interrupt;
+            bit CoincidenceInterrupt;
 
+         } Fields;
      } LcdStatus;
 
-    typedef struct packed
+    typedef union
     {
-        bit [0:7] ScrollX;
-        bit [0:7] ScrollY;
-        bit [0:7] LcdY;
-        bit [0:7] LcdYCompare;
-        bit [0:7] WindowY;
-        bit [0:7] WindowX;
+        bit [0:7] raw;
+        struct packed
+        {
+            bit [0:7] ScrollX;
+            bit [0:7] ScrollY;
+            bit [0:7] LcdY;
+            bit [0:7] LcdYCompare;
+            bit [0:7] WindowY;
+            bit [0:7] WindowX;
+        } Fields;
     } LcdPosition;
 
-    typedef struct packed
+    typedef union
     {
-        bit [0:1] Color1;
-        bit [0:1] Color2;
-        bit [0:1] Color3;
-        bit [0:1] Color4;
+        bit [0:7] raw;
+        struct packed
+        {
+            bit [0:1] Color1;
+            bit [0:1] Color2;
+            bit [0:1] Color3;
+            bit [0:1] Color4;
+        } Fields;
     } Pallete;
 
     typedef struct packed
@@ -54,7 +69,6 @@ package video_types;
     localparam PIXEL_BITS = 2;
     localparam ROW_SIZE = 8;
     localparam NUM_ROWS = 8;
-
     
     typedef union 
     {
@@ -63,30 +77,38 @@ package video_types;
     
     } vram_tiles;
 
-    typedef struct packed
+    typedef union
     {
-        bit BgOamPriority;
-        bit VerticalFlip;
-        bit HorizontalFlip;
-        bit Unused;
-        bit TileBankNumber;
-        bit [0:2] BackgroundPallete;
+        bit [0:7] raw;
+        struct packed
+        {
+            bit BgOamPriority;
+            bit VerticalFlip;
+            bit HorizontalFlip;
+            bit Unused;
+            bit TileBankNumber;
+            bit [0:2] BackgroundPallete;
+        } Fields;
     } BackgroundMapAttrs;
 
     typedef struct packed
     {
-        bit [0:7][0:32][0:32] BackgroundMap;        
+        bit [0:7][0:31][0:31] BackgroundMap;        
         BackgroundMapAttrs Attributes;
     } vram_background;
 
-    typedef struct packed
+    typedef union
     {
-        bit [0:2] CgbPalleteNumber;
-        bit VramBank;
-        bit PalleteNumber;
-        bit XFlip;
-        bit YFlip;
-        bit BgOamPriority;
+        bit [0:7] raw;
+        struct packed
+        {
+            bit [0:2] CgbPalleteNumber;
+            bit VramBank;
+            bit PalleteNumber;
+            bit XFlip;
+            bit YFlip;
+            bit BgOamPriority;
+        } Fields;
     } SpriteAttributeFlags;
 
     typedef struct packed
@@ -101,6 +123,5 @@ package video_types;
     {
         SpriteAttributes [0:39] Attributes;
     } SpriteAttributesTable;
-
 
 endpackage
