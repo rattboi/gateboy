@@ -1,7 +1,7 @@
 package video_types;
 
 
-    typedef packed struct
+    typedef struct packed
     {
         bit BackgroundDisplay;
         bit SpriteEnable;
@@ -12,9 +12,9 @@ package video_types;
         bit WindowTileMapSelect;
         bit LCDEnable;
 
-    } LcdControl
+    } LcdControl;
 
-    typedef packed struct
+    typedef struct packed
     {
         bit [0:2] Mode;
         bit Concidence;
@@ -25,7 +25,7 @@ package video_types;
 
      } LcdStatus;
 
-    typedef packed struct
+    typedef struct packed
     {
         bit [0:7] ScrollX;
         bit [0:7] ScrollY;
@@ -35,7 +35,7 @@ package video_types;
         bit [0:7] WindowX;
     } LcdPosition;
 
-    typedef packed struct
+    typedef struct packed
     {
         bit [0:1] Color1;
         bit [0:1] Color2;
@@ -43,7 +43,7 @@ package video_types;
         bit [0:1] Color4;
     } Pallete;
 
-    typedef packed struct
+    typedef struct packed
     { 
         Pallete BackgroundPallete;
         Pallete Sprite0Pallete;
@@ -59,11 +59,11 @@ package video_types;
     typedef union 
     {
         bit [(ROW_SIZE * NUM_ROWS * PIXEL_BITS) - 1:0] raw;
-        bit [(NUM_ROWS - 1:0] [(ROW_SIZE * PIXEL_BITS) - 1:0] rows;
+        bit [(NUM_ROWS - 1):0] [(ROW_SIZE * PIXEL_BITS) - 1:0] rows;
     
     } vram_tiles;
 
-    typedef struct 
+    typedef struct packed
     {
         bit BgOamPriority;
         bit VerticalFlip;
@@ -73,23 +73,23 @@ package video_types;
         bit [0:2] BackgroundPallete;
     } BackgroundMapAttrs;
 
-    typedef struct 
+    typedef struct packed
     {
-        byte [0:32][0:32] BackgroundMap;        
+        bit [0:7][0:32][0:32] BackgroundMap;        
         BackgroundMapAttrs Attributes;
     } vram_background;
 
-    typedef struct
+    typedef struct packed
     {
         bit [0:2] CgbPalleteNumber;
         bit VramBank;
-        bit PalleteNumber
+        bit PalleteNumber;
         bit XFlip;
         bit YFlip;
         bit BgOamPriority;
     } SpriteAttributeFlags;
 
-    typedef struct
+    typedef struct packed
     {
         byte YPosition;
         byte XPosition;
@@ -97,7 +97,7 @@ package video_types;
         SpriteAttributeFlags Flags;
     } SpriteAttributes;
     
-    typedef struct
+    typedef struct packed
     {
         SpriteAttributes [0:39] Attributes;
     } SpriteAttributesTable;
