@@ -2,23 +2,28 @@
 
 module Memory (interface db);
    parameter SIZE_BITS = 4;
-   parameter BASE_ADDR = 16'h1000;
-   localparam DECODER_MASK = ('1  << SIZE_BITS);
-   localparam SIZE = (1'b1 << SIZE_BITS);
+   parameter BASE_ADDR = 16'h5000;
+   localparam DECODER_MASK = 16'h000f;
+   localparam SIZE = (1 << SIZE_BITS);
    bit [db.DATA_SIZE-1:0] tx_reg;
-   bit [db.DATA_SIZE-1:0] memory [SIZE-1:0];
+   bit  [db.DATA_SIZE-1:0] memory [SIZE];
+   bit                    enable;
 
+   assign db.data = (enable) ? tx_reg : 'z;   
 
-   assign db.data = (db.reading() && db.selected(BASE_ADDR,DECODER_MASK)) ? tx_reg : 'z;   
    
-   always_latch  begin
+   always @(posedge db.clk)  begin
       if(db.writing() && db.selected(BASE_ADDR, DECODER_MASK)) begin
-         memory[db.addr & ~DECODER_MASK] = db.data;
+         memory[db.addr & DECODER_MASK] = db.data;
       end
+      else if(db.reading && db.selected(BASE_ADDR, DECODER_MASK)) begin
+        tx_reg = memory[db.addr & DECODER_MASK];
+         enable = 1;
+      end
+      else
+        enable = 0;
    end
 
-   always_latch
-     if(db.reading && db.selected(BASE_ADDR, DECODER_MASK))
-       tx_reg = memory[db.addr & ~DECODER_MASK];
+
      
 endmodule
