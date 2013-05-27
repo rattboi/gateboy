@@ -1,0 +1,49 @@
+`ifndef __tv80__
+`define __tv80__
+/*
+ * Author:      Tyler Tricker
+ * Description: This file contains data types common to different parts of the
+ *              TV80 microprocessor
+ */
+
+typedef byte unsigned       bits8;  // 8 bit registers
+typedef byte unsigned [1:0] bits16; // 16 bit registers
+
+// Status Flags
+typedef struct packed {
+    bit Z;
+    bit N;
+    bit H;
+    bit C;
+    bit [3:0] not_used;
+} Flags;
+
+// 8bit Register version
+typedef struct packed {
+    bits8 A; Flags F;
+    bits8 B; bits8 C;
+    bits8 D; bits8 E;  
+    bits8 H; bits8 L;
+
+    bits16 PC;
+    bits16 SP;
+} RegisterSet8bit;
+
+// 16bit Register version
+typedef struct packed {
+    bits16 AF;
+    bits16 BC;
+    bits16 DE;
+    bits16 HL;
+
+    bits16 PC;
+    bits16 SP;
+} RegisterSet16bit;
+
+typedef union {
+    RegisterSet8bit r8bit;
+    RegisterSet16bit r16bit;
+   
+} Registers;
+
+`endif
