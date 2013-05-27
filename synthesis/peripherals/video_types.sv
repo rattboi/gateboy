@@ -46,7 +46,7 @@ package video_types;
         } Fields;
     } LcdPosition;
 
-    typedef union
+    typedef union packed
     {
         bit [0:7] raw;
         struct packed
@@ -77,7 +77,7 @@ package video_types;
     
     } vram_tiles;
 
-    typedef union
+    typedef union packed
     {
         bit [0:7] raw;
         struct packed
@@ -97,7 +97,7 @@ package video_types;
         BackgroundMapAttrs Attributes;
     } vram_background;
 
-    typedef union
+    typedef union packed
     {
         bit [0:7] raw;
         struct packed
