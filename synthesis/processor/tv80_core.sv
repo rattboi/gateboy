@@ -219,57 +219,37 @@ module tv80_core (  // Inputs
      .Q                    (ALU_Q)
      );
   
-  always @(/*AUTOSENSE*/mcycle or mcycles or tstate or tstates)
-    begin
-      case (mcycles)
-        1 : last_mcycle = mcycle[0];
-        2 : last_mcycle = mcycle[1];
-        3 : last_mcycle = mcycle[2];
-        4 : last_mcycle = mcycle[3];
-        5 : last_mcycle = mcycle[4];
-        6 : last_mcycle = mcycle[5];
-        7 : last_mcycle = mcycle[6];
-        default : last_mcycle = 1'bx;
-      endcase // case(mcycles)
+  always_comb
+  begin
+    if (mcycles > 0)
+      last_mcycle = mcycle[mcycles -1];
+    else 
+      last_mcycle = 1'bx;
 
-      case (tstates)
-        0 : last_tstate = tstate[0];
-        1 : last_tstate = tstate[1];
-        2 : last_tstate = tstate[2];
-        3 : last_tstate = tstate[3];
-        4 : last_tstate = tstate[4];
-        5 : last_tstate = tstate[5];
-        6 : last_tstate = tstate[6];
-        default : last_tstate = 1'bx;
-      endcase
-    end // always @ (...
-  
+    if (tstates > 0)
+      last_tstate = tstate[tstates -1];
+    else 
+      last_tstate = 1'bx;        
+  end
           
-  always @(/*AUTOSENSE*/ALU_Q or BusAck or BusB or DI_Reg
-           or ExchangeRp or IR or Save_ALU_r or Set_Addr_To or XY_Ind
-           or XY_State or cen or last_tstate or mcycle)
-    begin
-      ClkEn = cen && ~ BusAck;
+  always_comb
+  begin
+    ClkEn = cen && ~ BusAck;
+    T_Res = (last_tstate) ? 1'b1 : 1'b0;
+    
+    if (XY_State != 2'b00 && XY_Ind == 1'b0 &&
+        ((Set_Addr_To == aXY) ||
+         (mcycle[0] && IR == 8'b11001011) ||
+         (mcycle[0] && IR == 8'b00110110)))
+      NextIs_XY_Fetch = 1'b1;
+    else 
+      NextIs_XY_Fetch = 1'b0;
 
-      if (last_tstate)
-        T_Res = 1'b1;
-      else T_Res = 1'b0;
-      
-      if (XY_State != 2'b00 && XY_Ind == 1'b0 &&
-          ((Set_Addr_To == aXY) ||
-           (mcycle[0] && IR == 8'b11001011) ||
-           (mcycle[0] && IR == 8'b00110110)))
-        NextIs_XY_Fetch = 1'b1;
-      else 
-        NextIs_XY_Fetch = 1'b0;
-
-      if (ExchangeRp)
-        Save_Mux = BusB;
-      else if (!Save_ALU_r)
-        Save_Mux = DI_Reg;
-      else
-        Save_Mux = ALU_Q;
-    end // always @ *
+    case ({ExchangeRp,Save_ALU_r})
+      2'b11, 2'b10: Save_Mux = BusB;
+      2'b00       : Save_Mux = DI_Reg;
+      2'b01       : Save_Mux = ALU_Q;
+  end
   
   always @ (posedge clk)
     begin
