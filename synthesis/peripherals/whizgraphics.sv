@@ -60,6 +60,7 @@ module whizgraphics(interface db,
         
 
 
+       //after rendering last line, render is complete, reset current line
        if(currentLine > LCD_LINES)
        begin
            renderComplete = 1;
