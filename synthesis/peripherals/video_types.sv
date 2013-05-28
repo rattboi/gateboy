@@ -111,17 +111,23 @@ package video_types;
         } Fields;
     } SpriteAttributeFlags;
 
-    typedef struct packed
-    {
+
+   localparam SPRITE_SIZE = 4;
+   localparam NUM_SPRITES = 40;
+   typedef union packed {
+      struct packed {
         byte YPosition;
         byte XPosition;
         byte Tile;
         SpriteAttributeFlags Flags;
+      } Fields;
+      bit [0:7] [0:SPRITE_SIZE-1] Bits;
     } SpriteAttributes;
     
-    typedef struct packed
+    typedef union packed
     {
-        SpriteAttributes [0:39] Attributes;
+       SpriteAttributes [0:NUM_SPRITES-1] Attributes;
+       bit  [0:SPRITE_SIZE*NUM_SPRITES-1] [0:7] Bits;
     } SpriteAttributesTable;
 
 endpackage
