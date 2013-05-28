@@ -32,7 +32,7 @@ package video_types;
          } Fields;
      } LcdStatus;
 
-    struct packed
+    typedef struct packed
     {
         bit [0:7] ScrollX;
         bit [0:7] ScrollY;
@@ -127,17 +127,22 @@ package video_types;
     } SpriteAttributesTable;
 
     //LCD Output Types
+    localparam LCD_LINEWIDTH = 160;
+    localparam LCD_LINES = 144;
+    localparam LCD_LINES_BITS = 8; //ceil(log_2(LCD_LINES)
+
     typedef bit[0:1] Pixel;
-   typedef Pixel[0:159] Line;
-    typedef Line[0:143] Lcd;
+    typedef Pixel[0:LCD_LINEWIDTH - 1] Line;
+    typedef Line[0:LCD_LINES - 1] Lcd;
+
 
    function void writeLCD(Lcd display, string path);
       automatic int fd = $fopen(path, "w");
       $fwrite(fd, "P2\n");
-      $fwrite(fd, "160 144\n");
+      $fwrite(fd, "%d %d\n", LCD_LINEWIDTH, LCD_LINES);
       $fwrite(fd, "3\n");
-      for(int i = 0; i < 144; i++) begin
-        for (int j = 0; j < 160; j++) begin
+      for(int i = 0; i < LCD_LINES; i++) begin
+        for (int j = 0; j < LCD_LINEWIDTH; j++) begin
            $fwrite(fd, "%d ", display[i][j]);
         end
          $fwrite(fd, "\n");
@@ -158,7 +163,7 @@ package video_types;
        code = $fgets(line, fd);
        code = $fgets(line, fd); 
        code = $fgets(line, fd);
-      for (int i = 0; i < 144; i++) begin
+      for (int i = 0; i < LCD_LINES; i++) begin
          code = $fgets(line, fd);
          k = 0;
          for(int j = 0; j < line.len()-1; j++) begin
@@ -172,6 +177,4 @@ package video_types;
          end
       end
     endfunction
-      
-   
 endpackage
