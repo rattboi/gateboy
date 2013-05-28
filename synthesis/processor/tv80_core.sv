@@ -199,73 +199,24 @@ module tv80_core (  // Inputs
   logic            Oldnmi_n;
   
   tv80_mcode #(Mode, Flag_C, Flag_N, Flag_P, Flag_X, Flag_H, Flag_Y, Flag_Z, Flag_S) i_mcode
-    (
-     .IR                   (IR),
-     .ISet                 (ISet),
+    ( .*,      
      .MCycle               (mcycle),
-     .F                    (F),
-     .NMICycle             (NMICycle),
-     .IntCycle             (IntCycle),
      .MCycles              (mcycles_d),
      .TStates              (tstates),
-     .Prefix               (Prefix),
-     .Inc_PC               (Inc_PC),
-     .Inc_WZ               (Inc_WZ),
-     .IncDec_16            (IncDec_16),
-     .Read_To_Acc          (Read_To_Acc),
-     .Read_To_Reg          (Read_To_Reg),
-     .Set_BusB_To          (Set_BusB_To),
-     .Set_BusA_To          (Set_BusA_To),
-     .ALU_Op               (ALU_Op),
-     .Save_ALU             (Save_ALU),
-     .PreserveC            (PreserveC),
-     .Arith16              (Arith16),
-     .Set_Addr_To          (Set_Addr_To),
      .IORQ                 (iorq_i),
-     .Jump                 (Jump),
-     .JumpE                (JumpE),
-     .JumpXY               (JumpXY),
-     .Call                 (Call),
-     .RstP                 (RstP),
-     .LDZ                  (LDZ),
-     .LDW                  (LDW),
-     .LDSPHL               (LDSPHL),
-     .Special_LD           (Special_LD),
-     .ExchangeDH           (ExchangeDH),
-     .ExchangeRp           (ExchangeRp),
-     .ExchangeAF           (ExchangeAF),
-     .ExchangeRS           (ExchangeRS),
-     .I_DJNZ               (I_DJNZ),
-     .I_CPL                (I_CPL),
-     .I_CCF                (I_CCF),
-     .I_SCF                (I_SCF),
-     .I_RETN               (I_RETN),
-     .I_BT                 (I_BT),
-     .I_BC                 (I_BC),
-     .I_BTR                (I_BTR),
-     .I_RLD                (I_RLD),
-     .I_RRD                (I_RRD),
-     .I_INRC               (I_INRC),
-     .SetDI                (SetDI),
-     .SetEI                (SetEI),
-     .IMode                (IMode),
-     .Halt                 (Halt),
      .NoRead               (no_read),
      .Write                (write)
      );
 
   tv80_alu #(Mode, Flag_C, Flag_N, Flag_P, Flag_X, Flag_H, Flag_Y, Flag_Z, Flag_S) i_alu
     (
+     .*,
      .Arith16              (Arith16_r),
      .Z16                  (Z16_r),
      .ALU_Op               (ALU_Op_r),
      .IR                   (IR[5:0]),
-     .ISet                 (ISet),
-     .BusA                 (BusA),
-     .BusB                 (BusB),
      .F_In                 (F),
-     .Q                    (ALU_Q),
-     .F_Out                (F_Out)
+     .Q                    (ALU_Q)
      );
 
   function [6:0] number_to_bitvec;
@@ -965,7 +916,7 @@ module tv80_core (  // Inputs
 
   tv80_reg i_reg
     (
-     .clk                  (clk),
+     .*,
      .CEN                  (ClkEn),
      .WEH                  (RegWEH),
      .WEL                  (RegWEL),
@@ -979,10 +930,7 @@ module tv80_core (  // Inputs
      .DOBH                 (RegBusB[15:8]),
      .DOBL                 (RegBusB[7:0]),
      .DOCH                 (RegBusC[15:8]),
-     .DOCL                 (RegBusC[7:0]),
-	  .BC                   (BC),
-	  .DE                   (DE),
-	  .HL                   (HL)
+     .DOCL                 (RegBusC[7:0])
      );
 
   //-------------------------------------------------------------------------
@@ -1335,9 +1283,5 @@ module tv80_core (  // Inputs
             end
         end
     end // always @ *
-  
-// synopsys dc_script_begin
-// set_attribute current_design "revision" "$Id: tv80_core.v,v 1.5 2005-01-26 18:55:47 ghutchis Exp $" -type string -quiet
-// synopsys dc_script_end
 endmodule // T80
 
