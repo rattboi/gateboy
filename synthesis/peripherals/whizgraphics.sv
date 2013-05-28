@@ -4,6 +4,18 @@ module whizgraphics(interface db);
    bit                    enable;
    assign db.data = enable ? bus_reg : 'z;
 
+    localparam LCDC_ADDR = 16'hff40;
+    localparam STAT_ADDR = 16'hff41;
+    localparam LCD_POS_BASE_ADDR = 16'hff42;
+    localparam LCD_PALLET_BASE_ADDR = 16'hff47;
+    localparam VRAM_PALLET_ADDR = 16'h8000;
+    localparam VRAM_PALLET_MASK = 16'h1fff;
+    localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
+    localparam VRAM_BACKGROUND1_MASK = 16'h03ff;
+    localparam VRAM_BACKGROUND2_ADDR = 16'h9c00;
+    localparam VRAM_BACKGROUND2_MASK = 16'h0fff;
+
+
    parameter OAM_LOC = 16'hfe00;
    parameter OAM_MASK = 16'h00ff;
    SpriteAttributesTable oam_table;
