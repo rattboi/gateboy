@@ -128,8 +128,50 @@ package video_types;
 
     //LCD Output Types
     typedef bit[0:1] Pixel;
-    typedef Pixel[0:143] Line;
-    typedef Line[0:159] Lcd;
+   typedef Pixel[0:159] Line;
+    typedef Line[0:143] Lcd;
 
+   function void writeLCD(Lcd display, string path);
+      automatic int fd = $fopen(path, "w");
+      $fwrite(fd, "P2\n");
+      $fwrite(fd, "160 144\n");
+      $fwrite(fd, "3\n");
+      for(int i = 0; i < 144; i++) begin
+        for (int j = 0; j < 160; j++) begin
+           $fwrite(fd, "%d ", display[i][j]);
+        end
+         $fwrite(fd, "\n");
+      end
+      $fclose(fd);
+   endfunction
 
+    function automatic Lcd readLCD(string path);
+       int fd = $fopen(path, "r");
+
+       string line;
+       string tmpword = "0";
+       int    tmploc = 0;
+       int    k = 0;
+       string space = " ";
+       string newline = "\n";
+       int    code;
+       code = $fgets(line, fd);
+       code = $fgets(line, fd); 
+       code = $fgets(line, fd);
+      for (int i = 0; i < 144; i++) begin
+         code = $fgets(line, fd);
+         k = 0;
+         for(int j = 0; j < line.len()-1; j++) begin
+            if (line.getc(j) == space.getc(0)|| line.getc(j) == newline.getc(0)) begin
+               readLCD[i][k++] = tmpword.atoi();
+               tmpword = "0";
+               tmploc = 0;
+            end else begin
+               tmpword.putc(tmploc++, line.getc(j));
+            end
+         end
+      end
+    endfunction
+      
+   
 endpackage

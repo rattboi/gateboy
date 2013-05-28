@@ -1,7 +1,7 @@
 #!/bin/sh
 export PATH=/pkgs/mentor/questa/current/questasim/bin:$PATH
-MODULE=w_tb
-FILES='whizzgraphics_tb.sv video_types.sv whizgraphics.sv ../interconnect/data_bus.inf'
+MODULE=pgm_tb
+FILES='whizzgraphics_tb.sv video_types.sv whizgraphics.sv ../interconnect/data_bus.inf pgm_tb.sv'
 for i in "$FILES" 
 do
     vlog +incdir+../interconnect -sv $i 2>&1 || exit
