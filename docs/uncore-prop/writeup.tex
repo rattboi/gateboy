@@ -33,13 +33,16 @@
 %allows hyperlinks 
 \usepackage{hyperref}
 
+%use newlines instead of indentation between paragraphs
+\usepackage[parfill]{parskip}
+
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
 %% \renewcommand\thesubsection{\alph{subsection})}
 %% \renewcommand\thesection{\arabic{section})}
 
 \begin{document}
 
-\createtitle{Design Spec}
+\createtitle{Gameboy Graphics Proposal}{\includegraphics{tetris.png}}
 %% These commands allow me to use cursive letter for things such as
 %% length.  Note that on ubuntu linux, this required installation of
 %% the package 'texlive-fonts-extra'. 
@@ -53,17 +56,30 @@
 
 
 \section{Overview}
+We plan on implementing the sprite-based graphics of the original
+gameboy. The gameboy used raster graphics accessed through a simple,
+memory mapped interface. We plan on creating an implmentation of these
+graphics, and leveraging the new validation features of System Verilog
+to accelerate the testing process. 
 
-Your project proposal should be brief but describe the work you
-propose doing and the names of all team members .  I dentify any
-existing design work you intend to use and its source. Be clear about
-yo ur contribution. Briefly describe your verification approach and
-identify the Veloce mode you intend to employ.  Note that if you’re
-starting with a working HDL design, the only errors your testbench
-will find are those that you accidentally introduced in the design
-when translating to SystemVerilog. You may need to intentionally
-inject a few erro rs into the design in this case in order to exercise
-your testbench.
+\section{Existing Work}
+The internet is full of gameboy emulators. In addition, several
+emulators have been created for FPGAs (i.e.
+\url{https://github.com/trun/fpgaboy}). However, none of these designs
+use System Verilog. We plan on using these designs as a jumping-off
+point for our own implmentation.
+
+\section{Requirements}
+
+We plan on implementing the original gameboy's sprite-based raster
+graphics engine. In addition to accepting draw commands from the
+gameboy cpu, the graphics engine needs to provide interrupt signals to
+the CPU. 
+
+The graphics module will be implemented and tested in isolation, but we plan to integrate our module with another group's Gameboy CPU implementation if time allows.
+
+\section{Testing Methodology}
+
 
 
 \end{document}
