@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone II"
 set_global_assignment -name DEVICE EP2C20F484C7
-set_global_assignment -name TOP_LEVEL_ENTITY gameboy
+set_global_assignment -name TOP_LEVEL_ENTITY tv80_alu
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "12.1 SP1"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "16:45:35  MAY 12, 2013"
 set_global_assignment -name LAST_QUARTUS_VERSION "12.1 SP1"
@@ -502,26 +502,13 @@ set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
 set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH top -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH tv80_alu -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_NAME top -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id top
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME top -section_id top
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/top.sv -section_id top
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name AUTO_PACKED_REGISTERS_STRATIXII MINIMIZE_AREA
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 2147039 -section_id Top
-set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
-set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
-set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
-set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
-set_instance_assignment -name TSU_REQUIREMENT "10 ns" -from * -to *
-set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to *
-set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to I2C_SCLK
-set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to I2C_SDAT
-set_global_assignment -name SYSTEMVERILOG_FILE testbenches/top.sv
 set_global_assignment -name SYSTEMVERILOG_FILE system/gameboy.sv
 set_global_assignment -name SYSTEMVERILOG_FILE system/top.sv
 set_global_assignment -name SYSTEMVERILOG_FILE system/async_mem.sv
@@ -533,10 +520,25 @@ set_global_assignment -name SYSTEMVERILOG_FILE processor/tv80_mcode.sv
 set_global_assignment -name SYSTEMVERILOG_FILE processor/tv80_reg.sv
 set_global_assignment -name SYSTEMVERILOG_FILE processor/tv80n.sv
 set_global_assignment -name SYSTEMVERILOG_FILE processor/tv80s.sv
-set_global_assignment -name VERILOG_FILE peripherals/joypad_controller.v
 set_global_assignment -name SYSTEMVERILOG_FILE system/interrupt_controller.sv
 set_global_assignment -name SYSTEMVERILOG_FILE system/memory_controller.sv
 set_global_assignment -name SYSTEMVERILOG_FILE system/timer_controller.sv
 set_global_assignment -name SYSTEMVERILOG_FILE system/video_controller.sv
 set_global_assignment -name SYSTEMVERILOG_FILE peripherals/joypad_controller.sv
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/top.sv -section_id top
+set_global_assignment -name EDA_TEST_BENCH_NAME tv80_alu -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tv80_alu
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tv80_alu -section_id tv80_alu
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/tv80_alu_tb.sv -section_id tv80_alu -hdl_version SystemVerilog_2005
+set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
+set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
+set_instance_assignment -name TSU_REQUIREMENT "10 ns" -from * -to *
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to *
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to I2C_SCLK
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to I2C_SDAT
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -6,44 +6,20 @@
  *              TV80 microprocessor
  */
 
-typedef byte unsigned       bits8;  // 8 bit registers
-typedef byte unsigned [1:0] bits16; // 16 bit registers
+package tv80;
+typedef bit[7:0] word;
 
-// Status Flags
-typedef struct packed {
+/* Flag register layout for GB*/
+typedef struct {
     bit Z;
-    bit N;
+    bit Y;
     bit H;
     bit C;
-    bit [3:0] not_used;
-} Flags;
+    bit S;
+    bit X;
+    bit P;
+    bit N;
+} Flags_GB;
 
-// 8bit Register version
-typedef struct packed {
-    bits8 A; Flags F;
-    bits8 B; bits8 C;
-    bits8 D; bits8 E;  
-    bits8 H; bits8 L;
-
-    bits16 PC;
-    bits16 SP;
-} RegisterSet8bit;
-
-// 16bit Register version
-typedef struct packed {
-    bits16 AF;
-    bits16 BC;
-    bits16 DE;
-    bits16 HL;
-
-    bits16 PC;
-    bits16 SP;
-} RegisterSet16bit;
-
-typedef union {
-    RegisterSet8bit r8bit;
-    RegisterSet16bit r16bit;
-   
-} Registers;
-
+endpackage
 `endif
