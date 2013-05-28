@@ -22,28 +22,24 @@ package video_types;
         bit [7:0] raw;
         struct packed
         {
-            bit [0:2] Mode;
-            bit Concidence;
-            bit Mode0Interrupt;
-            bit Mode1Interrupt;
-            bit Mode2Interrupt;
             bit CoincidenceInterrupt;
+            bit Mode2Interrupt;
+            bit Mode1Interrupt;
+            bit Mode0Interrupt;
+            bit Coincidence;
+            bit [2:0] Mode;
 
          } Fields;
      } LcdStatus;
 
-    typedef union
+    struct packed
     {
-        bit [0:7] raw;
-        struct packed
-        {
-            bit [0:7] ScrollX;
-            bit [0:7] ScrollY;
-            bit [0:7] LcdY;
-            bit [0:7] LcdYCompare;
-            bit [0:7] WindowY;
-            bit [0:7] WindowX;
-        } Fields;
+        bit [0:7] ScrollX;
+        bit [0:7] ScrollY;
+        bit [0:7] LcdY;
+        bit [0:7] LcdYCompare;
+        bit [0:7] WindowY;
+        bit [0:7] WindowX;
     } LcdPosition;
 
     typedef union packed
