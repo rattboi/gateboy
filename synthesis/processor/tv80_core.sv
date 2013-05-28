@@ -22,28 +22,46 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-module tv80_core (/*AUTOARG*/
-  // Outputs
-  m1_n, iorq, no_read, write, rfsh_n, halt_n, busak_n, A, dout, mc, ts, 
-  intcycle_n, IntE, stop, BC, DE, HL, F, ACC, PC, SP, IntE_FF1, IntE_FF2, INT_s,
-  // Inputs
-  reset_n, clk, cen, wait_n, int_n, nmi_n, busrq_n, dinst, di
+module tv80_core (  // Inputs
+                    input           reset_n, 
+                    input           clk,      
+                    input           cen,      
+                    input           wait_n, 
+                    input           int_n, 
+                    input           nmi_n, 
+                    input           busrq_n, 
+                    input   [7:0]   dinst, 
+                    input   [7:0]   di,
+                    // Outputs
+                    output  logic         m1_n,         
+                    output  logic         iorq, 
+                    output                no_read, 
+                    output                write, 
+                    output  logic         rfsh_n, 
+                    output  logic         halt_n, 
+                    output  logic         busak_n, 
+                    output  logic [15:0]  A, 
+                    output  logic [7:0]   dout, 
+                    output  logic [6:0]   mc, 
+                    output  logic [6:0]   ts, 
+                    output  logic         intcycle_n, 
+                    output  logic         IntE, 
+                    output  logic         stop, 
+                    output        [15:0]  BC,
+                    output        [15:0]  DE,
+                    output        [15:0]  HL,
+                    output        [7:0]   F,
+                    output        [7:0]   ACC,
+                    output        [15:0]  PC,
+                    output        [15:0]  SP,
+                    output                IntE_FF1, 
+                    output                IntE_FF2, 
+                    output                INT_s    
   );
-  // Beginning of automatic inputs (from unused autoinst inputs)
-  // End of automatics
   
   parameter Mode = 3;   // 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
   parameter IOWait = 1; // 0 => Single cycle I/O, 1 => Std I/O cycle
-  /*
-  parameter Flag_C = 0;
-  parameter Flag_N = 1;
-  parameter Flag_P = 2;
-  parameter Flag_X = 3;
-  parameter Flag_H = 4;
-  parameter Flag_Y = 5;
-  parameter Flag_Z = 6;
-  parameter Flag_S = 7;
-  */
+
   parameter Flag_C = 4;
   parameter Flag_N = 0;
   parameter Flag_P = 1;
@@ -51,55 +69,7 @@ module tv80_core (/*AUTOARG*/
   parameter Flag_H = 5;
   parameter Flag_Y = 6;
   parameter Flag_Z = 7;
-  parameter Flag_S = 3;
-  
-
-  input     reset_n;            
-  input     clk;                
-  input     cen;                
-  input     wait_n;             
-  input     int_n;              
-  input     nmi_n;              
-  input     busrq_n;            
-  output    m1_n;               
-  output    iorq;               
-  output    no_read;            
-  output    write;              
-  output    rfsh_n;             
-  output    halt_n;             
-  output    busak_n;            
-  output [15:0] A; 
-  input [7:0]   dinst;  
-  input [7:0]   di;     
-  output [7:0]  dout;     
-  output [6:0]  mc;     
-  output [6:0]  ts;     
-  output        intcycle_n;     
-  output        IntE;           
-  output        stop;         
-  output [15:0] BC;
-  output [15:0] DE;
-  output [15:0] HL;
-  output [7:0]  F;
-  output [7:0]  ACC;
-  output [15:0] PC;
-  output [15:0] SP;
-  output        IntE_FF1;
-  output        IntE_FF2;
-  output        INT_s;
-
-  reg    m1_n;          
-  reg    iorq;          
-  reg    rfsh_n;                
-  reg    halt_n;                
-  reg    busak_n;               
-  reg [15:0] A; 
-  reg [7:0]  dout;        
-  reg [6:0]  mc;        
-  reg [6:0]  ts;        
-  reg   intcycle_n;     
-  reg   IntE;           
-  reg   stop;           
+  parameter Flag_S = 3;        
 
   parameter     aNone    = 3'b111;
   parameter     aBC      = 3'b000;
@@ -110,80 +80,75 @@ module tv80_core (/*AUTOARG*/
   parameter     aZI      = 3'b110;
 
   // Registers
-  reg [7:0]     ACC, F;
-  reg [7:0]     Ap, Fp;
-  reg [7:0]     I;
-  reg [7:0]     R;
-  reg [15:0]    SP, PC;
-  reg [7:0]     RegDIH;
-  reg [7:0]     RegDIL;
+  logic [7:0]     Ap, Fp;
+  logic [7:0]     I;
+  logic [7:0]     R;
+  logic [7:0]     RegDIH;
+  logic [7:0]     RegDIL;
   wire [15:0]   RegBusA;
   wire [15:0]   RegBusB;
   wire [15:0]   RegBusC;
-  reg [2:0]     RegAddrA_r;
-  reg [2:0]     RegAddrA;
-  reg [2:0]     RegAddrB_r;
-  reg [2:0]     RegAddrB;
-  reg [2:0]     RegAddrC;
-  reg           RegWEH;
-  reg           RegWEL;
-  reg           Alternate;
+  logic [2:0]     RegAddrA_r;
+  logic [2:0]     RegAddrA;
+  logic [2:0]     RegAddrB_r;
+  logic [2:0]     RegAddrB;
+  logic [2:0]     RegAddrC;
+  logic           RegWEH;
+  logic           RegWEL;
+  logic           Alternate;
 
   // Help Registers
-  reg [15:0]    TmpAddr;        // Temporary address register
-  reg [7:0]     IR;             // Instruction register
-  reg [1:0]     ISet;           // Instruction set selector
-  reg [15:0]    RegBusA_r;
+  logic [15:0]    TmpAddr;        // Temporary address logicister
+  logic [7:0]     IR;             // Instruction logicister
+  logic [1:0]     ISet;           // Instruction set selector
+  logic [15:0]    RegBusA_r;
 
-  reg [15:0]    ID16;
-  reg [7:0]     Save_Mux;
+  logic [15:0]    ID16;
+  logic [7:0]     Save_Mux;
 
-  reg [6:0]     tstate;
-  reg [6:0]     mcycle;
-  reg           last_mcycle, last_tstate;
-  reg           IntE_FF1;
-  reg           IntE_FF2;
-  reg           Halt_FF;
-  reg           BusReq_s;
-  reg           BusAck;
-  reg           ClkEn;
-  reg           NMI_s;
-  reg           INT_s;
-  reg [1:0]     IStatus;
+  logic [6:0]     tstate;
+  logic [6:0]     mcycle;
+  logic           last_mcycle, last_tstate;
+  logic           Halt_FF;
+  logic           BusReq_s;
+  logic           BusAck;
+  logic           ClkEn;
+  logic           NMI_s;
+  logic [1:0]     IStatus;
 
-  reg [7:0]     DI_Reg;
-  reg           T_Res;
-  reg [1:0]     XY_State;
-  reg [2:0]     Pre_XY_F_M;
-  reg           NextIs_XY_Fetch;
-  reg           XY_Ind;
-  reg           No_BTR;
-  reg           BTR_r;
-  reg           Auto_Wait;
-  reg           Auto_Wait_t1;
-  reg           Auto_Wait_t2;
-  reg           IncDecZ;
+  logic [7:0]     DI_Reg;
+  logic           T_Res;
+  logic [1:0]     XY_State;
+  logic [2:0]     Pre_XY_F_M;
+  logic           NextIs_XY_Fetch;
+  logic           XY_Ind;
+  logic           No_BTR;
+  logic           BTR_r;
+  logic           Auto_Wait;
+  logic           Auto_Wait_t1;
+  logic           Auto_Wait_t2;
+  logic           IncDecZ;
 
   // ALU signals
-  reg [7:0]     BusB;
-  reg [7:0]     BusA;
+  logic [7:0]     BusB;
+  logic [7:0]     BusA;
   wire [7:0]    ALU_Q;
   wire [7:0]    F_Out;
 
   // Registered micro code outputs
-  reg [4:0]     Read_To_Reg_r;
-  reg           Arith16_r;
-  reg           Z16_r;
-  reg [3:0]     ALU_Op_r;
-  reg           Save_ALU_r;
-  reg           PreserveC_r;
-  reg [2:0]     mcycles;
+  logic [4:0]     Read_To_Reg_r;
+  logic           Arith16_r;
+  logic           Z16_r;
+  logic [3:0]     ALU_Op_r;
+  logic           Save_ALU_r;
+  logic           PreserveC_r;
+  logic [2:0]     mcycles;
 
   // Micro code outputs
   wire [2:0]    mcycles_d;
   wire [2:0]    tstates;
-  reg           IntCycle;
-  reg           NMICycle;
+  logic           IntCycle;
+  logic           NMICycle;
   wire          Inc_PC;
   wire          Inc_WZ;
   wire [3:0]    IncDec_16;
@@ -227,11 +192,11 @@ module tv80_core (/*AUTOARG*/
   wire [1:0]     IMode;
   wire           Halt;
 
-  reg [15:0]     PC16;
-  reg [15:0]     PC16_B;
-  reg [15:0]     SP16, SP16_A, SP16_B;
-  reg [15:0]     ID16_B;
-  reg            Oldnmi_n;
+  logic [15:0]     PC16;
+  logic [15:0]     PC16_B;
+  logic [15:0]     SP16, SP16_A, SP16_B;
+  logic [15:0]     ID16_B;
+  logic            Oldnmi_n;
   
   tv80_mcode #(Mode, Flag_C, Flag_N, Flag_P, Flag_X, Flag_H, Flag_Y, Flag_Z, Flag_S) i_mcode
     (
@@ -881,7 +846,7 @@ module tv80_core (/*AUTOARG*/
               RegAddrB_r <= #1 { XY_State[1],  2'b11 };
             end
 
-          // Address from register
+          // Address from logicister
           RegAddrC <= #1 { Alternate,  Set_Addr_To[1:0] };
           // Jump (HL), LD SP,HL
           if ((JumpXY == 1'b1 || LDSPHL == 1'b1) ) 
