@@ -32,7 +32,7 @@ package video_types;
          } Fields;
      } LcdStatus;
 
-    struct packed
+    typedef struct packed
     {
         bit [0:7] ScrollX;
         bit [0:7] ScrollY;
@@ -127,9 +127,13 @@ package video_types;
     } SpriteAttributesTable;
 
     //LCD Output Types
+    localparam LCD_LINEWIDTH = 160;
+    localparam LCD_LINES = 144;
+    localparam LCD_LINES_BITS = 8 //ceil(log_2(LCD_LINES)
+
     typedef bit[0:1] Pixel;
-    typedef Pixel[0:143] Line;
-    typedef Line[0:159] Lcd;
+    typedef Pixel[0:LCD_LINEWIDTH - 1] Line;
+    typedef Line[0:LCD_LINES - 1] Lcd;
 
 
 endpackage
