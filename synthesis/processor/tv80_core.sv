@@ -218,22 +218,6 @@ module tv80_core (  // Inputs
      .F_In                 (F),
      .Q                    (ALU_Q)
      );
-
-  function [6:0] number_to_bitvec;
-    input [2:0] num;
-    begin
-      case (num)
-        1 : number_to_bitvec = 7'b0000001;
-        2 : number_to_bitvec = 7'b0000010;
-        3 : number_to_bitvec = 7'b0000100;
-        4 : number_to_bitvec = 7'b0001000;
-        5 : number_to_bitvec = 7'b0010000;
-        6 : number_to_bitvec = 7'b0100000;
-        7 : number_to_bitvec = 7'b1000000;
-        default : number_to_bitvec = 7'bx;
-      endcase // case(num)
-    end
-  endfunction // number_to_bitvec
   
   always @(/*AUTOSENSE*/mcycle or mcycles or tstate or tstates)
     begin
@@ -1184,7 +1168,7 @@ module tv80_core (  // Inputs
                             end 
                           else if ((mcycle[6]) || (mcycle[5] && Mode == 1 && ISet != 2'b01) ) 
                             begin
-                              mcycle <= #1 number_to_bitvec(Pre_XY_F_M + 1);
+                              mcycle <= #1 1 << (Pre_XY_F_M + 1);                              
                             end 
                           else if ((last_mcycle) ||
                                    No_BTR == 1'b1 ||
