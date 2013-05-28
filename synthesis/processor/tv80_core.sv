@@ -257,8 +257,8 @@ module tv80_core (  // Inputs
   // first sequential block
   always_ff @(posedge clk)
     begin
-      if (~reset_n) 
-      begin
+      if (~reset_n)
+      begin // resets
         // low reset signals
         { PC, A, TmpAddr, IR, ISet, XY_State, IStatus, mcycles, dout, Alternate, Read_To_Reg_r,
           Arith16_r, BTR_r, Z16_r, ALU_Op_r, Save_ALU_r, PreserveC_r, XY_Ind } <= #1 '0;
@@ -275,100 +275,72 @@ module tv80_core (  // Inputs
         
       else 
         begin
-
           if (ClkEn == 1'b1 ) 
             begin
-
-              ALU_Op_r <= #1 4'b0000;
-              Save_ALU_r <= #1 1'b0;
-              Read_To_Reg_r <= #1 5'b00000;
-
+              {ALU_Op_r, Save_ALU_r, Read_To_Reg_r} <= #1 '0;
               mcycles <= #1 mcycles_d;
 
               if (IMode != 2'b11 ) 
-                begin
-                  IStatus <= #1 IMode;
-                end
+                IStatus <= #1 IMode;
 
-              Arith16_r <= #1 Arith16;
+              Arith16_r   <= #1 Arith16;
               PreserveC_r <= #1 PreserveC;
+              
               if (ISet == 2'b10 && ALU_Op[2] == 1'b0 && ALU_Op[0] == 1'b1 && mcycle[2] ) 
-                begin
-                  Z16_r <= #1 1'b1;
-                end 
+                Z16_r <= #1 1'b1;
               else 
-                begin
-                  Z16_r <= #1 1'b0;
-                end
+                Z16_r <= #1 1'b0;
 
               if (mcycle[0] && (tstate[1] | tstate[2] | tstate[3] )) 
+              begin
+                if (tstate[2] && wait_n == 1'b1 ) 
                 begin
-                  // mcycle == 1 && tstate == 1, 2, || 3
-                  if (tstate[2] && wait_n == 1'b1 ) 
+                  `ifdef TV80_REFRESH // ifdef
+                    if (Mode < 2 ) 
                     begin
-                      `ifdef TV80_REFRESH
-                      if (Mode < 2 ) 
-                        begin
-                          A[7:0] <= #1 R;
-                          A[15:8] <= #1 I;
-                          R[6:0] <= #1 R[6:0] + 1;
-                        end
-                      `endif
-                      if (Jump == 1'b0 && Call == 1'b0 && NMICycle == 1'b0 && IntCycle == 1'b0 && ~ (Halt_FF == 1'b1 || Halt == 1'b1) ) 
-                        begin
-                          PC <= #1 PC16;
-                        end
-
-                      if (IntCycle == 1'b1 && IStatus == 2'b01 ) 
-                        begin
-                          IR <= #1 8'b11111111;
-                        end 
-                      else if (Halt_FF == 1'b1 || (IntCycle == 1'b1 && IStatus == 2'b10) || NMICycle == 1'b1 ) 
-                        begin
-                          IR <= #1 8'b00000000;
-                        end 
-                      else 
-                        begin
-                          IR <= #1 dinst;
-                        end
-
-                      ISet <= #1 2'b00;
-                      if (Prefix != 2'b00 ) 
-                        begin
-                          if (Prefix == 2'b11 ) 
-                            begin
-                              if (IR[5] == 1'b1 ) 
-                                begin
-                                  XY_State <= #1 2'b10;
-                                end 
-                              else 
-                                begin
-                                  XY_State <= #1 2'b01;
-                                end
-                            end 
-                          else 
-                            begin
-                              if (Prefix == 2'b10 ) 
-                                begin
-                                  XY_State <= #1 2'b00;
-                                  XY_Ind <= #1 1'b0;
-                                end
-                              ISet <= #1 Prefix;
-                            end
-                        end 
-                      else 
-                        begin
-                          XY_State <= #1 2'b00;
-                          XY_Ind <= #1 1'b0;
-                        end
-                    end // if (tstate == 2 && wait_n == 1'b1 )
+                      A      <= #1 {I, R};
+                      R[6:0] <= #1 R[6:0] + 1;
+                    end
+                  `endif // endif
                   
+                  // PC
+                  if (Jump == 1'b0 && Call == 1'b0 && NMICycle == 1'b0 && IntCycle == 1'b0 
+                        && ~ (Halt_FF == 1'b1 || Halt == 1'b1) ) 
+                    PC <= #1 PC16;
 
-                end 
-              else 
+                  // IR
+                  if (IntCycle == 1'b1 && IStatus == 2'b01 ) 
+                    IR <= #1 '1;
+                  else if (Halt_FF == 1'b1 || (IntCycle == 1'b1 && IStatus == 2'b10) || NMICycle == 1'b1 ) 
+                    IR <= #1 '0;
+                  else 
+                    IR <= #1 dinst;
+
+                  // ISet
+                  ISet <= #1 2'b00;
+                  
+                  // Prefix dependent assignments
+                  case (Prefix)
+                    2'b11: XY_State   <= #1 (IR[5] == 1'b1) ? 2'b10 : 2'b01;
+                            
+                    2'b10: begin
+                            ISet      <= #1 Prefix;
+                            XY_State  <= #1 2'b00;
+                            XY_Ind    <= #1 1'b0;
+                          end
+                          
+                    2'b01: ISet       <= #1 Prefix;
+                    
+                    2'b00: begin
+                            XY_State  <= #1 '0;
+                            XY_Ind    <= #1 '0;
+                          end
+                  endcase
+                end // if (tstate == 2 && wait_n == 1'b1 )
+              end // (mcycle[0] && (tstate[1] | tstate[2] | tstate[3] )) 
+              
+              else // either (mcycle > 1) OR (mcycle == 1 AND tstate > 3)
                 begin
-                  // either (mcycle > 1) OR (mcycle == 1 AND tstate > 3)
-
                   if (mcycle[5] ) 
                     begin
                       XY_Ind <= #1 1'b1;
