@@ -126,4 +126,10 @@ package video_types;
        bit  [0:SPRITE_SIZE*NUM_SPRITES-1] [0:7] Bits;
     } SpriteAttributesTable;
 
+    //LCD Output Types
+    typedef bit[0:1] Pixel;
+    typedef Pixel[0:143] Line;
+    typedef Line[0:159] Lcd;
+
+
 endpackage
