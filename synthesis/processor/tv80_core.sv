@@ -219,6 +219,7 @@ module tv80_core (  // Inputs
      .Q                    (ALU_Q)
      );
   
+  // first comb block
   always_comb
   begin
     if (mcycles > 0)
@@ -231,7 +232,8 @@ module tv80_core (  // Inputs
     else 
       last_tstate = 1'bx;        
   end
-          
+  
+  // second comb block
   always_comb
   begin
     ClkEn = cen && ~ BusAck;
@@ -249,42 +251,28 @@ module tv80_core (  // Inputs
       2'b11, 2'b10: Save_Mux = BusB;
       2'b00       : Save_Mux = DI_Reg;
       2'b01       : Save_Mux = ALU_Q;
+    endcase
   end
   
-  always @ (posedge clk)
+  // first sequential block
+  always_ff @(posedge clk)
     begin
-      if (reset_n == 1'b0 ) 
-        begin
-          PC <= #1 0;  // Program Counter
-          A <= #1 0;
-          TmpAddr <= #1 0;
-          IR <= #1 8'b00000000;
-          ISet <= #1 2'b00;
-          XY_State <= #1 2'b00;
-          IStatus <= #1 2'b00;
-          mcycles <= #1 3'b000;
-          dout <= #1 8'b00000000;
-
-          ACC <= #1 8'hFF;
-          F <= #1 8'hFF;
-          Ap <= #1 8'hFF;
-          Fp <= #1 8'hFF;
-          I <= #1 8'hFE; // 0
-          `ifdef TV80_REFRESH
-          R <= #1 0;
-          `endif
-          SP <= #1 16'hFFFF;
-          Alternate <= #1 1'b0;
-
-          Read_To_Reg_r <= #1 5'b00000;
-          Arith16_r <= #1 1'b0;
-          BTR_r <= #1 1'b0;
-          Z16_r <= #1 1'b0;
-          ALU_Op_r <= #1 4'b0000;
-          Save_ALU_r <= #1 1'b0;
-          PreserveC_r <= #1 1'b0;
-          XY_Ind <= #1 1'b0;
-        end 
+      if (~reset_n) 
+      begin
+        // low reset signals
+        { PC, A, TmpAddr, IR, ISet, XY_State, IStatus, mcycles, dout, Alternate, Read_To_Reg_r,
+          Arith16_r, BTR_r, Z16_r, ALU_Op_r, Save_ALU_r, PreserveC_r, XY_Ind } <= #1 '0;
+        
+        // high reset signals
+        { ACC, F, Ap, Fp, SP } <= #1 '1;
+        
+        // others 
+        I <= #1 8'hFE;
+        `ifdef TV80_REFRESH 
+          R <= #1 '0; 
+        `endif
+      end 
+        
       else 
         begin
 
