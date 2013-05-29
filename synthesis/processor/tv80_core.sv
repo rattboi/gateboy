@@ -629,28 +629,20 @@ module tv80_core (  // Inputs
       {RegWEH, RegWEL} = (IncDec_16[1:0] == '1) ? {RegWEH, RegWEL} : '1;
   end // always @ *
   
-// fifth sequential block
-  always @(/*AUTOSENSE*/ExchangeDH or ID16 or IncDec_16 or RegBusA_r
-           or RegBusB or Save_Mux or mcycle or tstate)
+// RegDIH/RegDIL block
+  always_comb
   begin
-    RegDIH = Save_Mux;
-    RegDIL = Save_Mux;
-
     if (ExchangeDH == 1'b1 && tstate[3] ) 
-    begin
-      RegDIH = RegBusB[15:8];
-      RegDIL = RegBusB[7:0];
-    end
-    else if (ExchangeDH == 1'b1 && tstate[4] ) 
-    begin
-      RegDIH = RegBusA_r[15:8];
-      RegDIL = RegBusA_r[7:0];
-    end
+      {RegDIH, RegDIL} = RegBusB[15:0];
+
+    else if (ExchangeDH == 1'b1 && tstate[4] )
+      {RegDIH, RegDIL} = RegBusA_r[15:0];
+
     else if (IncDec_16[2] == 1'b1 && ((tstate[2] && mcycle != 3'b001) || (tstate[3] && mcycle[0])) ) 
-    begin
-      RegDIH = ID16[15:8];
-      RegDIL = ID16[7:0];
-    end
+      {RegDIH, RegDIL} = ID16[15:0];
+
+    else
+      {RegDIH, RegDIL} = {2{Save_Mux}};
   end
 
   tv80_reg i_reg
@@ -673,73 +665,36 @@ module tv80_core (  // Inputs
      );
 
   //-------------------------------------------------------------------------
-  //
-  // Buses
-  //
+  // Bus Block
   //-------------------------------------------------------------------------
-  // first bus sequential block
   always @ (posedge clk)
   begin
     if (ClkEn == 1'b1 ) 
     begin
       case (Set_BusB_To)
-        4'b0111 :
-          BusB <= #1 ACC;
-        4'b0000 , 4'b0001 , 4'b0010 , 4'b0011 , 4'b0100 , 4'b0101 :
-          begin
-            if (Set_BusB_To[0] == 1'b1 ) 
-            begin
-              BusB <= #1 RegBusB[7:0];
-            end 
-            else 
-            begin
-              BusB <= #1 RegBusB[15:8];
-            end
-          end
-        4'b0110 :
-          BusB <= #1 DI_Reg;
-        4'b1000 :
-          BusB <= #1 SP[7:0];
-        4'b1001 :
-          BusB <= #1 SP[15:8];
-        4'b1010 :
-          BusB <= #1 8'b00000001;
-        4'b1011 :
-          BusB <= #1 F;
-        4'b1100 :
-          BusB <= #1 PC[7:0];
-        4'b1101 :
-          BusB <= #1 PC[15:8];
-        4'b1110 :
-          BusB <= #1 8'b00000000;
-        default :
-          BusB <= #1 8'hxx;
+        4'b0111: BusB <= #1 ACC;
+        4'b0000 , 4'b0001 , 4'b0010 , 4'b0011 , 4'b0100 , 4'b0101: 
+          BusB <= #1 (Set_BusB_To[0]) ? RegBusB[7:0] : RegBusB[15:8];
+        4'b0110 : BusB <= #1 DI_Reg;
+        4'b1000 : BusB <= #1 SP[7:0];
+        4'b1001 : BusB <= #1 SP[15:8];
+        4'b1010 : BusB <= #1 8'b00000001;
+        4'b1011 : BusB <= #1 F;
+        4'b1100 : BusB <= #1 PC[7:0];
+        4'b1101 : BusB <= #1 PC[15:8];
+        4'b1110 : BusB <= #1 8'b00000000;
+        default : BusB <= #1 8'hxx;
       endcase
 
       case (Set_BusA_To)
-        4'b0111 :
-          BusA <= #1 ACC;
+        4'b0111 : BusA <= #1 ACC;
         4'b0000 , 4'b0001 , 4'b0010 , 4'b0011 , 4'b0100 , 4'b0101 :
-          begin
-            if (Set_BusA_To[0] == 1'b1 )
-            begin
-              BusA <= #1 RegBusA[7:0];
-            end 
-            else 
-            begin
-              BusA <= #1 RegBusA[15:8];
-            end
-          end
-        4'b0110 :
-          BusA <= #1 DI_Reg;
-        4'b1000 :
-          BusA <= #1 SP[7:0];
-        4'b1001 :
-          BusA <= #1 SP[15:8];
-        4'b1010 :
-          BusA <= #1 8'b00000000;
-        default :
-          BusB <= #1  8'hxx;
+          BusA <= #1 (Set_BusA_To[0]) ? RegBusA[7:0] : RegBusA[15:8];
+        4'b0110 : BusA <= #1 DI_Reg;
+        4'b1000 : BusA <= #1 SP[7:0];
+        4'b1001 : BusA <= #1 SP[15:8];
+        4'b1010 : BusA <= #1 8'b00000000;
+        default : BusB <= #1  8'hxx;
       endcase
     end
   end
