@@ -714,9 +714,8 @@ module tv80_core (  // Inputs
   end
 `endif  
 
-// second control sequential block
-  always @(/*AUTOSENSE*/BusAck or Halt_FF or I_DJNZ or IntCycle
-           or IntE_FF1 or di or iorq_i or mcycle or tstate)
+// second control signal block
+  always_comb
   begin
     mc = mcycle;
     ts = tstate;
