@@ -587,10 +587,10 @@ module tv80_core (  // Inputs
     
   end // always @ (posedge clk)
   
-// third sequential block
-  always @(/*AUTOSENSE*/Alternate or ExchangeDH or IncDec_16
-           or RegAddrA_r or RegAddrB_r or XY_State or mcycle or tstate)
+// RegAddr block
+  always_comb
   begin
+    // RegAddrA
     if ((tstate[2] || (tstate[3] && mcycle[0] && IncDec_16[2] == 1'b1)) && XY_State == 2'b00)
       RegAddrA = { Alternate, IncDec_16[1:0] };
     else if ((tstate[2] || (tstate[3] && mcycle[0] && IncDec_16[2] == 1'b1)) && IncDec_16[1:0] == 2'b10)
@@ -602,11 +602,9 @@ module tv80_core (  // Inputs
     else
       RegAddrA = RegAddrA_r;
     
-    if (ExchangeDH == 1'b1 && tstate[3])
-      RegAddrB = { Alternate, 2'b01 };
-    else
-      RegAddrB = RegAddrB_r;
-  end // always @ *
+    // RegAddrB
+    RegAddrB = (ExchangeDH == 1'b1 && tstate[3]) ? {Alternate, 2'b01} : RegAddrB_r;
+  end
   
 // fourth seqnential block
   always @(/*AUTOSENSE*/ALU_Op_r or Auto_Wait_t1 or ExchangeDH
