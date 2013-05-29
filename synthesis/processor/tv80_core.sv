@@ -558,45 +558,29 @@ module tv80_core (  // Inputs
     begin
       // Bus A / Write
       RegAddrA_r <= #1  { Alternate, Set_BusA_To[2:1] };
+      
       if (XY_Ind == 1'b0 && XY_State != 2'b00 && Set_BusA_To[2:1] == 2'b10 ) 
-      begin
         RegAddrA_r <= #1 { XY_State[1],  2'b11 };
-      end
 
       // Bus B
       RegAddrB_r <= #1 { Alternate, Set_BusB_To[2:1] };
       if (XY_Ind == 1'b0 && XY_State != 2'b00 && Set_BusB_To[2:1] == 2'b10 ) 
-      begin
         RegAddrB_r <= #1 { XY_State[1],  2'b11 };
-      end
 
       // Address from logicister
       RegAddrC <= #1 { Alternate,  Set_Addr_To[1:0] };
+      
       // Jump (HL), LD SP,HL
       if ((JumpXY == 1'b1 || LDSPHL == 1'b1) ) 
-      begin
         RegAddrC <= #1 { Alternate, 2'b10 };
-      end
       if (((JumpXY == 1'b1 || LDSPHL == 1'b1) && XY_State != 2'b00) || (mcycle[5]) ) 
-      begin
         RegAddrC <= #1 { XY_State[1],  2'b11 };
-      end
-
+        
       if (I_DJNZ == 1'b1 && Save_ALU_r == 1'b1 && Mode < 2 ) 
-      begin
         IncDecZ <= #1 F_Out[Flag_Z];
-      end
+
       if ((tstate[2] || (tstate[3] && mcycle[0])) && IncDec_16[2:0] == 3'b100 ) 
-      begin
-        if (ID16 == 0 ) 
-        begin
-          IncDecZ <= #1 1'b0;
-        end 
-        else 
-        begin
-          IncDecZ <= #1 1'b1;
-        end
-      end
+        IncDecZ <= #1 (ID16 == 0) ? 1'b0 : 1'b1; 
       
       RegBusA_r <= #1 RegBusA;
     end
