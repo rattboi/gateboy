@@ -709,8 +709,6 @@ module tv80_core (  // Inputs
       rfsh_n <= #1 '1;
     else if (cen) 
       rfsh_n <= #1 (mcycle[0] && ((tstate[2]  && wait_n == 1'b1) || tstate[3])) ? '0 : '1;
-    else
-      rfsh_n <= #1 rfsh_n;
   end
 `endif  
 
@@ -729,39 +727,21 @@ module tv80_core (  // Inputs
   end
 
   //-----------------------------------------------------------------------
-  //
   // Syncronise inputs
-  //
   //-----------------------------------------------------------------------
-// first sync sequential block
   always @ (posedge clk)
   begin : sync_inputs
-
     if (reset_n == 1'b0 ) 
-    begin
-      BusReq_s <= #1 1'b0;
-      INT_s <= #1 1'b0;
-      NMI_s <= #1 1'b0;
-      Oldnmi_n <= #1 1'b0;
-    end 
-    else
-    begin
-      if (cen == 1'b1 ) 
-      begin
-        BusReq_s <= #1 ~ busrq_n;
-        INT_s <= #1 ~ int_n;
-        if (NMICycle == 1'b1 ) 
-        begin
-          NMI_s <= #1 1'b0;
-        end 
-        else if (nmi_n == 1'b0 && Oldnmi_n == 1'b1 ) 
-        begin
-          NMI_s <= #1 1'b1;
-        end
-        Oldnmi_n <= #1 nmi_n;
-      end
+      {BusReq_s, INT_s, NMI_s, Oldnmi_n} <= #1 '0;
+
+    else if (cen)
+    begin 
+      BusReq_s <= #1 ~ busrq_n;
+      INT_s <= #1 ~ int_n;  
+      Oldnmi_n <= #1 nmi_n;
+      NMI_s <= #1 (NMICycle) ? '0 : '1;
     end
-  end
+  end  
 
   //-----------------------------------------------------------------------
   //
