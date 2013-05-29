@@ -700,32 +700,17 @@ module tv80_core (  // Inputs
   end
 
   //-------------------------------------------------------------------------
-  //
   // Generate external control signals
-  //
   //-------------------------------------------------------------------------
-  // first control sequential block
 `ifdef TV80_REFRESH
   always @ (posedge clk)
   begin
     if (reset_n == 1'b0 ) 
-    begin
-      rfsh_n <= #1 1'b1;
-    end 
+      rfsh_n <= #1 '1;
+    else if (cen) 
+      rfsh_n <= #1 (mcycle[0] && ((tstate[2]  && wait_n == 1'b1) || tstate[3])) ? '0 : '1;
     else
-    begin
-      if (cen == 1'b1 ) 
-      begin
-        if (mcycle[0] && ((tstate[2]  && wait_n == 1'b1) || tstate[3]) ) 
-        begin
-          rfsh_n <= #1 1'b0;
-        end 
-        else 
-        begin
-          rfsh_n <= #1 1'b1;
-        end
-      end
-    end
+      rfsh_n <= #1 rfsh_n;
   end
 `endif  
 
