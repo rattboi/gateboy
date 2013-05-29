@@ -606,43 +606,27 @@ module tv80_core (  // Inputs
     RegAddrB = (ExchangeDH == 1'b1 && tstate[3]) ? {Alternate, 2'b01} : RegAddrB_r;
   end
   
-// fourth seqnential block
-  always @(/*AUTOSENSE*/ALU_Op_r or Auto_Wait_t1 or ExchangeDH
-           or IncDec_16 or Read_To_Reg_r or Save_ALU_r or mcycle
-           or tstate or wait_n)
+// ReqWEL/RegWEH block
+  always_comb
   begin
     RegWEH = 1'b0;
     RegWEL = 1'b0;
+    
     if ((tstate[1] && Save_ALU_r == 1'b0 && Auto_Wait_t1 == 1'b0) ||
         (Save_ALU_r == 1'b1 && ALU_Op_r != 4'b0111) ) 
     begin
       case (Read_To_Reg_r)
-        5'b10000 , 5'b10001 , 5'b10010 , 5'b10011 , 5'b10100 , 5'b10101 :
-        begin
-          RegWEH = ~ Read_To_Reg_r[0];
-          RegWEL = Read_To_Reg_r[0];
-        end
+        5'b10000 , 5'b10001 , 5'b10010 , 5'b10011 , 5'b10100 , 5'b10101:
+          {RegWEH, RegWEL} = {~Read_To_Reg_r[0], Read_To_Reg_r[0]};
+        default: {RegWEH, RegWEL} = '0;
       endcase // case(Read_To_Reg_r)
-      
     end // if ((tstate == 1 && Save_ALU_r == 1'b0 && Auto_Wait_t1 == 1'b0) ||...
     
-
-    if (ExchangeDH == 1'b1 && (tstate[3] || tstate[4]) ) 
-    begin
-      RegWEH = 1'b1;
-      RegWEL = 1'b1;
-    end
+    if (ExchangeDH == 1'b1 && (tstate[3] || tstate[4]))
+      {RegWEH, RegWEL} = '1;
 
     if (IncDec_16[2] == 1'b1 && ((tstate[2] && wait_n == 1'b1 && mcycle != 3'b001) || (tstate[3] && mcycle[0])) ) 
-    begin
-      case (IncDec_16[1:0])
-        2'b00 , 2'b01 , 2'b10 :
-        begin
-          RegWEH = 1'b1;
-          RegWEL = 1'b1;
-        end
-      endcase
-    end
+      {RegWEH, RegWEL} = (IncDec_16[1:0] == '1) ? {RegWEH, RegWEL} : '1;
   end // always @ *
   
 // fifth sequential block
