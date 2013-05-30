@@ -23,39 +23,39 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 module tv80_reg (/*AUTOARG*/
-  // Outputs
-  DOBH, DOAL, DOCL, DOBL, DOCH, DOAH, BC, DE, HL,
   // Inputs
-  AddrC, AddrA, AddrB, DIH, DIL, clk, CEN, WEH, WEL
+  input [2:0] AddrA, 
+  input [2:0] AddrB, 
+  input [2:0] AddrC, 
+  input [7:0] DIH, 
+  input [7:0] DIL, 
+  input clk, 
+  input CEN, 
+  input WEH, 
+  input WEL,
+  // Outputs
+  output [7:0]  DOAL, 
+  output [7:0]  DOAH, 
+  output [7:0]  DOCL, 
+  output [7:0]  DOCH, 
+  output [7:0]  DOBL, 
+  output [7:0]  DOBH, 
+  output [15:0] BC, 
+  output [15:0] DE, 
+  output [15:0] HL
   );
-    input  [2:0] AddrC;
-    output [7:0] DOBH;
-    input  [2:0] AddrA;
-    input  [2:0] AddrB;
-    input  [7:0] DIH;
-    output [7:0] DOAL;
-    output [7:0] DOCL;
-    input  [7:0] DIL;
-    output [7:0] DOBL;
-    output [7:0] DOCH;
-    output [7:0] DOAH;
-    input  clk, CEN, WEH, WEL;
-	
-	 output [15:0] BC;
-	 output [15:0] DE;
-	 output [15:0] HL;
 
-  reg [7:0] RegsH [0:7];
-  reg [7:0] RegsL [0:7];
+  bit [7:0] RegsH [0:7];
+  bit [7:0] RegsL [0:7];
 
-  always @(posedge clk)
+  always_ff @(posedge clk)
+  begin
+    if (CEN)
     begin
-      if (CEN)
-        begin
-          if (WEH) RegsH[AddrA] <= DIH;
-          if (WEL) RegsL[AddrA] <= DIL;
-        end
+      if (WEH) RegsH[AddrA] <= DIH;
+      if (WEL) RegsL[AddrA] <= DIL;
     end
+  end
           
   assign DOAH = RegsH[AddrA];
   assign DOAL = RegsL[AddrA];
@@ -65,15 +65,12 @@ module tv80_reg (/*AUTOARG*/
   assign DOCL = RegsL[AddrC];
 
   // break out ram bits for waveform debug
-  wire [7:0] H = RegsH[2];
-  wire [7:0] L = RegsL[2];
+  // wire [7:0] H = RegsH[2];
+  // wire [7:0] L = RegsL[2];
   
   assign BC = { RegsH[0], RegsL[0] };
   assign DE = { RegsH[1], RegsL[1] };
   assign HL = { RegsH[2], RegsL[2] };
   
-// synopsys dc_script_begin
-// set_attribute current_design "revision" "$Id: tv80_reg.v,v 1.1 2004-05-16 17:39:57 ghutchis Exp $" -type string -quiet
-// synopsys dc_script_end
 endmodule
 
