@@ -82,7 +82,7 @@ module tv80_core (  // Inputs
   // Registers
   logic [7:0]     Ap, Fp;
   logic [7:0]     I;
-  logic [7:0]     R;
+  logic [7:0]     R = 0;
   logic [7:0]     RegDIH;
   logic [7:0]     RegDIL;
   wire [15:0]   RegBusA;
@@ -196,7 +196,6 @@ module tv80_core (  // Inputs
   logic [15:0]     PC16_B;
   logic [15:0]     SP16, SP16_A, SP16_B;
   logic [15:0]     ID16_B;
-  logic            Oldnmi_n;
   
   tv80_mcode #(Mode, Flag_C, Flag_N, Flag_P, Flag_X, Flag_H, Flag_Y, Flag_Z, Flag_S) i_mcode
     ( .*,      
@@ -709,6 +708,8 @@ module tv80_core (  // Inputs
       rfsh_n <= #1 '1;
     else if (cen) 
       rfsh_n <= #1 (mcycle[0] && ((tstate[2]  && wait_n == 1'b1) || tstate[3])) ? '0 : '1;
+    else 
+      rfsh_n <= '1;
   end
 `endif  
 
@@ -732,23 +733,19 @@ module tv80_core (  // Inputs
   always @ (posedge clk)
   begin : sync_inputs
     if (reset_n == 1'b0 ) 
-      {BusReq_s, INT_s, NMI_s, Oldnmi_n} <= #1 '0;
+      {BusReq_s, INT_s, NMI_s} <= #1 '0;
 
     else if (cen)
     begin 
       BusReq_s <= #1 ~ busrq_n;
       INT_s <= #1 ~ int_n;  
-      Oldnmi_n <= #1 nmi_n;
       NMI_s <= #1 (NMICycle) ? '0 : '1;
     end
   end  
 
   //-----------------------------------------------------------------------
-  //
   // Main state machine
-  //
   //-----------------------------------------------------------------------
-// first state machine sequential block
   always @ (posedge clk)
   begin
     if (reset_n == 1'b0 ) 
@@ -767,162 +764,118 @@ module tv80_core (  // Inputs
       Auto_Wait_t2 <= #1 1'b0;
       m1_n <= #1 1'b1;
     end 
-    else
+    
+    else if (cen)
     begin
-      if (cen == 1'b1 ) 
+      if (T_Res) 
+        Auto_Wait_t1 <= #1 (T_Res) ? 1'b0 : (Auto_Wait || iorq_i);
+       
+      Auto_Wait_t2 <= #1 Auto_Wait_t1;
+      No_BTR <= #1 (I_BT && (~ IR[4] || ~ F[Flag_P])) ||
+                (I_BC && (~ IR[4] || F[Flag_Z] || ~ F[Flag_P])) ||
+                (I_BTR && (~ IR[4] || F[Flag_Z]));
+                
+      if (tstate[2]) 
       begin
-        if (T_Res == 1'b1 ) 
+        if (SetEI) 
+          {IntE_FF1, IntE_FF2} <= #1 '1;
+        if (I_RETN) 
+          IntE_FF1 <= #1 IntE_FF2;
+      end
+      
+      if (tstate[3] && SetDI)
+        {IntE_FF1, IntE_FF2} <= #1 '0;
+
+      if (IntCycle || NMICycle)
+        Halt_FF <= #1 1'b0;
+      
+      if (mcycle[0] && tstate[2] && wait_n == 1'b1 ) 
+        m1_n <= #1 1'b1;
+      
+      if (!(BusReq_s == 1'b1 && BusAck == 1'b1)) 
+      begin
+        BusAck <= #1 1'b0;
+        
+        if (T_Res && ((tstate[2] && wait_n == 1'b0 ))) 
         begin
-          Auto_Wait_t1 <= #1 1'b0;
-        end 
-        else 
-        begin
-          Auto_Wait_t1 <= #1 Auto_Wait || iorq_i;
-        end
-        Auto_Wait_t2 <= #1 Auto_Wait_t1;
-        No_BTR <= #1 (I_BT && (~ IR[4] || ~ F[Flag_P])) ||
-                  (I_BC && (~ IR[4] || F[Flag_Z] || ~ F[Flag_P])) ||
-                  (I_BTR && (~ IR[4] || F[Flag_Z]));
-        if (tstate[2] ) 
-        begin
-          if (SetEI == 1'b1 ) 
+          Halt_FF <= #1 (Halt) ? '1 : Halt_FF;
+          
+          if (BusReq_s == 1'b1 ) 
+            BusAck <= #1 1'b1;
+          
+          else // busreq == 0
           begin
-            IntE_FF1 <= #1 1'b1;
-            IntE_FF2 <= #1 1'b1;
-          end
-          if (I_RETN == 1'b1 ) 
-          begin
-            IntE_FF1 <= #1 IntE_FF2;
-          end
-        end
-        if (tstate[3] ) 
-        begin
-          if (SetDI == 1'b1 ) 
-          begin
-            IntE_FF1 <= #1 1'b0;
-            IntE_FF2 <= #1 1'b0;
-          end
-        end
-        if (IntCycle == 1'b1 || NMICycle == 1'b1 ) 
-        begin
-          Halt_FF <= #1 1'b0;
-        end
-        if (mcycle[0] && tstate[2] && wait_n == 1'b1 ) 
-        begin
-          m1_n <= #1 1'b1;
-        end
-        if (BusReq_s == 1'b1 && BusAck == 1'b1 ) 
-        begin
-        end 
-        else 
-        begin
-          BusAck <= #1 1'b0;
-          if (tstate[2] && wait_n == 1'b0 ) 
-          begin
-          end 
-          else if (T_Res == 1'b1 ) 
-          begin
-            if (Halt == 1'b1 ) 
+            tstate <= #1 7'b0000010;
+            if (NextIs_XY_Fetch == 1'b1 ) 
             begin
-              Halt_FF <= #1 1'b1;
-            end
-            if (BusReq_s == 1'b1 ) 
+              mcycle <= #1 7'b0100000;
+              Pre_XY_F_M <= #1 mcycle[2:0];
+              
+              if (IR == 8'b00110110 && Mode == 0 ) 
+                Pre_XY_F_M <= #1 3'b010;
+            end 
+            
+            else if ((mcycle[6]) || (mcycle[5] && Mode == 1 && ISet != 2'b01) ) 
+              mcycle <= #1 1'b1 << (Pre_XY_F_M + 1'b1);                              
+
+            else if ((last_mcycle) || No_BTR == 1'b1 ||
+                     (mcycle[1] && I_DJNZ == 1'b1 && IncDecZ == 1'b1) ) 
             begin
-              BusAck <= #1 1'b1;
+              m1_n <= #1 1'b0;
+              mcycle <= #1 7'b0000001;
+              IntCycle <= #1 1'b0;
+              NMICycle <= #1 1'b0;
+              if (NMI_s == 1'b1 && Prefix == 2'b00 ) 
+              begin
+                NMICycle <= #1 1'b1;
+                IntE_FF1 <= #1 1'b0;
+              end 
+              else if ((IntE_FF1 == 1'b1 && INT_s == 1'b1) && Prefix == 2'b00 && SetEI == 1'b0 ) 
+              begin
+                IntCycle <= #1 1'b1;
+                IntE_FF1 <= #1 1'b0;
+                IntE_FF2 <= #1 1'b0;
+              end
             end 
             else 
-            begin
-              tstate <= #1 7'b0000010;
-              if (NextIs_XY_Fetch == 1'b1 ) 
-              begin
-                mcycle <= #1 7'b0100000;
-                Pre_XY_F_M <= #1 mcycle;
-                if (IR == 8'b00110110 && Mode == 0 ) 
-                begin
-                  Pre_XY_F_M <= #1 3'b010;
-                end
-              end 
-              else if ((mcycle[6]) || (mcycle[5] && Mode == 1 && ISet != 2'b01) ) 
-              begin
-                mcycle <= #1 1 << (Pre_XY_F_M + 1);                              
-              end 
-              else if ((last_mcycle) ||
-                       No_BTR == 1'b1 ||
-                       (mcycle[1] && I_DJNZ == 1'b1 && IncDecZ == 1'b1) ) 
-              begin
-                m1_n <= #1 1'b0;
-                mcycle <= #1 7'b0000001;
-                IntCycle <= #1 1'b0;
-                NMICycle <= #1 1'b0;
-                if (NMI_s == 1'b1 && Prefix == 2'b00 ) 
-                begin
-                  NMICycle <= #1 1'b1;
-                  IntE_FF1 <= #1 1'b0;
-                end 
-                else if ((IntE_FF1 == 1'b1 && INT_s == 1'b1) && Prefix == 2'b00 && SetEI == 1'b0 ) 
-                begin
-                  IntCycle <= #1 1'b1;
-                  IntE_FF1 <= #1 1'b0;
-                  IntE_FF2 <= #1 1'b0;
-                end
-              end 
-              else 
-              begin
-                mcycle <= #1 { mcycle[5:0], mcycle[6] };
-              end
-            end
-          end 
-          else 
-            begin   // verilog has no "nor" operator
-              if ( ~(Auto_Wait == 1'b1 && Auto_Wait_t2 == 1'b0) &&
-                   ~(IOWait == 1 && iorq_i == 1'b1 && Auto_Wait_t1 == 1'b0) ) 
-              begin
-                tstate <= #1 { tstate[5:0], tstate[6] };
-              end
-            end
-        end
-        if (tstate[0]) 
-        begin
-          m1_n <= #1 1'b0;
-        end
+              mcycle <= #1 { mcycle[5:0], mcycle[6] };
+          end
+        end 
+        
+        else if ( ~(Auto_Wait == 1'b1 && Auto_Wait_t2 == 1'b0) &&  // verilog has no "nor" operator
+                 ~(IOWait == 1 && iorq_i == 1'b1 && Auto_Wait_t1 == 1'b0) ) 
+          tstate <= #1 { tstate[5:0], tstate[6] };   
       end
+      
+      if (tstate[0]) 
+        m1_n <= #1 1'b0;
     end
   end
+  
 // second state machine sequential block
-  always @(/*AUTOSENSE*/BTR_r or DI_Reg or IncDec_16 or JumpE or PC
-         or RegBusA or RegBusC or SP or tstate)
+  always_comb
   begin
-    if (JumpE == 1'b1 ) 
-    begin
-      PC16_B = { {8{DI_Reg[7]}}, DI_Reg };
-    end 
-    else if (BTR_r == 1'b1 ) 
-    begin
-      PC16_B = -2;
-    end
-    else
-    begin
-      PC16_B = 1;
-    end
+    PC16_B = (JumpE) ? {{8{DI_Reg[7]}}, DI_Reg} : (BTR_r) ? -16'd2 : 1'b1;
 
     if (tstate[3])
     begin
       SP16_A = RegBusC;
       SP16_B = { {8{DI_Reg[7]}}, DI_Reg };
     end
+    
     else
     begin
       // suspect that ID16 and SP16 could be shared
       SP16_A = SP;
       
       if (IncDec_16[3] == 1'b1)
-        SP16_B = -1;
+        SP16_B = -16'd1;
       else
         SP16_B = 1;
     end
 
     if (IncDec_16[3])  
-      ID16_B = -1;
+      ID16_B = -16'd1;
     else
       ID16_B = 1;
 
@@ -931,17 +884,7 @@ module tv80_core (  // Inputs
     SP16 = SP16_A + SP16_B;
   end // always @ *
   
-// third state machine sequential block
-  always @(/*AUTOSENSE*/IntCycle or NMICycle or mcycle)
-  begin
-    Auto_Wait = 1'b0;
-    if (IntCycle == 1'b1 || NMICycle == 1'b1 ) 
-    begin
-      if (mcycle[0] ) 
-      begin
-        Auto_Wait = 1'b1;
-      end
-    end
-  end // always @ *
+// third state machine sequential block (can be replaced with the following)
+  assign Auto_Wait = ((IntCycle == 1'b1 || NMICycle == 1'b1 ) && mcycle[0]) ? 1'b1 : 1'b0;
 endmodule // T80
 
