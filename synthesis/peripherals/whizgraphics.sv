@@ -25,7 +25,10 @@ module whizgraphics(interface db,
     localparam VRAM_TILES_ADDR = 16'h8000;
     localparam RAM_TILES_MASK = 16'h1fff;
     localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES;
-    Tile tiles [0:NUM_TILES-1];
+    union packed {
+        bit [0:VRAM_TILES_SIZE/8-1] [0:7] Bits;
+       Tile [0:NUM_TILES-1] Data; 
+    } tiles;
 
     localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
     localparam VRAM_BACKGROUND1_MASK = 16'h03ff;
@@ -56,7 +59,7 @@ module whizgraphics(interface db,
 
     function Tile GetTileFromIndex(int tileIndex);
         automatic Tile t;
-        t = tiles[tileIndex];
+        t = tiles.Data[tileIndex];
         return t;
     endfunction
 
@@ -92,8 +95,6 @@ module whizgraphics(interface db,
    always_ff @(posedge db.clk) begin
       if(db.reading()) begin
          enable = 1;
-         if (db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_MASK) === 1)
-           $display("selected");
          priority case (1'b1)
            db.selected(OAM_LOC, OAM_SIZE):
              bus_reg = oam_table.Bits[db.addr & OAM_MASK];

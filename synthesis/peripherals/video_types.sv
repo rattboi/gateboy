@@ -67,11 +67,10 @@ package video_types;
     localparam ROW_SIZE = 8;
     localparam NUM_ROWS = 8;
     
-    typedef union 
+    typedef union packed
     {
         bit [0:(ROW_SIZE * NUM_ROWS * PIXEL_BITS) - 1] raw;
         bit [0:(ROW_SIZE * PIXEL_BITS) - 1] [0:(NUM_ROWS - 1)] rows;
-    
     } Tile;
 
     typedef union packed
