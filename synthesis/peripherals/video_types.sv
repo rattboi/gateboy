@@ -135,42 +135,71 @@ package video_types;
     typedef Pixel[0:LCD_LINEWIDTH - 1] Line;
     typedef Line[0:LCD_LINES - 1] Lcd;
 
-
+   // builds a pgm imaage
    function void writeLCD(Lcd display, string path);
+      // open the file
       automatic int fd = $fopen(path, "w");
+      // write the magic word
       $fwrite(fd, "P2\n");
+      // write the width and height of the image on a line
       $fwrite(fd, "%d %d\n", LCD_LINEWIDTH, LCD_LINES);
+      // specify n-1 gray intensities
       $fwrite(fd, "3\n");
+
+      // For every line of the LCD
       for(int i = 0; i < LCD_LINES; i++) begin
+         // For every pixel on the line
         for (int j = 0; j < LCD_LINEWIDTH; j++) begin
+           // write out the color that is being displayed
            $fwrite(fd, "%d ", display[i][j]);
         end
+         // at the end of the line, write a newline
          $fwrite(fd, "\n");
       end
+      // close the stream
       $fclose(fd);
    endfunction
 
+   // read an LCD: much more complicated
     function automatic Lcd readLCD(string path);
+       // open the file
        int fd = $fopen(path, "r");
 
+       // string that stores the current line  of the pixmap
        string line;
+       // tmpword represents the ascii characters of the current pixel
        string tmpword = "0";
+       // the count of the number of bytes in the current tmpword
        int    tmploc = 0;
+       // counter
        int    k = 0;
+       // ascii string of a space
        string space = " ";
+       // ascii string of a newline
        string newline = "\n";
+       // return code (bad programmers don't use it)
        int    code;
+       // throw away image header: we assume it is a dgm sized picture
        code = $fgets(line, fd);
        code = $fgets(line, fd); 
        code = $fgets(line, fd);
+       // for every line of the pgm
       for (int i = 0; i < LCD_LINES; i++) begin
+         // get the line
          code = $fgets(line, fd);
          k = 0;
-         for(int j = 0; j < line.len()-1; j++) begin
+         // for every character on the line:
+         for(int j = 0; j < line.len(); j++) begin
+            // if it is a space or a newline
             if (line.getc(j) == space.getc(0)|| line.getc(j) == newline.getc(0)) begin
-               readLCD[i][k++] = tmpword.atoi();
+               // check and see if we have a color code in tmpword. If
+               // we do, write it to the LCD
+               if (tmploc > 0) 
+                 readLCD[i][k++] = tmpword.atoi();
+               // reset the temporary word fields
                tmpword = "0";
                tmploc = 0;
+               // else, assume the character is a pixel code, and add it to the tmp word register
             end else begin
                tmpword.putc(tmploc++, line.getc(j));
             end
