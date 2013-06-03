@@ -75,7 +75,7 @@ module tv80_alu (
     begin
       static logic Carry7_v;
       static logic UseCarry = 
-          ALU_Op[1] ^ (~ALU_Op[2] && ALU_Op[0] && F_In[Flag_C]);
+          ALU_Op[1] ^ (!ALU_Op[2] && ALU_Op[0] && F_In[Flag_C]);
 
       BitMask = 8'b1 << 8'(IR[5:3]);
 
@@ -165,11 +165,11 @@ module tv80_alu (
                         F_Out[Flag_H] = 1'b1;
                     else 
                         F_Out[Flag_H] = 1'b0;
-                    DAA_Q = DAA_Q + 6;
+                    DAA_Q = DAA_Q + 9'd6;
                 end // if (DAA_Q[3:0] > 9 || F_In[Flag_H] == 1'b1 )
                 // new Ahigh > 9 || C == 1
                 if (DAA_Q[8:4] > 9 || F_In[Flag_C] == 1'b1 ) 
-                    DAA_Q = DAA_Q + 96; // 0x60
+                    DAA_Q = DAA_Q + 9'd96; // 0x60
           end 
           else 
           begin
@@ -178,10 +178,10 @@ module tv80_alu (
               begin
                   if (DAA_Q[3:0] > 5 ) 
                       F_Out[Flag_H] = 1'b0;
-                  DAA_Q[7:0] = DAA_Q[7:0] - 6;
+                  DAA_Q[7:0] = DAA_Q[7:0] - 8'd6;
               end
               if (BusA > 153 || F_In[Flag_C] == 1'b1 ) 
-                  DAA_Q = DAA_Q - 352; // 0x160
+                  DAA_Q = DAA_Q - 9'd352; // 0x160
          end // else: !if(F_In[Flag_N] == 1'b0 )
               
               F_Out[Flag_X] = DAA_Q[3];
@@ -223,7 +223,6 @@ module tv80_alu (
           
           BIT:
             begin
-              // BIT
               Q_t[7:0] = BusB & BitMask;
               F_Out[Flag_S] = Q_t[7];
               if (Q_t[7:0] == 8'b00000000 ) 
