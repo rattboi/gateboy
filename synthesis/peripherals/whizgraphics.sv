@@ -1,7 +1,7 @@
 module whizgraphics(interface db, 
     input logic drawline,
     output bit renderComplete,
-    Lcd lcd);
+    video_types::Lcd lcd);
 
 
    import video_types::*;
