@@ -21,9 +21,11 @@ module whizgraphics(interface db,
     localparam LCD_PALLET_BASE_ADDR = 16'hff47;
     LcdPalletes lcdPalletes;
 
+    localparam NUM_TILES = 384;
     localparam VRAM_TILES_ADDR = 16'h8000;
-    localparam VRAM_TILES_MASK = 16'h1fff;
-    Tile tiles [0:255];
+    localparam RAM_TILES_MASK = 16'h1fff;
+    localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES;
+    Tile tiles [0:NUM_TILES-1];
 
     localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
     localparam VRAM_BACKGROUND1_MASK = 16'h03ff;
@@ -88,22 +90,28 @@ module whizgraphics(interface db,
     end
 
    always_ff @(posedge db.clk) begin
-      if (db.writing() && db.selected(OAM_LOC, OAM_SIZE)) begin
-         oam_table.Bits[db.addr & OAM_MASK] = db.data;
-      end
-      else if (db.reading() && db.selected(OAM_LOC, OAM_SIZE)) begin
+      if(db.reading()) begin
          enable = 1;
-         bus_reg = oam_table.Bits[db.addr & OAM_MASK];
+         if (db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_MASK) === 1)
+           $display("selected");
+         priority case (1'b1)
+           db.selected(OAM_LOC, OAM_SIZE):
+             bus_reg = oam_table.Bits[db.addr & OAM_MASK];
+           db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE):
+             bus_reg = vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK];
+           1:
+             enable = 0;
+         endcase         
+      end else if (db.writing()) begin // if (db.reading())
+         enable = 0;
+         priority case (1'b1)
+           db.selected(OAM_LOC, OAM_SIZE): begin
+             oam_table.Bits[db.addr & OAM_MASK] = db.data;
+              end
+           db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE): 
+             vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK] = db.data;
+         endcase
       end
-      else if (db.reading() && db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE)) begin
-         enable = 1;
-         bus_reg = vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK];
-      end
-      else if (db.writing() && db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE)) begin
-         vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK] = db.data;
-      end
-      else
-        enable = 0;
    end
 
    always_ff @(posedge drawline)
