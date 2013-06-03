@@ -23,7 +23,7 @@ module whizgraphics(interface db,
 
     localparam VRAM_TILES_ADDR = 16'h8000;
     localparam VRAM_TILES_MASK = 16'h1fff;
-    Tile[0:255] tiles;
+    Tile tiles [0:255];
 
     localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
     localparam VRAM_BACKGROUND1_MASK = 16'h03ff;
@@ -47,31 +47,31 @@ module whizgraphics(interface db,
 
     //helper functions
     function Pixel GetPixel(Tile t, int row, int pixel);
-       Pixel p; 
-       p = { t.rows[row][pixel], t.rows[row][pixel + (NUM_ROWS * ROW_SIZE) };
+       automatic Pixel p; 
+       p = { t.rows[row][pixel], t.rows[row][pixel + (NUM_ROWS * ROW_SIZE)] };
        return p;
     endfunction
 
     function Tile GetTileFromIndex(int tileIndex);
-        Tile t;
+        automatic Tile t;
         t = tiles[tileIndex];
         return t;
     endfunction
 
     function bit[0:7] GetTileIndexFromScreenPoint(int x, int y);
 
-        int bgX = x + lcdPosition.ScrollX;
-        int bgY = y + lcdPosition.ScrollY;
-        int tileX = bgX / TILE_SIZE;
-        int tileY = bgY / TILE_SIZE;
+        automatic int bgX = x + lcdPosition.ScrollX;
+        automatic int bgY = y + lcdPosition.ScrollY;
+        automatic int tileX = bgX / TILE_SIZE;
+        automatic int tileY = bgY / TILE_SIZE;
 
         //TODO: determine bmap from contrpl register
-        return vramBackground1[tileX][tileY];
+        return vramBackground1.BackgroundMap[tileX][tileY];
     endfunction
 
     function Pixel GetPixelAtScreenPoint(int x, int y);
-        int tileIndex = GetTileIndexFromScreenPoint(x, y);
-        Tile t = GetTileFromIndex(tileIndex);
+        automatic int tileIndex = GetTileIndexFromScreenPoint(x, y);
+        automatic Tile t = GetTileFromIndex(tileIndex);
         return GetPixel(t, y, x % TILE_SIZE);
     endfunction
 
@@ -108,16 +108,16 @@ module whizgraphics(interface db,
 
    always_ff @(posedge drawline)
    begin
-      int startTileX = lcdPosition.ScrollX / TILE_SIZE;
-      int tileY = (lcdPosition.ScrollY + currentLine) / TILE_SIZE;
-      int tileOffsetX = lcdPosition.ScrollX % TILE_SIZE;
-      int tileOffsetY = (lcdPosition.ScrollY + currentLine) % TILE_SIZE;
+      automatic int startTileX = lcdPosition.ScrollX / TILE_SIZE;
+      automatic int tileY = (lcdPosition.ScrollY + currentLine) / TILE_SIZE;
+      automatic int tileOffsetX = lcdPosition.ScrollX % TILE_SIZE;
+      automatic int tileOffsetY = (lcdPosition.ScrollY + currentLine) % TILE_SIZE;
 
       if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
 
       for(int i = 0; i < LCD_LINEWIDTH; i++)
       begin
-        Lcd[currentLine][i] = GetPixelAtScreenPoint(i, currentLine); 
+        lcd[currentLine][i] = GetPixelAtScreenPoint(i, currentLine); 
       end
 
        //after rendering last line, render is complete, reset current line
@@ -127,9 +127,9 @@ module whizgraphics(interface db,
            currentLine = 0;
        end
        else
+       begin
            renderComplete = 0;
            currentLine++;
         end
-
    end
 endmodule
