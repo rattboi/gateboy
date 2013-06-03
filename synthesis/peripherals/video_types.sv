@@ -69,10 +69,10 @@ package video_types;
     
     typedef union 
     {
-        bit [(ROW_SIZE * NUM_ROWS * PIXEL_BITS) - 1:0] raw;
-        bit [(NUM_ROWS - 1):0] [(ROW_SIZE * PIXEL_BITS) - 1:0] rows;
+        bit [0:(ROW_SIZE * NUM_ROWS * PIXEL_BITS) - 1] raw;
+        bit [0:(ROW_SIZE * PIXEL_BITS) - 1] [0:(NUM_ROWS - 1)] rows;
     
-    } vram_tiles;
+    } Tile;
 
     typedef union packed
     {
