@@ -49,13 +49,11 @@ module tv80_reg (/*AUTOARG*/
   bit [7:0] RegsL [0:7];
 
   always_ff @(posedge clk)
-  begin
     if (CEN)
     begin
       if (WEH) RegsH[AddrA] <= DIH;
       if (WEL) RegsL[AddrA] <= DIL;
     end
-  end
           
   assign DOAH = RegsH[AddrA];
   assign DOAL = RegsL[AddrA];
