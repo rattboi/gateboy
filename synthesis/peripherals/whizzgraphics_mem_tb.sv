@@ -16,9 +16,10 @@ module w_mem_tb();
    
    initial forever #10 clk = ~clk;
    
+
+   // Test the OAM
    initial begin
-      $display("%x", DUT.OAM_SIZE);
-      for (int i = 0; i < 900; i++) begin : write
+      for (int i = 0; i < 900; i++) begin : write 
          if (i >= DUT.OAM_SIZE) disable write;
          r = $urandom;
          address = (i & DUT.OAM_MASK) + DUT.OAM_LOC;
@@ -30,8 +31,22 @@ module w_mem_tb();
             $display("read %x from addr %x", d, address);
             numPassed++;
          end
+      end 
+
+      for (int i = 0; i < 1024; i++) begin : write
+         if (i >= DUT.VRAM_BACKGROUND1_SIZE) disable write;
+         r = $urandom;
+         address = (i & DUT.VRAM_BACKGROUND1_MASK) + DUT.VRAM_BACKGROUND1_ADDR;
+         db.write(r, address);
+         db.read(address,d);
+         $display("i = %x", i);
+         if (d != r)
+           $display("Could not transfer byte %x to addr %x", r, address);
+         else begin
+            $display("read %x from addr %x", d, address);
+            numPassed++;
+         end
       end
-      
       $display("Passed %d tests", numPassed);
       $finish;
    end
