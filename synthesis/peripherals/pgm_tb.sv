@@ -1,3 +1,4 @@
+// Test the 
 module pgm_tb();
    import video_types::*;
    Lcd picture1;

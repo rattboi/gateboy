@@ -90,6 +90,7 @@ package video_types;
 
     typedef struct packed
     {
+        bit [0:(32*32)-1][0:7] Bits;
         bit [0:7][0:31][0:31] BackgroundMap;        
         BackgroundMapAttrs Attributes;
     } vram_background;

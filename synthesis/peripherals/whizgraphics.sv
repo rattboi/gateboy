@@ -1,7 +1,7 @@
 module whizgraphics(interface db, 
     input logic drawline,
     output bit renderComplete,
-    Lcd lcd);
+    video_types::Lcd lcd);
 
     parameter DEBUG_OUT = 1;
     `define DebugPrint(x) if(DEBUG_OUT) $display("%p", x);
@@ -27,14 +27,17 @@ module whizgraphics(interface db,
 
     localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
     localparam VRAM_BACKGROUND1_MASK = 16'h03ff;
+    localparam VRAM_BACKGROUND1_SIZE = 32*32;
     vram_background vramBackground1;
 
     localparam VRAM_BACKGROUND2_ADDR = 16'h9c00;
     localparam VRAM_BACKGROUND2_MASK = 16'h0fff;
+    localparam VRAM_BACKGROUND2_SIZE = 32*32;
     vram_background vramBackground2;
 
     localparam OAM_LOC = 16'hfe00;
     localparam OAM_MASK = 16'h00ff;
+    localparam OAM_SIZE = SPRITE_SIZE*NUM_SPRITES;
     SpriteAttributesTable oam_table;
 
 
@@ -85,13 +88,19 @@ module whizgraphics(interface db,
     end
 
    always_ff @(posedge db.clk) begin
-      if (db.writing() && db.selected(OAM_LOC, OAM_MASK)) begin
+      if (db.writing() && db.selected(OAM_LOC, OAM_SIZE)) begin
          oam_table.Bits[db.addr & OAM_MASK] = db.data;
       end
-      else if (db.reading() && db.selected(OAM_LOC, OAM_MASK)) begin
+      else if (db.reading() && db.selected(OAM_LOC, OAM_SIZE)) begin
          enable = 1;
          bus_reg = oam_table.Bits[db.addr & OAM_MASK];
-//         $display("reading %x from %x", oam_table.Bits[db.addr & OAM_MASK], db.addr);
+      end
+      else if (db.reading() && db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE)) begin
+         enable = 1;
+         bus_reg = vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK];
+      end
+      else if (db.writing() && db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE)) begin
+         vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK] = db.data;
       end
       else
         enable = 0;

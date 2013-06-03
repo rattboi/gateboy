@@ -1,8 +1,8 @@
+// test the memory module by writing random values to memory locations.
 module data_bus_tb();
 
    bit clk = 0;
    DataBus db(clk);
-//   Dummy DUT(db);
    Memory MUT(db.peripheral);
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
@@ -13,8 +13,9 @@ module data_bus_tb();
    
    initial begin
 
+      $display("%d", MUT.DECODER_MASK);
       for (int i = 0; i < 900; i++) begin
-         r = $urandom;
+         r = $urandom;         
          address = (i & MUT.DECODER_MASK) + MUT.BASE_ADDR;
          db.write(r, address);
          db.read(address,d);

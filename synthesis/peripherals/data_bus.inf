@@ -1,6 +1,5 @@
 // This file contains the main interface to describe the data bus that
 // connects the gameboy's cpu to its peripherals
-
 interface DataBus (input bit clk);
    parameter ADDR_SIZE = 16;
    parameter DATA_SIZE = 8;   
@@ -53,8 +52,8 @@ interface DataBus (input bit clk);
       @cb;
    endtask
 
-   function bit selected(input bit [ADDR_SIZE-1:0] address, input bit [ADDR_SIZE-1:0] mask);
-      selected = ((addr & ~mask) === (address & ~mask));
+   function bit selected(input bit [ADDR_SIZE-1:0] baseaddr, input bit [ADDR_SIZE-1:0] size);
+      selected = (addr >= baseaddr) && (addr < baseaddr+size);
    endfunction // selected
 
    function bit writing();

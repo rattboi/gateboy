@@ -1,9 +1,11 @@
 module w_tb();
-
+   import video_types::*;
    bit clk = 0;
    DataBus db(clk);
-//   Dummy DUT(db);
-   whizgraphics DUT(db.peripheral);
+   wire drawline;
+   wire renderComplete;
+   Lcd lcd;
+   whizgraphics DUT(.*, .db(db.peripheral));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;
