@@ -1,3 +1,4 @@
+// test the memory module by writing random values to memory locations.
 module data_bus_tb();
 
    bit clk = 0;
