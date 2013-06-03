@@ -1,14 +1,24 @@
 #!/bin/sh
 export PATH=/pkgs/mentor/questa/current/questasim/bin:$PATH
-MODULE=pgm_tb
+MODULES="pgm_tb tb_render w_tb w_mem_tb"
 
-if [ -n "$1" ] ; then
-    MODULE=$1
+# if the user supplied testbenches to run, run them instead
+echo "$@"
+
+if [ $# -gt 0 ] ; then
+
+MODULES="$@"
 fi
-echo Testing module $MODULE
+echo Testing modules "$MODULES"
+# convert spaces to newlines to allow for multiple tbs to be run
+MODULES=`echo "$MODULES" | tr " " "\n"`
 FILES='whizgraphics_render_tb.sv whizzgraphics_mem_tb.sv whizzgraphics_tb.sv video_types.sv whizgraphics.sv pgm_tb.sv data_bus.inf data_bus_tb.sv memory.sv'
 for i in "$FILES" 
 do
     vlog  -sv $i 2>&1 || exit
 done
-vsim -c $MODULE -voptargs="+acc" -do "log -r /*; run -all; exit"  1>&2 || exit 
+# run all of the testbenches specified
+for i in $MODULES ; do
+    echo Testing $i
+    vsim -c $MODULES -voptargs="+acc" -do "log -r /*; run -all; exit"  1>&2 || true
+done
