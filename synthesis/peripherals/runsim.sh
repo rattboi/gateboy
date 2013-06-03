@@ -12,7 +12,7 @@ fi
 echo Testing modules "$MODULES"
 # convert spaces to newlines to allow for multiple tbs to be run
 MODULES=`echo "$MODULES" | tr " " "\n"`
-FILES='whizgraphics_render_tb.sv whizzgraphics_mem_tb.sv whizzgraphics_tb.sv video_types.sv whizgraphics.sv pgm_tb.sv data_bus.inf data_bus_tb.sv memory.sv'
+FILES='video_types.sv whizgraphics_render_tb.sv whizzgraphics_mem_tb.sv whizzgraphics_tb.sv  whizgraphics.sv pgm_tb.sv data_bus.inf data_bus_tb.sv memory.sv'
 for i in "$FILES" 
 do
     vlog  -sv $i 2>&1 || exit
@@ -20,5 +20,5 @@ done
 # run all of the testbenches specified
 for i in $MODULES ; do
     echo Testing $i
-    vsim -c $MODULES -voptargs="+acc" -do "log -r /*; run -all; exit"  1>&2 || true
+    vsim -c $i -voptargs="+acc" -do "log -r /*; run -all; exit"  1>&2 || exit
 done
