@@ -13,8 +13,9 @@ module data_bus_tb();
    
    initial begin
 
+      $display("%d", MUT.DECODER_MASK);
       for (int i = 0; i < 900; i++) begin
-         r = $urandom;
+         r = $urandom;         
          address = (i & MUT.DECODER_MASK) + MUT.BASE_ADDR;
          db.write(r, address);
          db.read(address,d);

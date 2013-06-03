@@ -32,6 +32,7 @@ module whizgraphics(interface db,
 
     localparam OAM_LOC = 16'hfe00;
     localparam OAM_MASK = 16'h00ff;
+    localparam OAM_SIZE = SPRITE_SIZE*NUM_SPRITES;
     SpriteAttributesTable oam_table;
 
 
@@ -43,10 +44,10 @@ module whizgraphics(interface db,
    assign db.data = enable ? bus_reg : 'z;
 
    always_ff @(posedge db.clk) begin
-      if (db.writing() && db.selected(OAM_LOC, OAM_MASK)) begin
+      if (db.writing() && db.selected(OAM_LOC, OAM_SIZE)) begin
          oam_table.Bits[db.addr & OAM_MASK] = db.data;
       end
-      else if (db.reading() && db.selected(OAM_LOC, OAM_MASK)) begin
+      else if (db.reading() && db.selected(OAM_LOC, OAM_SIZE)) begin
          enable = 1;
          bus_reg = oam_table.Bits[db.addr & OAM_MASK];
 //         $display("reading %x from %x", oam_table.Bits[db.addr & OAM_MASK], db.addr);

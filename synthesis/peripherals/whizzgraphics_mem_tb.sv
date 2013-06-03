@@ -17,8 +17,9 @@ module w_mem_tb();
    initial forever #10 clk = ~clk;
    
    initial begin
-
-      for (int i = 0; i < 900; i++) begin
+      $display("%x", DUT.OAM_SIZE);
+      for (int i = 0; i < 900; i++) begin : write
+         if (i >= DUT.OAM_SIZE) disable write;
          r = $urandom;
          address = (i & DUT.OAM_MASK) + DUT.OAM_LOC;
          db.write(r, address);
