@@ -63,6 +63,7 @@ package video_types;
 
 
     localparam PIXEL_BITS = 2;
+    localparam TILE_SIZE = 8;
     localparam ROW_SIZE = 8;
     localparam NUM_ROWS = 8;
     
