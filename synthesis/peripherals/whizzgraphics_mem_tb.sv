@@ -28,7 +28,6 @@ module w_mem_tb();
          if (d != r)
            $display("Could not transfer byte %x to addr %x", r, address);
          else begin
-            $display("read %x from addr %x", d, address);
             numPassed++;
          end
       end 
@@ -39,11 +38,9 @@ module w_mem_tb();
          address = (i & DUT.VRAM_BACKGROUND1_MASK) + DUT.VRAM_BACKGROUND1_ADDR;
          db.write(r, address);
          db.read(address,d);
-         $display("i = %x", i);
          if (d != r)
            $display("Could not transfer byte %x to addr %x", r, address);
          else begin
-            $display("read %x from addr %x", d, address);
             numPassed++;
          end
       end
