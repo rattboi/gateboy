@@ -1,4 +1,4 @@
-module tb();
+module data_bus_tb();
 
    bit clk = 0;
    DataBus db(clk);
