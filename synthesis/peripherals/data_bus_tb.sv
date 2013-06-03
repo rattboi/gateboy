@@ -2,7 +2,6 @@ module data_bus_tb();
 
    bit clk = 0;
    DataBus db(clk);
-//   Dummy DUT(db);
    Memory MUT(db.peripheral);
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
