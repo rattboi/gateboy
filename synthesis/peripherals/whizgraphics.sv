@@ -24,10 +24,12 @@ module whizgraphics(interface db,
 
     localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
     localparam VRAM_BACKGROUND1_MASK = 16'h03ff;
+    localparam VRAM_BACKGROUND1_SIZE = 32*32;
     vram_background vramBackground1;
 
     localparam VRAM_BACKGROUND2_ADDR = 16'h9c00;
     localparam VRAM_BACKGROUND2_MASK = 16'h0fff;
+    localparam VRAM_BACKGROUND2_SIZE = 32*32;
     vram_background vramBackground2;
 
     localparam OAM_LOC = 16'hfe00;
@@ -50,7 +52,13 @@ module whizgraphics(interface db,
       else if (db.reading() && db.selected(OAM_LOC, OAM_SIZE)) begin
          enable = 1;
          bus_reg = oam_table.Bits[db.addr & OAM_MASK];
-//         $display("reading %x from %x", oam_table.Bits[db.addr & OAM_MASK], db.addr);
+      end
+      else if (db.reading() && db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE)) begin
+         enable = 1;
+         bus_reg = vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK];
+      end
+      else if (db.writing() && db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE)) begin
+         vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK] = db.data;
       end
       else
         enable = 0;

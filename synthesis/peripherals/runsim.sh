@@ -6,7 +6,7 @@ if [ -n "$1" ] ; then
     MODULE=$1
 fi
 echo Testing module $MODULE
-FILES='whizgraphics_render_tb.sv whizzgraphics_tb.sv video_types.sv whizgraphics.sv pgm_tb.sv data_bus.inf data_bus_tb.sv memory.sv'
+FILES='whizgraphics_render_tb.sv whizzgraphics_mem_tb.sv whizzgraphics_tb.sv video_types.sv whizgraphics.sv pgm_tb.sv data_bus.inf data_bus_tb.sv memory.sv'
 for i in "$FILES" 
 do
     vlog  -sv $i 2>&1 || exit
