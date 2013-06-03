@@ -23,10 +23,10 @@ module whizgraphics(interface db,
 
     localparam NUM_TILES = 384;
     localparam VRAM_TILES_ADDR = 16'h8000;
-    localparam RAM_TILES_MASK = 16'h1fff;
-    localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES;
+    localparam VRAM_TILES_MASK = 16'h1fff;
+    localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES / 8;
     union packed {
-        bit [0:VRAM_TILES_SIZE/8-1] [0:7] Bits;
+        bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
        Tile [0:NUM_TILES-1] Data; 
     } tiles;
 
@@ -100,6 +100,8 @@ module whizgraphics(interface db,
              bus_reg = oam_table.Bits[db.addr & OAM_MASK];
            db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE):
              bus_reg = vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK];
+           db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
+             bus_reg = tiles.Bits[db.addr & VRAM_TILES_MASK];
            1:
              enable = 0;
          endcase         
@@ -111,6 +113,10 @@ module whizgraphics(interface db,
               end
            db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE): 
              vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK] = db.data;
+           db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
+             tiles.Bits[db.addr & VRAM_TILES_MASK] = db.data;
+           1:
+             ;
          endcase
       end
    end

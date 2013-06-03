@@ -43,7 +43,21 @@ module w_mem_tb();
          else begin
             numPassed++;
          end
+      end // block: write
+
+      for (int i = 0; i < 2048; i++) begin : write
+         if (i >= DUT.VRAM_TILES_SIZE) disable write;
+         r = $urandom;
+         address = (i & DUT.VRAM_TILES_MASK) + DUT.VRAM_TILES_ADDR;
+         db.write(r, address);
+         db.read(address,d);
+         if (d != r)
+           $display("Could not transfer byte %x to addr %x", r, address);
+         else begin
+            numPassed++;
+         end
       end
+      
       $display("Passed %d tests", numPassed);
       $finish;
    end
