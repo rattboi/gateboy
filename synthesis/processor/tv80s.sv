@@ -30,7 +30,7 @@ module tv80s (  // Inputs
                 input           nmi_n,
                 input           busrq_n,
                 input     [7:0] di,
-                
+
                 // Outputs
                 output          m1_n,
                 output   logic  mreq_n,
@@ -57,8 +57,8 @@ module tv80s (  // Inputs
   parameter   Mode =    3; // 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
   parameter   T2Write = 1; // 0 => wr_n active in T3, /=0 => wr_n active in T2
   parameter   IOWait  = 1; // 0 => Single cycle I/O, 1 => Std I/O cycle
-  localparam  cen =     1'b1; 
-  
+  localparam  cen =     1'b1;
+
   wire          intcycle_n;
   wire          no_read;
   wire          write;
@@ -91,17 +91,17 @@ module tv80s (  // Inputs
     .mc (mcycle),
     .ts (tstate),
     .intcycle_n (intcycle_n),
-	  .BC (BC),
-	  .DE (DE),
-	  .HL (HL),
-	  .F (F),
-	  .ACC (ACC),
-	  .PC (PC),
+    .BC (BC),
+    .DE (DE),
+    .HL (HL),
+    .F (F),
+    .ACC (ACC),
+    .PC (PC),
     .SP (SP),
     .IntE_FF1(IntE_FF1),
     .IntE_FF2(IntE_FF2),
     .INT_s(INT_s)
-    );  
+    );
 
   always_ff @(posedge clk)
   begin
@@ -113,14 +113,14 @@ module tv80s (  // Inputs
       mreq_n <= #1 1'b1;
       di_reg <= #1 0;
     end
-    
+
     else
     begin
       rd_n   <= #1 1'b1;
       wr_n   <= #1 1'b1;
       iorq_n <= #1 1'b1;
       mreq_n <= #1 1'b1;
-      
+
       if (mcycle[0])
       begin
         if (tstate[1] || (tstate[2] && wait_n == 1'b0))
@@ -131,9 +131,9 @@ module tv80s (  // Inputs
         end
       `ifdef TV80_REFRESH
         if (tstate[3])
-      mreq_n <= #1 1'b0;
+          mreq_n <= #1 1'b0;
       `endif
-      end // if (mcycle[0])          
+      end // if (mcycle[0])
       else
       begin
         if ((tstate[1] || (tstate[2] && wait_n == 1'b0)) && no_read == 1'b0 && write == 1'b0)
@@ -143,7 +143,7 @@ module tv80s (  // Inputs
           mreq_n <= #1 iorq;
         end
         if (T2Write == 0)
-        begin                          
+        begin
           if (tstate[2] && write == 1'b1)
           begin
             wr_n <= #1 1'b0;
@@ -160,9 +160,9 @@ module tv80s (  // Inputs
             mreq_n <= #1 iorq;
           end
         end // else: !if(T2write == 0)
-        
+
       end // else: !if(mcycle[0])
-      
+
       if (tstate[2] && wait_n == 1'b1)
         di_reg <= #1 di;
     end // else: !if(!reset_n)
