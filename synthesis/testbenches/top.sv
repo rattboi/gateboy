@@ -23,7 +23,7 @@ module testbench(
   reg [7:0] cart_rom [0:32767];
   wire [7:0] Di_wram;
   
-  assign Di = A[14] ? Di_wram : tetris_rom[A];
+  assign Di = A[14] ? Di_wram : cart_rom[A];
 
   initial begin 
     coreclk = 0;

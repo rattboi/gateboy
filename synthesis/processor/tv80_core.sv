@@ -52,13 +52,13 @@ module tv80_core (  // Inputs
                     output        [15:0]  BC,
                     output        [15:0]  DE,
                     output        [15:0]  HL,
-                    output        [7:0]   F,
-                    output        [7:0]   ACC,
-                    output        [15:0]  PC,
-                    output        [15:0]  SP,
-                    output                IntE_FF1, 
-                    output                IntE_FF2, 
-                    output                INT_s    
+                    output  logic [7:0]   F,
+                    output  logic [7:0]   ACC,
+                    output  logic [15:0]  PC,
+                    output  logic [15:0]  SP,
+                    output  logic         IntE_FF1, 
+                    output  logic         IntE_FF2, 
+                    output  logic         INT_s    
   );
   
   parameter Mode = 3;   // 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
