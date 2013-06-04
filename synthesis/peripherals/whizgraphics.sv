@@ -1,7 +1,9 @@
 module whizgraphics(interface db, 
-    input logic drawline,
-    output bit renderComplete,
-    video_types::Lcd lcd);
+                    input logic drawline,
+                    logic reset,
+                    output bit renderComplete,
+                    output video_types::Lcd lcd);
+
 
     parameter DEBUG_OUT = 0;
     `define DebugPrint(x) if(DEBUG_OUT) $display("%p", x);
@@ -92,6 +94,7 @@ module whizgraphics(interface db,
         renderComplete = '0;
     end
 
+   // functions as address decoder. 
    always_ff @(posedge db.clk) begin
       if(db.reading()) begin
          enable = 1;
@@ -121,13 +124,22 @@ module whizgraphics(interface db,
       end
    end
 
+   // RENDER THE CODEZ
    always_ff @(posedge drawline)
-   begin
+     begin : renderer
+        
       automatic int startTileX = lcdPosition.ScrollX / TILE_SIZE;
       automatic int tileY = (lcdPosition.ScrollY + currentLine) / TILE_SIZE;
       automatic int tileOffsetX = lcdPosition.ScrollX % TILE_SIZE;
       automatic int tileOffsetY = (lcdPosition.ScrollY + currentLine) % TILE_SIZE;
 
+   
+      if (reset) begin
+         currentLine = 0;
+         disable renderer;
+      end
+            
+   
       if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
 
       for(int i = 0; i < LCD_LINEWIDTH; i++)

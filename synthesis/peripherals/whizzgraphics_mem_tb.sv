@@ -7,6 +7,7 @@ module w_mem_tb();
    DataBus db(clk);
    wire renderComplete;
    Lcd lcd;
+   bit  reset = 0;
    whizgraphics DUT(.*, .db(db.peripheral), .drawline(clk));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
@@ -34,8 +35,9 @@ module w_mem_tb();
    endtask
    
    initial begin
-   // Test the OAM
+      // Test the different sections of the graphics memory
       tickleBus(DUT.OAM_LOC, DUT.OAM_SIZE, DUT.OAM_MASK);
+      tickleBus(DUT.VRAM_BACKGROUND1_ADDR, DUT.VRAM_BACKGROUND1_SIZE, DUT.VRAM_BACKGROUND1_MASK);
       tickleBus(DUT.VRAM_BACKGROUND1_ADDR, DUT.VRAM_BACKGROUND1_SIZE, DUT.VRAM_BACKGROUND1_MASK);
       tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE, DUT.VRAM_TILES_MASK);
 

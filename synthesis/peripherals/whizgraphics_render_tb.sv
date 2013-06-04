@@ -8,6 +8,7 @@ module tb_render();
    DataBus db(clk);
    logic drawline;
    wire renderComplete;
+   bit  reset = 0;
    Lcd lcd;
 	whizgraphics #(.DEBUG_OUT(1)) DUT(.*, .db(db.peripheral));
 
