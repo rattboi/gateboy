@@ -102,10 +102,7 @@ module whizgraphics(interface db,
     endfunction
 
     function automatic void SetTilePixelValue(int tileIndex, int pixel, int row, bit[0:1] pixelval);
-        $display("Setting R: %d P: %d to PV: %b", row, pixel, pixelval);
-        //{tiles.Data[tileIndex].rows[row][pixel], tiles.Data[tileIndex].rows[pixel + ROW_SIZE][row]} = pixelval;
         {tiles.Data[tileIndex].rows[row][pixel], tiles.Data[tileIndex].rows[row][pixel + ROW_SIZE]} = pixelval;
-        $display("Row %d: %b", row, tiles.Data[tileIndex].rows[row]);
     endfunction
 
     //rendering state
@@ -118,11 +115,6 @@ module whizgraphics(interface db,
     initial
     begin
         renderComplete = '0;
-
-		  // Initialize to all zeros
-		  // do not use unless implementing
-		  // interrupt functionality
-		  lcdStatus      = '0;
     end
 
    // functions as address decoder. 
