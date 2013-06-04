@@ -46,8 +46,7 @@ jr_neg:
      ld   a,c
      and  $F0
      cp   e
-;     jp   nz,test_failed
-     jp   z,test_failed
+     jp   nz,test_failed
      inc  b
      inc  c
      jr   nz,-
