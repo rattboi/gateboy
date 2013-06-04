@@ -73,7 +73,10 @@ module whizgraphics(interface db,
         automatic int tileY = bgY / TILE_SIZE;
 
         //TODO: determine bmap from contrpl register
-        return vramBackground1.BackgroundMap[tileX][tileY];
+        if(!lcdControl.Fields.TileMapSelect)
+            return vramBackground1.BackgroundMap[tileX][tileY];
+        else
+            return vramBackground2.BackgroundMap[tileX][tileY];
     endfunction
 
     function Pixel GetBackgroundPixelAtScreenPoint(int x, int y);
