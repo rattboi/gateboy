@@ -2,26 +2,24 @@
 `define __tv80_alu__
 
 package tv80_alu_definitions;
-// This enum is order sensitive
-typedef enum bit[3:0] {
-    ADD, //0000
-    ADC, //0001
-    SUB, //0010
-    SBC, //0011
-    AND, //0100
-    XOR, //0101
-    OR,  //0110
-    CP,  //0111
-    ROT, //1000
-    BIT, //1001
-    SET, //1010
-    RES, //1011
-    DAA, //1100
-    RLD, //1101
-    RRD  //1110
-} alu_op_t;
 
-typedef enum bit[2:0] {
+    localparam ADD = 4'b0000;
+    localparam ADC = 4'b0001;
+    localparam SUB = 4'b0010;
+    localparam SBC = 4'b0011;
+    localparam AND = 4'b0100;
+    localparam XOR = 4'b0101;
+    localparam OR  = 4'b0110;
+    localparam CP  = 4'b0111;
+    localparam ROT = 4'b1000;
+    localparam BIT = 4'b1001;
+    localparam SET = 4'b1010;
+    localparam RES = 4'b1011;
+    localparam DAA = 4'b1100;
+    localparam RLD = 4'b1101;
+    localparam RRD = 4'b1110;
+
+typedef enum logic [2:0] {
     ROT_RLC, //000
     ROT_RRC, //001
     ROT_RL,  //010

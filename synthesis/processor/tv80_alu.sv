@@ -31,7 +31,7 @@ module tv80_alu (
   // Inputs
   input Arith16,
   input Z16, 
-  input tv80_alu_definitions::alu_op_t ALU_Op,
+  input [3:0] ALU_Op,
   input [5:0] IR,
   input [1:0] ISet,
   input tv80::word BusA,

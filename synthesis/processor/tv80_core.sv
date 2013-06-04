@@ -22,6 +22,8 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+`include "tv80_alu.pkg"
+
 module tv80_core (  // Inputs
                     input           reset_n, 
                     input           clk,      
@@ -159,7 +161,7 @@ module tv80_core (  // Inputs
   wire [3:0]     Set_BusB_To;
   wire [3:0]     Set_BusA_To;
 
-  tv80_alu::ALU_Op_t ALU_Op;
+  logic [3:0]    ALU_Op;
   wire           Save_ALU;
   wire           PreserveC;
   wire           Arith16;
