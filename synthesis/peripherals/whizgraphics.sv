@@ -17,10 +17,8 @@ module whizgraphics(interface db,
 
     localparam LCD_STAT_ADDR = 16'hff41;
     localparam LCD_STAT_SIZE = 1;
-    union packed {
-       bit [0:7] Bits;
-       LcdStatus Data;
-    } lcdStatus;
+    LcdStatus lcdStatus;
+
 
     localparam LCD_POS_ADDR = 16'hff42; 
     localparam LCD_POS_SIZE = 4;
@@ -136,7 +134,7 @@ module whizgraphics(interface db,
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              bus_reg = tiles.Bits[db.addr - VRAM_TILES_ADDR];
            db.selected(LCD_STAT_ADDR, LCD_STAT_SIZE):
-             bus_reg = lcdStatus.Bits;
+             bus_reg = lcdStatus;
            db.selected(LCDC_ADDR, LCDC_SIZE):
              bus_reg = lcdControl;
            1:
