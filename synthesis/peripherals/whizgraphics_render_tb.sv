@@ -15,23 +15,23 @@ module tb_render();
     initial 
     begin
         //write data to tiles
-        DUT.tiles.Data[0].rows[0][0] = '1;
-        DUT.tiles.Data[0].rows[0][2] = '1;
-        DUT.tiles.Data[0].rows[0][4] = '1;
-        DUT.tiles.Data[0].rows[0][6] = '1;
-        DUT.tiles.Data[0].rows[2][0] = '1;
-        DUT.tiles.Data[0].rows[2][2] = '1;
-        DUT.tiles.Data[0].rows[2][4] = '1;
-        DUT.tiles.Data[0].rows[2][6] = '1;
-        DUT.tiles.Data[0].rows[4][0] = '1;
-        DUT.tiles.Data[0].rows[4][2] = '1;
-        DUT.tiles.Data[0].rows[4][4] = '1;
-        DUT.tiles.Data[0].rows[4][6] = '1;
-        DUT.tiles.Data[0].rows[6][0] = '1;
-        DUT.tiles.Data[0].rows[6][2] = '1;
-        DUT.tiles.Data[0].rows[6][4] = '1;
-        DUT.tiles.Data[0].rows[6][6] = '1;
+        for(int x = 0; x < 32; x++)
+        begin
+            SetTilePixelValue(DUT.tiles.Data[0], x, 0, 2'b00);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 1, 2'b01);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 2, 2'b10);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 3, 2'b11);
 
+            SetTilePixelValue(DUT.tiles.Data[0], x, 4, 2'b00);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 5, 2'b01);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 6, 2'b10);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 7, 2'b11);
+
+            SetTilePixelValue(DUT.tiles.Data[0], x, 8, 2'b00);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 9, 2'b01);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 10, 2'b10);
+            SetTilePixelValue(DUT.tiles.Data[0], x, 11, 2'b11);
+        end
     end
 
 
