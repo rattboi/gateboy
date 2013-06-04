@@ -101,8 +101,8 @@ module whizgraphics(interface db,
         return GetPixel(t, y % TILE_SIZE, x % TILE_SIZE);
     endfunction
 
-    function automatic void SetTilePixelValue(int tileIndex, int pixel, int row, bit[0:1] pixelval);
-        {tiles.Data[tileIndex].rows[row][pixel], tiles.Data[tileIndex].rows[row][pixel + ROW_SIZE]} = pixelval;
+    function automatic void SetTilePixelValue(int tileIndex, int column, int row, bit[0:1] pixelval);
+        {tiles.Data[tileIndex].rows[row][column], tiles.Data[tileIndex].rows[row][column+ ROW_SIZE]} = pixelval;
     endfunction
 
     //rendering state
