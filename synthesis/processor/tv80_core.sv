@@ -130,10 +130,11 @@ module tv80_core (  // Inputs
   logic           IncDecZ;
 
   // ALU signals
-  logic [7:0]     BusB;
-  logic [7:0]     BusA;
-  wire [7:0]    ALU_Q;
-  wire [7:0]    F_Out;
+  tv80::word      BusB;
+  tv80::word      BusA;
+
+  wire [7:0]      ALU_Q;
+  tv80::word      F_Out;
 
   // Registered micro code outputs
   logic [4:0]     Read_To_Reg_r;
