@@ -79,7 +79,7 @@ module whizgraphics(interface db,
     function Pixel GetPixelAtScreenPoint(int x, int y);
         automatic int tileIndex = GetTileIndexFromScreenPoint(x, y);
         automatic Tile t = GetTileFromIndex(tileIndex);
-        return GetPixel(t, y, x % TILE_SIZE);
+        return GetPixel(t, y % TILE_SIZE, x % TILE_SIZE);
     endfunction
 
     //rendering state
