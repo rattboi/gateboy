@@ -7,21 +7,21 @@ module w_mem_tb();
    DataBus db(clk);
    wire renderComplete;
    Lcd lcd;
-   whizgraphics DUT(.*, .db(db.peripheral), .drawline(clk));
+   whizgraphics #(.DEBUG_OUT(0)) DUT(.*, .db(db.peripheral), .drawline(clk));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;
    bit [db.DATA_SIZE-1:0] d;
    
    initial forever #10 clk = ~clk;
-   
 
-   // Test the OAM
-   initial begin
-      for (int i = 0; i < 900; i++) begin : write 
-         if (i >= DUT.OAM_SIZE) disable write;
+   task tickleBus(int baseaddr, int size, int mask, int maxtests = 9000);
+      
+      bit [db.ADDR_SIZE-1:0] address;
+      for (int i = 0; i < maxtests; i++) begin : write 
+         if (i >= size) disable write;
          r = $urandom;
-         address = (i & DUT.OAM_MASK) + DUT.OAM_LOC;
+         address = (i & mask) + baseaddr;
          db.write(r, address);
          db.read(address,d);
          if (d != r)
@@ -30,32 +30,15 @@ module w_mem_tb();
             numPassed++;
          end
       end 
+      
+   endtask
+   
+   initial begin
+   // Test the OAM
+      tickleBus(DUT.OAM_LOC, DUT.OAM_SIZE, DUT.OAM_MASK);
+      tickleBus(DUT.VRAM_BACKGROUND1_ADDR, DUT.VRAM_BACKGROUND1_SIZE, DUT.VRAM_BACKGROUND1_MASK);
+      tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE, DUT.VRAM_TILES_MASK);
 
-      for (int i = 0; i < 1024; i++) begin : write
-         if (i >= DUT.VRAM_BACKGROUND1_SIZE) disable write;
-         r = $urandom;
-         address = (i & DUT.VRAM_BACKGROUND1_MASK) + DUT.VRAM_BACKGROUND1_ADDR;
-         db.write(r, address);
-         db.read(address,d);
-         if (d != r)
-           $display("Could not transfer byte %x to addr %x", r, address);
-         else begin
-            numPassed++;
-         end
-      end // block: write
-
-      for (int i = 0; i < 2048; i++) begin : write
-         if (i >= DUT.VRAM_TILES_SIZE) disable write;
-         r = $urandom;
-         address = (i & DUT.VRAM_TILES_MASK) + DUT.VRAM_TILES_ADDR;
-         db.write(r, address);
-         db.read(address,d);
-         if (d != r)
-           $display("Could not transfer byte %x to addr %x", r, address);
-         else begin
-            numPassed++;
-         end
-      end
       
       $display("Passed %d tests", numPassed);
       $display("Attempting to draw pretty picture...");
