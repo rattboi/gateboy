@@ -17,7 +17,7 @@ package video_types;
         } Fields;
     } LcdControl;
 
-    typedef union
+    typedef union packed
     {
         bit [7:0] raw;
         struct packed
@@ -38,10 +38,13 @@ package video_types;
         bit [0:7] ScrollY;
         bit [0:7] LcdY;
         bit [0:7] LcdYCompare;
-        bit [0:7] WindowY;
-        bit [0:7] WindowX;
     } LcdPosition;
 
+   typedef struct packed {
+      bit [0:7]   WindowY;
+      bit [0:7]   WindowX;
+   } LcdWindowPosition;
+   
     typedef union packed
     {
         bit [0:7] raw;

@@ -17,11 +17,9 @@ module w_tb();
    
    initial begin
 
-      for (int i = 0; i < 900; i++) begin : stop
-         if (i >= DUT.OAM_SIZE)
-           disable stop;
+      for (int i = 0; i < DUT.OAM_SIZE; i++) begin 
          r = $urandom;
-         address = (i & DUT.OAM_MASK) + DUT.OAM_LOC;
+         address = i + DUT.OAM_LOC;
          db.write(r, address);
          db.read(address,d);
          if (d == r) 
