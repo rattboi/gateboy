@@ -4,6 +4,10 @@ module tb_render();
 	localparam ACTIVE   = 1'b1;
 	localparam INACTIVE = 0'b0;
 
+	int a;
+	int b;
+
+
 	bit clk = 0;
    DataBus db(clk);
    logic drawline;
@@ -21,9 +25,32 @@ module tb_render();
       @db.clk; reset = 0;
    endtask
 
+	function void ChangeBGMap(int x, int y, int TileNum);
+
+		if(x > 31 || y > 31 || TileNum > 384)
+			return;
+		else
+		begin
+			DUT.vramBackground1.BackgroundMap[x][y] = TileNum;
+			DUT.vramBackground2.BackgroundMap[x][y] = TileNum;
+ 		end
+
+	endfunction
+
+
     initial 
-      begin
-         resetWhizgraphics();
+    begin
+        resetWhizgraphics();
+		  //Change the background map to something different
+		  ChangeBGMap(5,5,3);
+		  $display("BGMAP: %b", DUT.vramBackground1.BackgroundMap[5][5]);
+
+		  foreach(DUT.vramBackground1.BackgroundMap[a,b]);
+		  begin
+		     if(DUT.vramBackground1.BackgroundMap[a][b] != '0)
+			     $display("BGMAP has a tile !=0");
+		  end
+		  
         //write data to tiles
         for(int i = 0; i < 32; i++)
         begin
@@ -34,8 +61,7 @@ module tb_render();
         end
     //$display("Row 0: %b", DUT.tiles.Data[0].rows[0]);
     $display("Row 1: %b", DUT.tiles.Data[0].rows[1]);
-    DUT.lcdPosition.Data.ScrollX = 2;
-    //$finish;
+    DUT.lcdPosition.Data.ScrollX = 1;
     end
 
 
@@ -48,12 +74,11 @@ module tb_render();
 		if(renderComplete)
         begin
             writeLCD(lcd, "out1.pgm");
-			$finish;
+			   $finish;
         end
 	end
 
 	final begin
-		$display("renderComplete: %b", renderComplete);
 		$display("tb_render is done");
 	end
 

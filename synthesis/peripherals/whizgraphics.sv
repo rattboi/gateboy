@@ -15,6 +15,8 @@ module whizgraphics(interface db,
     localparam LCDC_SIZE = 1;
     LcdControl lcdControl;
 
+	 //Instance of LCD status register
+	 // unused in the design
     localparam LCD_STAT_ADDR = 16'hff41;
     localparam LCD_STAT_SIZE = 1;
     LcdStatus lcdStatus;

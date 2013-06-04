@@ -86,10 +86,12 @@ package video_types;
         bit [0:(NUM_ROWS - 1)] [0:(ROW_SIZE * PIXEL_BITS) - 1] rows;
     } Tile;
 
+	 localparam BG_WIDTH  = 32;
+	 localparam BG_HEIGHT = 32;
     typedef union packed
     {
-        bit [0:(32*32)-1][0:7] Bits;
-        bit [0:31][0:31][0:7] BackgroundMap;
+        bit [0:(BG_WIDTH * BG_HEIGHT)-1][0:(TILE_SIZE-1)] Bits;
+        bit [0:(BG_WIDTH-1)][0:(BG_HEIGHT-1)][0:(TILE_SIZE-1)] BackgroundMap;
     } vram_background;
 
     typedef union packed
