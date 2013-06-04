@@ -13,10 +13,6 @@ module palette_tb();
    int        numFailed = 0;
    bit [db.DATA_SIZE-1:0] d;
       
-   task resetWhizgraphics();
-      reset = 1;
-      @db.clk; reset = 0;
-   endtask
    
 
    initial forever #10 clk = ~clk;

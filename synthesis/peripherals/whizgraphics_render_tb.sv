@@ -12,8 +12,18 @@ module tb_render();
    Lcd lcd;
 	whizgraphics #(.DEBUG_OUT(0)) DUT(.*, .db(db.peripheral));
 
+   // simple task to reset the whizgraphics hardware: necessary in
+   // order to load the default palette.
+   // TODO: This code is repro'd in palette_tb.sv
+   // Code needs to by DRYer   
+   task resetWhizgraphics();
+      reset = 1;
+      @db.clk; reset = 0;
+   endtask
+
     initial 
-    begin
+      begin
+         resetWhizgraphics();
         //write data to tiles
         for(int i = 0; i < 32; i++)
         begin

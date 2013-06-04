@@ -95,10 +95,14 @@ module whizgraphics(interface db,
             return vramBackground2.BackgroundMap[tileX][tileY];
     endfunction
 
+   function Pixel getPixelColor(PaletteType p, Color c);
+      getPixelColor = lcdPalletes.Data.indexedPalettes[p].indexedColors[c];
+   endfunction
+   
     function Pixel GetBackgroundPixelAtScreenPoint(int x, int y);
         automatic int tileIndex = GetTileIndexFromScreenPoint(x, y);
         automatic Tile t = GetTileFromIndex(tileIndex);
-        return GetPixel(t, (y + lcdPosition.Data.ScrollY) % TILE_SIZE, (x + lcdPosition.Data.ScrollX) % TILE_SIZE);
+        return getPixelColor(PALETTE_BACKGROUND, GetPixel(t, (y + lcdPosition.Data.ScrollY) % TILE_SIZE, (x + lcdPosition.Data.ScrollX) % TILE_SIZE));
     endfunction
 
     function automatic void SetTilePixelValue(int tileIndex, int column, int row, bit[0:1] pixelval);
