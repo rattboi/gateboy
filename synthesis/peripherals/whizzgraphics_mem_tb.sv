@@ -7,8 +7,8 @@ module w_mem_tb();
    DataBus db(clk);
    wire renderComplete;
    Lcd lcd;
-   bit  reset = 0;
-   whizgraphics DUT(.*, .db(db.peripheral), .drawline(clk));
+   bit  reset = 1;
+   whizgraphics #(.DEBUG_OUT(0)) DUT(.*, .db(db.peripheral), .drawline(clk));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;
@@ -40,15 +40,26 @@ module w_mem_tb();
       tickleBus(DUT.VRAM_BACKGROUND1_ADDR, DUT.VRAM_BACKGROUND1_SIZE, DUT.VRAM_BACKGROUND1_MASK);
       tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE, DUT.VRAM_TILES_MASK);
 
-      
       $display("Passed %d tests", numPassed);
       $display("Attempting to draw pretty picture...");
-      if (renderComplete) begin
-         $display("yay! art.");
-      end else begin
-         $display("aww... didn't work, still wrote out shite");
-      end
-              writeLCD(lcd, "out.pgm");
+
+      // try to write out the image, but have a 900 cycle timeout
+      reset = 0;
+      fork : tmpfork
+         begin 
+            repeat(900)@(posedge clk); 
+            $display("aww... timeout."); 
+            disable tmpfork; 
+         end
+         begin 
+            wait(renderComplete); 
+            $display("yay! art.");
+            writeLCD(lcd, "out.pgm");
+            disable tmpfork; 
+         end
+      join
+      
+      
       $finish;
    end
 endmodule
