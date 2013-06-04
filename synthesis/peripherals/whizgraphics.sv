@@ -76,7 +76,7 @@ module whizgraphics(interface db,
         return vramBackground1.BackgroundMap[tileX][tileY];
     endfunction
 
-    function Pixel GetPixelAtScreenPoint(int x, int y);
+    function Pixel GetBackgroundPixelAtScreenPoint(int x, int y);
         automatic int tileIndex = GetTileIndexFromScreenPoint(x, y);
         automatic Tile t = GetTileFromIndex(tileIndex);
         return GetPixel(t, y % TILE_SIZE, x % TILE_SIZE);
@@ -149,7 +149,7 @@ module whizgraphics(interface db,
 
       for(int i = 0; i < LCD_LINEWIDTH; i++)
       begin
-        lcd[currentLine][i] = GetPixelAtScreenPoint(i, currentLine); 
+        lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
       end
 
        //after rendering last line, render is complete, reset current line
