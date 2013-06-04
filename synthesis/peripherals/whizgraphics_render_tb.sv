@@ -15,25 +15,16 @@ module tb_render();
     initial 
     begin
         //write data to tiles
-        for(int x = 0; x < 32; x++)
+        for(int i = 0; i < 32; i++)
         begin
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 0, 2'b00);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 1, 2'b01);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 2, 2'b10);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 3, 2'b11);
-
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 4, 2'b00);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 5, 2'b01);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 6, 2'b10);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 7, 2'b11);
-
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 8, 2'b00);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 9, 2'b01);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 10, 2'b10);
-            DUT.SetTilePixelValue(DUT.tiles.Data[0], x, 11, 2'b11);
+            DUT.SetTilePixelValue(0, 0, i, 2'b00);
+            DUT.SetTilePixelValue(0, 1, i, 2'b01);
+            DUT.SetTilePixelValue(0, 2, i, 2'b10);
+            DUT.SetTilePixelValue(0, 3, i, 2'b11);
         end
-    $display("tile data: %p", DUT.tiles.Data[0]);
-    $finish;
+    //$display("Row 0: %b", DUT.tiles.Data[0].rows[0]);
+    $display("Row 1: %b", DUT.tiles.Data[0].rows[1]);
+    //$finish;
     end
 
 

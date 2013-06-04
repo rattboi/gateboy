@@ -72,7 +72,7 @@ module whizgraphics(interface db,
     //helper functions
     function Pixel GetPixel(Tile t, int row, int pixel);
        automatic Pixel p; 
-       p = { t.rows[row][pixel], t.rows[row][pixel + (NUM_ROWS * ROW_SIZE)] };
+       p = { t.rows[row][pixel], t.rows[row][pixel + ROW_SIZE] };
        return p;
     endfunction
 
@@ -101,10 +101,11 @@ module whizgraphics(interface db,
         return GetPixel(t, y % TILE_SIZE, x % TILE_SIZE);
     endfunction
 
-    function automatic void SetTilePixelValue(int tileIndex, int x, int y, bit[0:1] pixelval);
-
-        tiles.Data[tileIndex].rows[x][y] = pixelval[0];
-        tiles.Data[tileIndex].rows[x + ROW_SIZE][y] = pixelval[1];
+    function automatic void SetTilePixelValue(int tileIndex, int pixel, int row, bit[0:1] pixelval);
+        $display("Setting R: %d P: %d to PV: %b", row, pixel, pixelval);
+        //{tiles.Data[tileIndex].rows[row][pixel], tiles.Data[tileIndex].rows[pixel + ROW_SIZE][row]} = pixelval;
+        {tiles.Data[tileIndex].rows[row][pixel], tiles.Data[tileIndex].rows[row][pixel + ROW_SIZE]} = pixelval;
+        $display("Row %d: %b", row, tiles.Data[tileIndex].rows[row]);
     endfunction
 
     //rendering state

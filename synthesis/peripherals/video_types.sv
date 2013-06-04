@@ -73,7 +73,7 @@ package video_types;
     typedef union packed
     {
         bit [0:(ROW_SIZE * NUM_ROWS * PIXEL_BITS) - 1] raw;
-        bit [0:(ROW_SIZE * PIXEL_BITS) - 1] [0:(NUM_ROWS - 1)] rows;
+        bit [0:(NUM_ROWS - 1)] [0:(ROW_SIZE * PIXEL_BITS) - 1] rows;
     } Tile;
 
     typedef union packed
