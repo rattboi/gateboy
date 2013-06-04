@@ -5,8 +5,8 @@ module async_mem (/*AUTOARG*/
   wr_clk, wr_data, wr_cs, addr, rd_cs
   );
 
-  parameter asz = 15,
-	    depth = 32768;
+  parameter asz = 15;
+  parameter depth = 32768;
   
   input       wr_clk;
   input [7:0] wr_data;

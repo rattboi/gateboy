@@ -64,7 +64,7 @@ module testbench(
   gameboy gameboy (.*);
   
   // WRAM
-  async_mem #(.asz(8), .depth(8192)) wram (
+  async_mem #(.asz(16), .depth(8192)) wram (
     .rd_data(Di_wram),
     .wr_clk(clock),
     .wr_data(Do),
@@ -74,7 +74,7 @@ module testbench(
   );
   
   // VRAM
-  async_mem #(.asz(8), .depth(8192)) vram (
+  async_mem #(.asz(16), .depth(8192)) vram (
     .rd_data(Di_vram),
     .wr_clk(clock),
     .wr_data(Do_vram),
