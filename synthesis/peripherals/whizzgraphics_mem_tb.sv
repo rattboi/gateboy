@@ -48,6 +48,8 @@ module w_mem_tb();
       tickleBus(DUT.LCD_PALLETE_ADDR, DUT.LCD_PALLETE_SIZE);
       $display("Testing LCD POS...");
       tickleBus(DUT.LCD_POS_ADDR, DUT.LCD_POS_SIZE);
+      $display("Testing LCD CONTROL REGISTER...");
+      tickleBus(DUT.LCDC_ADDR, DUT.LCDC_SIZE);
       $display("Testing LCD WIN...");
       tickleBus(DUT.LCD_WIN_ADDR, DUT.LCD_WIN_SIZE);
       $display("Testing VRAM TILES...");

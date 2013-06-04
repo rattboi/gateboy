@@ -1,6 +1,6 @@
 package video_types;
 
-    typedef union 
+    typedef union packed
     {
         bit [7:0] raw;
         struct packed
