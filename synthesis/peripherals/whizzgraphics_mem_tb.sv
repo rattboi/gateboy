@@ -81,7 +81,7 @@ module w_mem_tb();
       resetWhizgraphics();
       // Test the different sections of the graphics memory
       $display("Testing OAM...");
-      tickleBus(DUT.OAM_LOC, 4);
+      tickleBus(DUT.OAM_LOC, DUT.OAM_SIZE);
       $display("Testing VRAM BGND1...");
       tickleBus(DUT.VRAM_BACKGROUND1_ADDR, DUT.VRAM_BACKGROUND1_SIZE);
       $display("Testing VRAM BGND2...");
