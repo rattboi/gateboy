@@ -47,6 +47,8 @@ module w_mem_tb();
       tickleBus(DUT.VRAM_BACKGROUND2_ADDR, DUT.VRAM_BACKGROUND2_SIZE, DUT.VRAM_BACKGROUND2_MASK);
       $display("Testing LCD PALETTE...");
       tickleBus(DUT.LCD_PALLETE_ADDR, DUT.LCD_PALLETE_SIZE, DUT.LCD_PALLETE_MASK);
+      $display("Testing LCD POS...");
+      tickleBus(DUT.LCD_POS_ADDR, DUT.LCD_POS_SIZE, DUT.LCD_POS_MASK);
       $display("Testing VRAM TILES...");
       tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE, DUT.VRAM_TILES_MASK);
 

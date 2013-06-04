@@ -17,8 +17,13 @@ module whizgraphics(interface db,
     localparam STAT_ADDR = 16'hff41;
     LcdStatus lcdStatus;
 
-    localparam LCD_POS_BASE_ADDR = 16'hff42;
-    LcdPosition lcdPosition;
+    localparam LCD_POS_ADDR = 16'hff42;
+    localparam LCD_POS_SIZE = 6;
+    localparam LCD_POS_MASK = 16'h7;
+     union packed {
+        bit [0:LCD_POS_SIZE-1] [0:7] Bits;
+        LcdPosition Data;
+     } lcdPosition;
 
     localparam LCD_PALLETE_ADDR = 16'hff47;
     localparam LCD_PALLETE_SIZE = 3;
@@ -74,8 +79,8 @@ module whizgraphics(interface db,
 
     function bit[0:7] GetTileIndexFromScreenPoint(int x, int y);
 
-        automatic int bgX = x + lcdPosition.ScrollX;
-        automatic int bgY = y + lcdPosition.ScrollY;
+        automatic int bgX = x + lcdPosition.Data.ScrollX;
+        automatic int bgY = y + lcdPosition.Data.ScrollY;
         automatic int tileX = bgX / TILE_SIZE;
         automatic int tileY = bgY / TILE_SIZE;
 
@@ -117,6 +122,8 @@ module whizgraphics(interface db,
              bus_reg = vramBackground2.Bits[db.addr & VRAM_BACKGROUND2_MASK];
            db.selected(LCD_PALLETE_ADDR, LCD_PALLETE_SIZE):
              bus_reg = vramBackground2.Bits[db.addr & LCD_PALLETE_MASK];
+           db.selected(LCD_POS_ADDR, LCD_POS_SIZE):
+             bus_reg = vramBackground2.Bits[db.addr & LCD_POS_MASK];
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              bus_reg = tiles.Bits[db.addr & VRAM_TILES_MASK];
            1:
@@ -134,7 +141,8 @@ module whizgraphics(interface db,
              vramBackground2.Bits[db.addr & VRAM_BACKGROUND2_MASK] = db.data;
            db.selected(LCD_PALLETE_ADDR, LCD_PALLETE_SIZE): 
              vramBackground2.Bits[db.addr & LCD_PALLETE_MASK] = db.data;
-
+           db.selected(LCD_POS_ADDR, LCD_POS_SIZE): 
+             vramBackground2.Bits[db.addr & LCD_POS_MASK] = db.data;
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              tiles.Bits[db.addr & VRAM_TILES_MASK] = db.data;
            1:
@@ -147,10 +155,10 @@ module whizgraphics(interface db,
    always_ff @(posedge drawline)
      begin : renderer
         
-      automatic int startTileX = lcdPosition.ScrollX / TILE_SIZE;
-      automatic int tileY = (lcdPosition.ScrollY + currentLine) / TILE_SIZE;
-      automatic int tileOffsetX = lcdPosition.ScrollX % TILE_SIZE;
-      automatic int tileOffsetY = (lcdPosition.ScrollY + currentLine) % TILE_SIZE;
+      automatic int startTileX = lcdPosition.Data.ScrollX / TILE_SIZE;
+      automatic int tileY = (lcdPosition.Data.ScrollY + currentLine) / TILE_SIZE;
+      automatic int tileOffsetX = lcdPosition.Data.ScrollX % TILE_SIZE;
+      automatic int tileOffsetY = (lcdPosition.Data.ScrollY + currentLine) % TILE_SIZE;
 
    
       if (reset) begin
