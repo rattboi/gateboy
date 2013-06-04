@@ -49,7 +49,7 @@ module whizgraphics(interface db,
  
     union packed {
         bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
-       Tile [0:NUM_TILES-1] Data; 
+       Tile [NUM_TILES] Data; 
     } tiles;
 
     localparam VRAM_BACKGROUND1_ADDR = 16'h9800;

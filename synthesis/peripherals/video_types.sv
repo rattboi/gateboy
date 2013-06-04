@@ -44,24 +44,34 @@ package video_types;
       bit [0:7]   WindowY;
       bit [0:7]   WindowX;
    } LcdWindowPosition;
-   
+
+    typedef bit [0:1] Color;
     typedef union packed
     {
-        bit [0:7] raw;
+       bit [0:7] raw;
+       Color [0:3] indexedColors;
         struct packed
         {
-            bit [0:1] Color1;
-            bit [0:1] Color2;
-            bit [0:1] Color3;
-            bit [0:1] Color4;
+            Color Color1;
+            Color Color2;
+            Color Color3;
+            Color Color4;
         } Fields;
     } Pallete;
 
-    typedef struct packed
-    { 
-        Pallete BackgroundPallete;
-        Pallete Sprite0Pallete;
-        Pallete Sprite1Pallete;
+   typedef enum {PALETTE_BACKGROUND; PALETTE_SPRITE0; PALETTE_SPRITE1;} PaletteType;
+
+   function Color LookupColor(PaletteType palette_num, Color srcColor, LcdPalletes palettes);
+      LookupColor = palettes.indexedPalettes[palette_num][srcColor];
+   endfunction 
+   
+    typedef union packed
+    {
+       Pallete [0:2] indexedPalettes;
+       struct packed {
+       Pallete BackgroundPallete;
+       Pallete Sprite0Pallete;
+       Pallete Sprite1Pallete; } namedPalettes;
     } LcdPalletes;
 
 
