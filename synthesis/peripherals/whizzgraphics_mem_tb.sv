@@ -39,9 +39,15 @@ module w_mem_tb();
    
    initial begin
       // Test the different sections of the graphics memory
+      $display("Testing OAM...");
       tickleBus(DUT.OAM_LOC, DUT.OAM_SIZE, DUT.OAM_MASK);
+      $display("Testing VRAM BGND1...");
       tickleBus(DUT.VRAM_BACKGROUND1_ADDR, DUT.VRAM_BACKGROUND1_SIZE, DUT.VRAM_BACKGROUND1_MASK);
+      $display("Testing VRAM BGND2...");
       tickleBus(DUT.VRAM_BACKGROUND2_ADDR, DUT.VRAM_BACKGROUND2_SIZE, DUT.VRAM_BACKGROUND2_MASK);
+      $display("Testing LCD PALETTE...");
+      tickleBus(DUT.LCD_PALLETE_ADDR, DUT.LCD_PALLETE_SIZE, DUT.LCD_PALLETE_MASK);
+      $display("Testing VRAM TILES...");
       tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE, DUT.VRAM_TILES_MASK);
 
       $display("Passed %d tests", numPassed);

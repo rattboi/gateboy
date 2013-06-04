@@ -20,13 +20,20 @@ module whizgraphics(interface db,
     localparam LCD_POS_BASE_ADDR = 16'hff42;
     LcdPosition lcdPosition;
 
-    localparam LCD_PALLET_BASE_ADDR = 16'hff47;
-    LcdPalletes lcdPalletes;
+    localparam LCD_PALLETE_ADDR = 16'hff47;
+    localparam LCD_PALLETE_SIZE = 3;
+    localparam LCD_PALLETE_MASK = 16'h3;
+ 
+    union packed {
+      LcdPalletes Data;
+      bit [0:LCD_PALLETE_SIZE-1] [0:7] Bits;
+      } lcdPalletes;
 
     localparam NUM_TILES = 384;
     localparam VRAM_TILES_ADDR = 16'h8000;
     localparam VRAM_TILES_MASK = 16'h1fff;
     localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES / 8;
+ 
     union packed {
         bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
        Tile [0:NUM_TILES-1] Data; 
@@ -108,7 +115,8 @@ module whizgraphics(interface db,
              bus_reg = vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK];
            db.selected(VRAM_BACKGROUND2_ADDR, VRAM_BACKGROUND2_SIZE):
              bus_reg = vramBackground2.Bits[db.addr & VRAM_BACKGROUND2_MASK];
-
+           db.selected(LCD_PALLETE_ADDR, LCD_PALLETE_SIZE):
+             bus_reg = vramBackground2.Bits[db.addr & LCD_PALLETE_MASK];
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              bus_reg = tiles.Bits[db.addr & VRAM_TILES_MASK];
            1:
@@ -124,6 +132,9 @@ module whizgraphics(interface db,
              vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK] = db.data;
            db.selected(VRAM_BACKGROUND2_ADDR, VRAM_BACKGROUND2_SIZE): 
              vramBackground2.Bits[db.addr & VRAM_BACKGROUND2_MASK] = db.data;
+           db.selected(LCD_PALLETE_ADDR, LCD_PALLETE_SIZE): 
+             vramBackground2.Bits[db.addr & LCD_PALLETE_MASK] = db.data;
+
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              tiles.Bits[db.addr & VRAM_TILES_MASK] = db.data;
            1:
