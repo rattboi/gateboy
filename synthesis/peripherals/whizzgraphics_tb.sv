@@ -5,7 +5,7 @@ module w_tb();
    wire drawline;
    wire renderComplete;
    Lcd lcd;
-   whizgraphics DUT(.*, .db(db.peripheral));
+   whizgraphics #(.DEBUG_OUT(1)) DUT(.*, .db(db.peripheral));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;

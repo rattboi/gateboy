@@ -7,7 +7,7 @@ module w_mem_tb();
    DataBus db(clk);
    wire renderComplete;
    Lcd lcd;
-   whizgraphics #(.DEBUG_OUT(0)) DUT(.*, .db(db.peripheral), .drawline(clk));
+   whizgraphics DUT(.*, .db(db.peripheral), .drawline(clk));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;

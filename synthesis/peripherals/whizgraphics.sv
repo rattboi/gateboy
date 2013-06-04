@@ -3,7 +3,7 @@ module whizgraphics(interface db,
     output bit renderComplete,
     video_types::Lcd lcd);
 
-    parameter DEBUG_OUT = 1;
+    parameter DEBUG_OUT = 0;
     `define DebugPrint(x) if(DEBUG_OUT) $display("%p", x);
 
 

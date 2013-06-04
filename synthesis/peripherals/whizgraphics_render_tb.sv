@@ -9,7 +9,7 @@ module tb_render();
    logic drawline;
    wire renderComplete;
    Lcd lcd;
-	whizgraphics DUT(.*, .db(db.peripheral));
+	whizgraphics #(.DEBUG_OUT(1)) DUT(.*, .db(db.peripheral));
 
     initial 
     begin
