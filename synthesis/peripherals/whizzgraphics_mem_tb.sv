@@ -12,6 +12,7 @@ module w_mem_tb();
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;
+   int        numFailed = 0;
    bit [db.DATA_SIZE-1:0] d;
    
    initial forever #10 clk = ~clk;
@@ -25,8 +26,10 @@ module w_mem_tb();
          address = (i & mask) + baseaddr;
          db.write(r, address);
          db.read(address,d);
-         if (d != r)
+         if (d != r) begin
            $display("Could not transfer byte %x to addr %x", r, address);
+            numFailed++;
+         end
          else begin
             numPassed++;
          end
@@ -42,6 +45,7 @@ module w_mem_tb();
       tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE, DUT.VRAM_TILES_MASK);
 
       $display("Passed %d tests", numPassed);
+      $display("Failed %d tests", numFailed);
       $display("Attempting to draw pretty picture...");
 
       // try to write out the image, but have a 900 cycle timeout
