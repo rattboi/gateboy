@@ -38,7 +38,7 @@ module whizgraphics(interface db,
     vram_background vramBackground1;
 
     localparam VRAM_BACKGROUND2_ADDR = 16'h9c00;
-    localparam VRAM_BACKGROUND2_MASK = 16'h0fff;
+    localparam VRAM_BACKGROUND2_MASK = 16'h03ff;
     localparam VRAM_BACKGROUND2_SIZE = 32*32;
     vram_background vramBackground2;
 
@@ -103,6 +103,9 @@ module whizgraphics(interface db,
              bus_reg = oam_table.Bits[db.addr & OAM_MASK];
            db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE):
              bus_reg = vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK];
+           db.selected(VRAM_BACKGROUND2_ADDR, VRAM_BACKGROUND2_SIZE):
+             bus_reg = vramBackground2.Bits[db.addr & VRAM_BACKGROUND2_MASK];
+
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              bus_reg = tiles.Bits[db.addr & VRAM_TILES_MASK];
            1:
@@ -116,6 +119,8 @@ module whizgraphics(interface db,
               end
            db.selected(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE): 
              vramBackground1.Bits[db.addr & VRAM_BACKGROUND1_MASK] = db.data;
+           db.selected(VRAM_BACKGROUND2_ADDR, VRAM_BACKGROUND2_SIZE): 
+             vramBackground2.Bits[db.addr & VRAM_BACKGROUND2_MASK] = db.data;
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              tiles.Bits[db.addr & VRAM_TILES_MASK] = db.data;
            1:
