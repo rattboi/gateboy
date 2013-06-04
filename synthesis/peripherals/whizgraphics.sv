@@ -49,7 +49,7 @@ module whizgraphics(interface db,
  
     union packed {
         bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
-       Tile [NUM_TILES] Data; 
+       Tile [0:NUM_TILES-1] Data; 
     } tiles;
 
     localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
@@ -98,7 +98,7 @@ module whizgraphics(interface db,
     function Pixel GetBackgroundPixelAtScreenPoint(int x, int y);
         automatic int tileIndex = GetTileIndexFromScreenPoint(x, y);
         automatic Tile t = GetTileFromIndex(tileIndex);
-        return GetPixel(t, y % TILE_SIZE, x % TILE_SIZE);
+        return GetPixel(t, (y + lcdPosition.Data.ScrollY) % TILE_SIZE, (x + lcdPosition.Data.ScrollX) % TILE_SIZE);
     endfunction
 
     function automatic void SetTilePixelValue(int tileIndex, int column, int row, bit[0:1] pixelval);
