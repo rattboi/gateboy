@@ -1,0 +1,4 @@
+--nogroup 
+--with-filename
+--ignore-file=match:transcript
+--ignore-dir=work
