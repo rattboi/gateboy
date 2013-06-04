@@ -105,6 +105,7 @@ module whizgraphics(interface db,
         {tiles.Data[tileIndex].rows[row][column], tiles.Data[tileIndex].rows[row][column+ ROW_SIZE]} = pixelval;
     endfunction
 
+   
     //rendering state
     bit [0:LCD_LINES_BITS - 1] currentLine;
 
@@ -112,6 +113,15 @@ module whizgraphics(interface db,
    bit                    enable;
    assign db.data = enable ? bus_reg : 'z;
 
+   function void resetWhizgraphics();
+      currentLine = 0;
+      renderComplete = 0;
+      for (int i = 0; i < 3; i++)
+        for(int j = 0; j < 4; j++)
+        lcdPalletes.Data.indexedPalettes[i].indexedColors[j] = j;
+   endfunction
+   
+   
     initial
     begin
         renderComplete = '0;
@@ -180,7 +190,7 @@ module whizgraphics(interface db,
 
    
       if (reset) begin
-         currentLine = 0;
+         resetWhizgraphics();
          disable renderer;
       end
             
