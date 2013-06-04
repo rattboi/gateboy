@@ -31,7 +31,6 @@ interface DataBus (input bit clk);
       @cb;
       addr = a;
       data_reg = d;      
-      @cb;
       we = 0;
       oe = 1;
       @cb;

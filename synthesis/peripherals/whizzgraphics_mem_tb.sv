@@ -36,10 +36,46 @@ module w_mem_tb();
       
    endtask
    
+   // Test that the fields of the OAM structure corresponde to actual values
+   task automatic testOAM();
+      bit [0:7] ypos, xpos, tilenum, attrs;
+      bit       hasfailed = 0;
+      {ypos,xpos,tilenum, attrs} = $urandom;
+
+      // write the y position      
+      db.write(ypos,16'hfe00);
+      // x position
+      db.write(xpos,16'hfe01);
+      // Tile number
+      db.write(tilenum,16'hfe02);
+      // attributes
+      db.write(attrs,16'hfe03);
+
+      if (DUT.oam_table.Attributes[0].Fields.YPosition != ypos) begin
+        $display("Invalid ypos set");
+         hasfailed = 1;
+      end
+      if (DUT.oam_table.Attributes[0].Fields.XPosition != xpos) begin
+        $display("Invalid xpos set");
+         hasfailed = 1;
+      end
+      if (DUT.oam_table.Attributes[0].Fields.Tile != tilenum) begin
+        $display("Invalid tilenum set");
+         hasfailed = 1;
+      end
+      if (DUT.oam_table.Attributes[0].Fields.Flags != attrs) begin
+        $display("Invalid attrs set");
+         hasfailed = 1;
+      end
+      if (!hasfailed)
+        $display("OAM Fields successfully accessed");
+   endtask
+
    initial begin
+      
       // Test the different sections of the graphics memory
       $display("Testing OAM...");
-      tickleBus(DUT.OAM_LOC, DUT.OAM_SIZE);
+      tickleBus(DUT.OAM_LOC, 4);
       $display("Testing VRAM BGND1...");
       tickleBus(DUT.VRAM_BACKGROUND1_ADDR, DUT.VRAM_BACKGROUND1_SIZE);
       $display("Testing VRAM BGND2...");
@@ -55,6 +91,8 @@ module w_mem_tb();
       $display("Testing VRAM TILES...");
       tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE);
 
+      testOAM();
+      
       $display("Passed %d tests", numPassed);
       $display("Failed %d tests", numFailed);
       $display("Attempting to draw pretty picture...");
