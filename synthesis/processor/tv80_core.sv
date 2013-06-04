@@ -158,7 +158,8 @@ module tv80_core (  // Inputs
   wire          Read_To_Reg;
   wire [3:0]     Set_BusB_To;
   wire [3:0]     Set_BusA_To;
-  wire [3:0]     ALU_Op;
+
+  tv80_alu::ALU_Op_t ALU_Op;
   wire           Save_ALU;
   wire           PreserveC;
   wire           Arith16;
