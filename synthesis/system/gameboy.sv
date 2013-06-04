@@ -10,7 +10,7 @@ module gameboy (
   // Main RAM + Cartridge
   output wire [15:0] A,
   input  wire  [7:0] Di,
-  output wire  [7:0] dout,
+  output wire  [7:0] Do,
   output wire        wr_n,
   output wire        rd_n,
   output wire        cs_n,
@@ -18,7 +18,7 @@ module gameboy (
   // Video RAM
   output wire [15:0] A_vram,
   input  wire  [7:0] Di_vram,
-  output wire  [7:0] dout_vram,
+  output wire  [7:0] Do_vram,
   output wire        wr_vram_n,
   output wire        rd_vram_n,
   output wire        cs_vram_n,
@@ -48,7 +48,7 @@ module gameboy (
   output wire [15:0] HL,
   output wire [15:0] A_cpu,
   output wire  [7:0] Di_cpu,
-  output wire  [7:0] dout_cpu
+  output wire  [7:0] Do_cpu
 );
   
   //assign pixel_data = 2'b0;
@@ -111,7 +111,7 @@ module gameboy (
     .busak_n(busak_n),
     .A(A_cpu),
     .di(Di_cpu),
-    .dout(dout_cpu),
+    .dout(Do_cpu),
     .ACC(AF[15:8]),
     .F(AF[7:0]),
     .BC(BC),
@@ -138,14 +138,14 @@ module gameboy (
   wire cs_sound;
   wire cs_joypad;
   
-  wire  [7:0] dout_mmu;
-  wire  [7:0] dout_interrupt;
-  wire  [7:0] dout_timer;
-  wire  [7:0] dout_sound;
-  wire  [7:0] dout_joypad;
+  wire  [7:0] Do_mmu;
+  wire  [7:0] Do_interrupt;
+  wire  [7:0] Do_timer;
+  wire  [7:0] Do_sound;
+  wire  [7:0] Do_joypad;
   
   wire [15:0] A_ppu;
-  wire  [7:0] dout_ppu;
+  wire  [7:0] Do_ppu;
   wire  [7:0] Di_ppu;
   wire        cs_ppu;
   
@@ -155,14 +155,14 @@ module gameboy (
     
     // CPU <-> MMU
     .A_cpu(A_cpu),
-    .Di_cpu(dout_cpu),
-    .Do_cpu(dout_mmu),
+    .Di_cpu(Do_cpu),
+    .Do_cpu(Do_mmu),
     .rd_cpu_n(rd_cpu_n),
     .wr_cpu_n(wr_cpu_n),
     
     // MMU <-> I/O Registers + External RAMs
     .A(A),
-    .Do(dout),
+    .Do(Do),
     .Di(Di),
     .wr_n(wr_n),
     .rd_n(rd_n),
@@ -170,15 +170,15 @@ module gameboy (
     
     // MMU <-> PPU
     .A_ppu(A_ppu),
-    .Do_ppu(dout_ppu),
+    .Do_ppu(Do_ppu),
     .Di_ppu(Di_ppu),
     .cs_ppu(cs_ppu),
     
     // Data lines (I/O Registers) -> MMU
-    .Do_interrupt(dout_interrupt),
-    .Do_timer(dout_timer),
-    .Do_sound(dout_sound),
-    .Do_joypad(dout_joypad),
+    .Do_interrupt(Do_interrupt),
+    .Do_timer(Do_timer),
+    .Do_sound(Do_sound),
+    .Do_joypad(Do_joypad),
     
     // MMU -> Modules (I/O Registers)
     .cs_interrupt(cs_interrupt),
@@ -208,15 +208,15 @@ module gameboy (
     .int_req(int_req),
     .jump_addr(jump_addr),
     .A(A),
-    .Di(dout_cpu),
-    .Do(dout_interrupt)
+    .Di(Do_cpu),
+    .Do(Do_interrupt)
   );
   
   // During an interrupts the CPU reads the jump address
   //  from a table in memory. It gets the address of this
   //  table from the interrupt module which is why this
   //  mux exists.
-  assign Di_cpu = (!iorq_n && !m1_n) ? jump_addr : dout_mmu;
+  assign Di_cpu = (!iorq_n && !m1_n) ? jump_addr : Do_mmu;
   
   //
   // Timer Controller
@@ -231,8 +231,8 @@ module gameboy (
     .int_ack(int_ack[2]),
     .int_req(int_req[2]),
     .A(A),
-    .Di(dout_cpu),
-    .Do(dout_timer)
+    .Di(Do_cpu),
+    .Do(Do_timer)
   );
   
   //
@@ -251,7 +251,7 @@ module gameboy (
     
     // PPU <-> MMU
     .A(A_ppu),
-    .Di(dout_ppu),
+    .Di(Do_ppu),
     .Do(Di_ppu),
     .rd_n(rd_n),
     .wr_n(wr_n),
@@ -259,7 +259,7 @@ module gameboy (
     
     // PPU <-> VRAM
     .A_vram(A_vram),
-    .Di_vram(dout_vram),
+    .Di_vram(Do_vram),
     .Do_vram(Di_vram),
     .rd_vram_n(rd_vram_n),
     .wr_vram_n(wr_vram_n),
@@ -283,8 +283,8 @@ module gameboy (
     .int_ack(int_ack[4]),
     .int_req(int_req[4]),
     .A(A),
-    .Di(dout_cpu),
-    .Do(dout_joypad),
+    .Di(Do_cpu),
+    .Do(Do_joypad),
     .cs(cs_timer),
     .rd_n(rd_n),
     .wr_n(wr_n),
