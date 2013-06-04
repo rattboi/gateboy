@@ -117,6 +117,11 @@ module whizgraphics(interface db,
     initial
     begin
         renderComplete = '0;
+
+		  // Initialize to all zeros
+		  // do not use unless implementing
+		  // interrupt functionality
+		  lcdStatus      = '0;
     end
 
    // functions as address decoder. 
