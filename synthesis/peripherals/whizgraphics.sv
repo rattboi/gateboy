@@ -9,17 +9,16 @@ module whizgraphics(interface db,
     `define DebugPrint(x) if(DEBUG_OUT) $display("%p", x);
 
 
-   import video_types::*;
-
+    import video_types::*;
+    
     localparam LCDC_ADDR = 16'hff40;
+    localparam LCDC_SIZE = 1;
     LcdControl lcdControl;
 
     localparam LCD_STAT_ADDR = 16'hff41;
     localparam LCD_STAT_SIZE = 1;
-    union packed {
-       bit [0:7] Bits;
-       LcdStatus Data;
-    } lcdStatus;
+    LcdStatus lcdStatus;
+
 
     localparam LCD_POS_ADDR = 16'hff42; 
     localparam LCD_POS_SIZE = 4;
@@ -140,7 +139,9 @@ module whizgraphics(interface db,
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              bus_reg = tiles.Bits[db.addr - VRAM_TILES_ADDR];
            db.selected(LCD_STAT_ADDR, LCD_STAT_SIZE):
-             bus_reg = lcdStatus.Bits;
+             bus_reg = lcdStatus;
+           db.selected(LCDC_ADDR, LCDC_SIZE):
+             bus_reg = lcdControl;
            1:
              enable = 0;
          endcase         
@@ -162,6 +163,8 @@ module whizgraphics(interface db,
              lcdWindowPosition.Bits[db.addr - LCD_WIN_ADDR] = db.data;
            db.selected(VRAM_TILES_ADDR, VRAM_TILES_SIZE):
              tiles.Bits[db.addr - VRAM_TILES_ADDR] = db.data;
+           db.selected(LCDC_ADDR, LCDC_SIZE):
+             lcdControl = db.data;
            1:
              ;
          endcase
