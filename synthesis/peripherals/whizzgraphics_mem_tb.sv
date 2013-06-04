@@ -17,6 +17,12 @@ module w_mem_tb();
    
    initial forever #10 clk = ~clk;
 
+   task resetWhizgraphics();
+      reset = 1;
+      @db.clk; reset = 0;
+   endtask   
+
+   
    task tickleBus(int baseaddr, int size);
       bit [db.ADDR_SIZE-1:0] address;
       for (int i = 0; i < size; i++) begin : write 
@@ -72,7 +78,7 @@ module w_mem_tb();
    endtask
 
    initial begin
-      
+      resetWhizgraphics();
       // Test the different sections of the graphics memory
       $display("Testing OAM...");
       tickleBus(DUT.OAM_LOC, 4);
@@ -91,14 +97,10 @@ module w_mem_tb();
       $display("Testing VRAM TILES...");
       tickleBus(DUT.VRAM_TILES_ADDR, DUT.VRAM_TILES_SIZE);
 
-      testOAM();
-      
-      $display("Passed %d tests", numPassed);
-      $display("Failed %d tests", numFailed);
       $display("Attempting to draw pretty picture...");
 
       // try to write out the image, but have a 900 cycle timeout
-      reset = 0;
+      resetWhizgraphics();
       fork : tmpfork
          begin 
             repeat(900)@(posedge clk); 
@@ -113,6 +115,10 @@ module w_mem_tb();
          end
       join
       
+      testOAM();
+      
+      $display("Passed %d tests", numPassed);
+      $display("Failed %d tests", numFailed);
       
 
       $finish;
