@@ -102,6 +102,12 @@ module whizgraphics(interface db,
         return GetPixel(t, y % TILE_SIZE, x % TILE_SIZE);
     endfunction
 
+    function automatic void SetTilePixelValue(int tileIndex, int x, int y, bit[0:1] pixelval);
+
+        tiles.Data[tileIndex].rows[x][y] = pixelval[0];
+        tiles.Data[tileIndex].rows[x + ROW_SIZE][y] = pixelval[1];
+    endfunction
+
     //rendering state
     bit [0:LCD_LINES_BITS - 1] currentLine;
 

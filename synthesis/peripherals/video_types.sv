@@ -76,11 +76,6 @@ package video_types;
         bit [0:(ROW_SIZE * PIXEL_BITS) - 1] [0:(NUM_ROWS - 1)] rows;
     } Tile;
 
-    function void SetTilePixelValue(Tile t, int x, int y, bit[0:1] pixvalue);
-        t.rows[y][x] = pixvalue; 
-        t.rows[y][x + ROW_SIZE] = pixvalue; 
-    endfunction
-
     typedef union packed
     {
         bit [0:(32*32)-1][0:7] Bits;
