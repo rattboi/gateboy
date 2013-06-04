@@ -5,10 +5,9 @@ module w_mem_tb();
    import video_types::*;
    bit clk = 0;
    DataBus db(clk);
-   wire drawline;
    wire renderComplete;
    Lcd lcd;
-   whizgraphics DUT(.*, .db(db.peripheral));
+   whizgraphics DUT(.*, .db(db.peripheral), .drawline(clk));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;
@@ -59,6 +58,13 @@ module w_mem_tb();
       end
       
       $display("Passed %d tests", numPassed);
+      $display("Attempting to draw pretty picture...");
+      if (renderComplete) begin
+         $display("yay! art.");
+      end else begin
+         $display("aww... didn't work, still wrote out shite");
+      end
+              writeLCD(lcd, "out.pgm");
       $finish;
    end
 endmodule
