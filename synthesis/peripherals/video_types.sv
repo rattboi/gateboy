@@ -59,11 +59,8 @@ package video_types;
         } Fields;
     } Pallete;
 
-   typedef enum {PALETTE_BACKGROUND; PALETTE_SPRITE0; PALETTE_SPRITE1;} PaletteType;
+   typedef enum {PALETTE_BACKGROUND, PALETTE_SPRITE0, PALETTE_SPRITE1} PaletteType;
 
-   function Color LookupColor(PaletteType palette_num, Color srcColor, LcdPalletes palettes);
-      LookupColor = palettes.indexedPalettes[palette_num][srcColor];
-   endfunction 
    
     typedef union packed
     {
@@ -74,6 +71,9 @@ package video_types;
        Pallete Sprite1Pallete; } namedPalettes;
     } LcdPalletes;
 
+   function Color LookupColor(PaletteType palette_num, Color srcColor, LcdPalletes palettes);
+      LookupColor = palettes.indexedPalettes[palette_num][srcColor];
+   endfunction 
 
     localparam PIXEL_BITS = 2;
     localparam TILE_SIZE = 8;
