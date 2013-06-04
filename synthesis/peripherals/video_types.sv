@@ -79,7 +79,7 @@ package video_types;
     typedef union packed
     {
         bit [0:(32*32)-1][0:7] Bits;
-        bit [0:31][0:31][0:7] BackgroundMap;        
+        bit [0:31][0:31][0:7] BackgroundMap;
     } vram_background;
 
     typedef union packed
@@ -101,9 +101,9 @@ package video_types;
    localparam NUM_SPRITES = 40;
    typedef union packed {
       struct packed {
-        byte YPosition;
-        byte XPosition;
-        byte Tile;
+        byte unsigned YPosition;
+        byte unsigned XPosition;
+        byte unsigned Tile;
         SpriteAttributeFlags Flags;
       } Fields;
       bit [0:7] [0:SPRITE_SIZE-1] Bits;
