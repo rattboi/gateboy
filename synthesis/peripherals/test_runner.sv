@@ -12,7 +12,7 @@ module TestRunner();
    initial begin
       automatic  whizzgraphics wg = new;
       tests.push_front(wg);
-
+      BaseTest::DebugLevel = LOG_ENABLED;
       while (tests.size() > 0) begin
          int numPassed, numFailed;
          BaseTest t;

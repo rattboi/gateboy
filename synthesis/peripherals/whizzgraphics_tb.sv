@@ -8,15 +8,18 @@ class whizzgraphics extends BaseTest;
       bit [0:15] address;
       numPassed = 0;
       numFailed = 0;
-      for (int i = 0; i < 32*32; i++) begin 
+      for (int i = 0; i < 4*40; i++) begin 
          r = $urandom;
          address = i + 16'hfe00;
+   
          db.write(r, address);
          db.read(address,d);
-         if (d == r) 
+         if (d == r) begin
            numPassed++;
-         else
+         end else begin
+           BaseTest::DebugPrint($psprintf("writing to addr %x Failed", address));
            numFailed++;
+         end
       end
    endtask
 endclass
