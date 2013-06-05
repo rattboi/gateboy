@@ -8,59 +8,41 @@ module whizgraphics(interface db,
 
     import video_types::*;
     
-    localparam LCDC_ADDR = 16'hff40;
-    localparam LCDC_SIZE = 1;
     LcdControl lcdControl;
 
 	 //Instance of LCD status register
 	 // unused in the design
-    localparam LCD_STAT_ADDR = 16'hff41;
-    localparam LCD_STAT_SIZE = 1;
     LcdStatus lcdStatus;
 
+    int lineDivider;
 
-    localparam LCD_POS_ADDR = 16'hff42; 
-    localparam LCD_POS_SIZE = 4;
      union packed {
         bit [0:LCD_POS_SIZE-1] [0:7] Bits;
         LcdPosition Data;
      } lcdPosition;
 
-    localparam LCD_WIN_ADDR = 16'hff4a; 
-    localparam LCD_WIN_SIZE = 2;
     union packed {
         bit [0:LCD_WIN_SIZE-1] [0:7] Bits;
         LcdWindowPosition Data;
      } lcdWindowPosition;
 
    
-    localparam LCD_PALLETE_ADDR = 16'hff47;
-    localparam LCD_PALLETE_SIZE = 3;
  
     union packed {
       LcdPalletes Data;
       bit [0:LCD_PALLETE_SIZE-1] [0:7] Bits;
       } lcdPalletes;
 
-    localparam NUM_TILES = 384;
-    localparam VRAM_TILES_ADDR = 16'h8000;
-    localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES / 8;
  
     union packed {
         bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
        Tile [0:NUM_TILES-1] Data; 
     } tiles;
 
-    localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
-    localparam VRAM_BACKGROUND1_SIZE = 32*32;
     vram_background vramBackground1;
 
-    localparam VRAM_BACKGROUND2_ADDR = 16'h9c00;
-    localparam VRAM_BACKGROUND2_SIZE = 32*32;
     vram_background vramBackground2;
 
-    localparam OAM_LOC = 16'hfe00;
-    localparam OAM_SIZE = SPRITE_SIZE*NUM_SPRITES;
     SpriteAttributesTable oam_table;
 
 
@@ -171,6 +153,8 @@ module whizgraphics(interface db,
    function void resetWhizgraphics();
       currentLine = 0;
       cntrl.renderComplete = 0;
+      lineDivider = 0;
+      lcdStatus.Fields.Mode = RENDER_VBLANK;
       for (int i = 0; i < 3; i++)
         for(int j = 0; j < 4; j++)
         lcdPalletes.Data.indexedPalettes[i].indexedColors[j] = j;
@@ -234,6 +218,9 @@ module whizgraphics(interface db,
       end
    end
 
+   parameter CLOCKS_PER_LINE = 260;
+   parameter VBLANK_LINES = 18;
+   
    // RENDER THE CODEZ
    always_ff @(posedge cntrl.drawline)
      begin : renderer
@@ -242,13 +229,16 @@ module whizgraphics(interface db,
       automatic int tileY = (lcdPosition.Data.ScrollY + currentLine) / TILE_SIZE;
       automatic int tileOffsetX = lcdPosition.Data.ScrollX % TILE_SIZE;
       automatic int tileOffsetY = (lcdPosition.Data.ScrollY + currentLine) % TILE_SIZE;
-
+     
    
       if (cntrl.reset) begin
          resetWhizgraphics();
          disable renderer;
       end
-            
+
+      lineDivider++;
+      if(lineDivider < CLOCKS_PER_LINE) disable renderer;
+      lineDivider = 0;
    
       //if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
 
@@ -256,15 +246,22 @@ module whizgraphics(interface db,
 		RenderLine(currentLine);
 
        //after rendering last line, render is complete, reset current line
-       if(currentLine > LCD_LINES)
-       begin
-           cntrl.renderComplete = 1;
-           currentLine = 0;
-       end
-       else
-       begin
+        if (currentLine < LCD_LINES) begin
+           lcdStatus.Fields.Mode = RENDER_BOTH;
            cntrl.renderComplete = 0;
            currentLine++;
+        end 
+        else if(currentLine < LCD_LINES + VBLANK_LINES)
+          begin
+             cntrl.renderComplete = 1;
+             lcdStatus.Fields.Mode = RENDER_VBLANK;
+             currentLine++;
+          end
+       else
+       begin
+          cntrl.renderComplete = 1;
+          lcdStatus.Fields.Mode = RENDER_VBLANK;
+          currentLine = 0;
         end
    end
 endmodule

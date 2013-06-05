@@ -28,8 +28,8 @@ class whizzgraphics extends BaseTest;
          if (d == r) begin
            numPassed++;
          end else begin
-            // Use the static function BaseTest::DebugPrint to print debug messages
-           BaseTest::DebugPrint($psprintf("writing to addr %x Failed", address));
+           // Use the static function BaseTest::DebugPrint to print debug messages
+           DebugPrint($psprintf("writing to addr %x Failed", address));
            numFailed++;
          end
       end
