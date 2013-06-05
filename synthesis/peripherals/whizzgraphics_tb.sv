@@ -1,33 +1,23 @@
-module w_tb();
-   import video_types::*;
-   bit clk = 0;
-   DataBus db(clk);
-   Control cntrl(clk);
-   whizgraphics #(.DEBUG_OUT(1)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
-   bit [db.DATA_SIZE-1:0] r;
-   bit [db.ADDR_SIZE-1:0] address;
-   int        numPassed = 0;
-   int        numFailed = 0;
-   bit [db.DATA_SIZE-1:0] d;
-   
-   initial forever #10 clk = ~clk;
-   
-   initial begin
+`ifndef __WHIZZGRAPHICS_TB__
+`define __WHIZZGRAPHICS_TB__
 
-      for (int i = 0; i < DUT.OAM_SIZE; i++) begin 
+class whizzgraphics extends BaseTest;
+   
+   virtual task runTest(output int numPassed, int numFailed);
+      bit [0:7] r,d;
+      bit [0:15] address;
+      numPassed = 0;
+      numFailed = 0;
+      for (int i = 0; i < 32*32; i++) begin 
          r = $urandom;
-         address = i + DUT.OAM_LOC;
+         address = i + 16'hfe00;
          db.write(r, address);
          db.read(address,d);
          if (d == r) 
-            numPassed++;
+           numPassed++;
          else
            numFailed++;
-
       end
-      
-      $display("Passed %d tests", numPassed);
-      $display("Failed %d tests", numFailed);
-      $finish;
-   end
-endmodule
+   endtask
+endclass
+`endif //  `ifndef __WHIZZGRAPHICS_TB__
