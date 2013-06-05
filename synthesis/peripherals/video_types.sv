@@ -1,5 +1,9 @@
 package video_types;
 
+
+    localparam LCDC_ADDR = 16'hff40;
+    localparam LCDC_SIZE = 1;
+   
     typedef union packed
     {
         bit [7:0] raw;
@@ -17,6 +21,10 @@ package video_types;
         } Fields;
     } LcdControl;
 
+
+    localparam LCD_STAT_ADDR = 16'hff41;
+    localparam LCD_STAT_SIZE = 1;
+
     typedef union packed
     {
         bit [7:0] raw;
@@ -32,6 +40,10 @@ package video_types;
          } Fields;
      } LcdStatus;
 
+
+    localparam LCD_POS_ADDR = 16'hff42; 
+    localparam LCD_POS_SIZE = 4;
+
     typedef struct packed
     {
         bit [0:7] ScrollX;
@@ -40,11 +52,18 @@ package video_types;
         bit [0:7] LcdYCompare;
     } LcdPosition;
 
+   localparam LCD_WIN_ADDR = 16'hff4a; 
+   localparam LCD_WIN_SIZE = 2;
+   
    typedef struct packed {
       bit [0:7]   WindowY;
       bit [0:7]   WindowX;
    } LcdWindowPosition;
 
+
+    localparam LCD_PALLETE_ADDR = 16'hff47;
+    localparam LCD_PALLETE_SIZE = 3;
+   
     typedef bit [0:1] Color;
     typedef union packed
     {
@@ -79,7 +98,10 @@ package video_types;
     localparam TILE_SIZE = 8;
     localparam ROW_SIZE = 8;
     localparam NUM_ROWS = 8;
-    
+    localparam NUM_TILES = 384;
+    localparam VRAM_TILES_ADDR = 16'h8000;
+    localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES / 8;
+
     typedef union packed
     {
         bit [0:(ROW_SIZE * NUM_ROWS * PIXEL_BITS) - 1] raw;
@@ -88,6 +110,11 @@ package video_types;
 
 	 localparam BG_WIDTH  = 32;
 	 localparam BG_HEIGHT = 32;
+   localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
+   localparam VRAM_BACKGROUND1_SIZE = 32*32;
+   localparam VRAM_BACKGROUND2_ADDR = 16'h9c00;
+   localparam VRAM_BACKGROUND2_SIZE = 32*32;
+
     typedef union packed
     {
         bit [0:(BG_WIDTH * BG_HEIGHT)-1][0:(TILE_SIZE-1)] Bits;
@@ -120,7 +147,10 @@ package video_types;
       } Fields;
       bit [0:7] [0:SPRITE_SIZE-1] Bits;
     } SpriteAttributes;
-    
+
+    localparam OAM_LOC = 16'hfe00;
+    localparam OAM_SIZE = SPRITE_SIZE*NUM_SPRITES;
+   
     typedef union packed
     {
        SpriteAttributes [0:NUM_SPRITES-1] Attributes;

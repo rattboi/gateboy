@@ -18,7 +18,10 @@ module TestRunner();
       // for each test that you create, you need to create an instance
       // and add it to this queue:
       automatic  whizzgraphics wg = new;
-      tests.push_front(wg);
+      automatic  w_mem_tb wmem = new;
+
+      tests.push_front(wg);      
+      tests.push_front(wmem);
 
       // is logging enabled?
       BaseTest::DebugLevel = LOG_ENABLED;
@@ -43,8 +46,8 @@ module TestRunner();
          // display the results of this test
          $display("Passed Tests: %0d", numPassed);
          $display("Failed Tests: %0d", numFailed);
-         $finish;
+
       end
-      
+      $finish;      
    end
 endmodule

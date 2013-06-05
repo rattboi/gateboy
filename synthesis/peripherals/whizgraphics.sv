@@ -8,59 +8,40 @@ module whizgraphics(interface db,
 
     import video_types::*;
     
-    localparam LCDC_ADDR = 16'hff40;
-    localparam LCDC_SIZE = 1;
     LcdControl lcdControl;
 
 	 //Instance of LCD status register
 	 // unused in the design
-    localparam LCD_STAT_ADDR = 16'hff41;
-    localparam LCD_STAT_SIZE = 1;
     LcdStatus lcdStatus;
 
 
-    localparam LCD_POS_ADDR = 16'hff42; 
-    localparam LCD_POS_SIZE = 4;
      union packed {
         bit [0:LCD_POS_SIZE-1] [0:7] Bits;
         LcdPosition Data;
      } lcdPosition;
 
-    localparam LCD_WIN_ADDR = 16'hff4a; 
-    localparam LCD_WIN_SIZE = 2;
     union packed {
         bit [0:LCD_WIN_SIZE-1] [0:7] Bits;
         LcdWindowPosition Data;
      } lcdWindowPosition;
 
    
-    localparam LCD_PALLETE_ADDR = 16'hff47;
-    localparam LCD_PALLETE_SIZE = 3;
  
     union packed {
       LcdPalletes Data;
       bit [0:LCD_PALLETE_SIZE-1] [0:7] Bits;
       } lcdPalletes;
 
-    localparam NUM_TILES = 384;
-    localparam VRAM_TILES_ADDR = 16'h8000;
-    localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES / 8;
  
     union packed {
         bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
        Tile [0:NUM_TILES-1] Data; 
     } tiles;
 
-    localparam VRAM_BACKGROUND1_ADDR = 16'h9800;
-    localparam VRAM_BACKGROUND1_SIZE = 32*32;
     vram_background vramBackground1;
 
-    localparam VRAM_BACKGROUND2_ADDR = 16'h9c00;
-    localparam VRAM_BACKGROUND2_SIZE = 32*32;
     vram_background vramBackground2;
 
-    localparam OAM_LOC = 16'hfe00;
-    localparam OAM_SIZE = SPRITE_SIZE*NUM_SPRITES;
     SpriteAttributesTable oam_table;
 
 

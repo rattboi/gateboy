@@ -1,6 +1,6 @@
 #!/bin/sh
 export PATH=/pkgs/mentor/questa/current/questasim/bin:$PATH
-MODULES="pgm_tb tb_render w_mem_tb palette_tb"
+MODULES="pgm_tb tb_render palette_tb"
 
 # if the user supplied testbenches to run, run them instead
 echo "$@"
@@ -12,7 +12,7 @@ fi
 echo Testing modules "$MODULES"
 # convert spaces to newlines to allow for multiple tbs to be run
 MODULES=`echo "$MODULES" | tr " " "\n"`
-FILES='video_types.sv control.inf whizgraphics_render_tb.sv whizzgraphics_mem_tb.sv whizgraphics.sv pgm_tb.sv data_bus.inf data_bus_tb.sv memory.sv palette_tb.sv test.pkg test_runner.sv'
+FILES='video_types.sv control.inf whizgraphics_render_tb.sv whizgraphics.sv pgm_tb.sv data_bus.inf data_bus_tb.sv memory.sv palette_tb.sv test.pkg test_runner.sv'
 FILES=`echo "$FILES" | tr " " "\n"`
 for i in $FILES 
 do
