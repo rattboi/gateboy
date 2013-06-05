@@ -1,0 +1,37 @@
+// This package holds all of the tests that can be executed by the
+// testrunner
+
+package Test;
+   import video_types::*;
+   // enum of log level types, currently only enabled and disabled
+   typedef enum {LOG_DISABLED, LOG_ENABLED} LogLevel;
+
+   // the abstract class all tests are derived from
+   virtual class BaseTest;
+      // handles for the DUT interfaces. Only signals in these two
+      // interfaces can be used by a test
+      virtual   DataBus db;
+      virtual   Control cntrl;
+      // current log level, accross all tests
+      static LogLevel DebugLevel;
+      // print a string as debug data. wrap in $psprintf if you want
+      // variable substition
+      static task DebugPrint (string msg);
+         if (DebugLevel == LOG_ENABLED)
+           $display(msg);
+      endtask // DebugPrint
+
+      // override to set the name for your test
+      virtual function string getName();
+         getName = "UnknownTest";
+      endfunction // getName
+
+      // override to have your test do something
+      pure virtual task runTest(output int numPassed, int numFailed);
+   
+    endclass // BaseTest
+
+   // include the tests naow.
+   // Each test's class must be included here
+   include "whizzgraphics_tb.sv";
+endpackage

@@ -1,8 +1,5 @@
-module whizgraphics(interface db, 
-                    input logic drawline,
-                    logic reset,
-                    output bit renderComplete,
-                    output video_types::Lcd lcd);
+module whizgraphics(interface db,
+                    Control.DUT cntrl);
 
 
     parameter DEBUG_OUT = 0;
@@ -121,7 +118,7 @@ module whizgraphics(interface db,
 
    function void resetWhizgraphics();
       currentLine = 0;
-      renderComplete = 0;
+      cntrl.renderComplete = 0;
       for (int i = 0; i < 3; i++)
         for(int j = 0; j < 4; j++)
         lcdPalletes.Data.indexedPalettes[i].indexedColors[j] = j;
@@ -130,7 +127,7 @@ module whizgraphics(interface db,
    
     initial
     begin
-        renderComplete = '0;
+        cntrl.renderComplete = '0;
     end
 
    // functions as address decoder. 
@@ -186,7 +183,7 @@ module whizgraphics(interface db,
    end
 
    // RENDER THE CODEZ
-   always_ff @(posedge drawline)
+   always_ff @(posedge cntrl.drawline)
      begin : renderer
         
       automatic int startTileX = lcdPosition.Data.ScrollX / TILE_SIZE;
@@ -195,7 +192,7 @@ module whizgraphics(interface db,
       automatic int tileOffsetY = (lcdPosition.Data.ScrollY + currentLine) % TILE_SIZE;
 
    
-      if (reset) begin
+      if (cntrl.reset) begin
          resetWhizgraphics();
          disable renderer;
       end
@@ -205,18 +202,18 @@ module whizgraphics(interface db,
 
       for(int i = 0; i < LCD_LINEWIDTH; i++)
       begin
-        lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
+        cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
       end
 
        //after rendering last line, render is complete, reset current line
        if(currentLine > LCD_LINES)
        begin
-           renderComplete = 1;
+           cntrl.renderComplete = 1;
            currentLine = 0;
        end
        else
        begin
-           renderComplete = 0;
+           cntrl.renderComplete = 0;
            currentLine++;
         end
    end

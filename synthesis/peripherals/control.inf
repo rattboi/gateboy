@@ -1,0 +1,22 @@
+// Interface to control gameboy graphics OOB
+
+interface Control(input bit drawline);
+   bit reset;
+   bit renderComplete;
+   video_types::Lcd lcd;
+
+
+   clocking cb @(posedge drawline);
+      output reset;
+      input  lcd;
+      input  renderComplete;
+   endclocking
+   
+   task resetDUT;
+      reset = 1;
+      @cntrl.drawline reset = 0;
+   endtask
+
+   modport TEST(import resetDUT, input renderComplete, lcd);
+   modport DUT(input reset, drawline, output renderComplete, lcd);
+endinterface
