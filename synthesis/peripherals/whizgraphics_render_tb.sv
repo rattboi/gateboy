@@ -8,7 +8,7 @@ module tb_render();
 	bit clk = 0;
    DataBus db(clk);
    Control cntrl(clk);
-	whizgraphics #(.DEBUG_OUT(0)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
+	whizgraphics #(.DEBUG_OUT(1)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
 
    // simple task to reset the whizgraphics hardware: necessary in
    // order to load the default palette.
@@ -78,8 +78,29 @@ module tb_render();
             DUT.SetTilePixelValue(0, 7, i, 2'b11);
         end
 
+        //write test sprite tile
+        DUT.SetTilePixelValue(1, 0, 0, 2'b10);
+        DUT.SetTilePixelValue(1, 1, 0, 2'b10);
+        DUT.SetTilePixelValue(1, 2, 0, 2'b10);
+        DUT.SetTilePixelValue(1, 0, 1, 2'b10);
+        DUT.SetTilePixelValue(1, 1, 1, 2'b10);
+        DUT.SetTilePixelValue(1, 2, 1, 2'b10);
+        DUT.SetTilePixelValue(1, 0, 2, 2'b10);
+        DUT.SetTilePixelValue(1, 1, 2, 2'b10);
+        DUT.SetTilePixelValue(1, 2, 2, 2'b10);
 
-	 	 DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'h1b;
+        DUT.oam_table.Attributes[0].Fields.Tile = 1;
+        DUT.oam_table.Attributes[0].Fields.XPosition = 10;
+        DUT.oam_table.Attributes[0].Fields.YPosition = 10;
+
+	 	DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'h1b;
+
+
+         $display("Tile Data:");
+         for(int i = 0; i < 4; i++)
+         begin
+            $display("%d: %p", i, DUT.tiles.Data[i]);
+         end
     end
 
 	initial forever #10 clk = ~clk;

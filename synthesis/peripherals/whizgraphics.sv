@@ -108,13 +108,56 @@ module whizgraphics(interface db,
         {tiles.Data[tileIndex].rows[row][column], tiles.Data[tileIndex].rows[row][column+ ROW_SIZE]} = pixelval;
     endfunction
 
+    localparam MAX_SPRITES_PER_LINE = 8;
+    //Render current line
 	 function automatic void RenderLine(bit [0:LCD_LINES_BITS - 1] currentLine);
-		//Render the background for the current line
-      for(int i = 0; i < LCD_LINEWIDTH; i++)
-      begin
-        lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
-      end
+        int spritesRendered = 0;
+        SpriteAttributes currentSprite;
+        int tileIndex = 0;
+        Tile t;
 
+         //render  background
+        for(int i = 0; i < LCD_LINEWIDTH; i++)
+        begin
+            cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
+        end
+        //render sprites
+        for(int i = 0; i < NUM_SPRITES; i++)
+        begin
+            //limit number of sprites drawn per line
+            if(spritesRendered >= MAX_SPRITES_PER_LINE)
+                break;
+
+            currentSprite = oam_table.Attributes[i];
+            //reject sprites that are not on the current line
+            if(currentSprite.Fields.YPosition > currentLine + lcdPosition.Data.ScrollY
+                || currentSprite.Fields.YPosition + TILE_SIZE < currentLine + lcdPosition.Data.ScrollY)
+                continue;
+
+            //reject sprites that are left or right of the current lcd drawing region
+            if(currentSprite.Fields.XPosition > LCD_LINEWIDTH + lcdPosition.Data.ScrollX
+                || currentSprite.Fields.XPosition + TILE_SIZE < lcdPosition.Data.ScrollX)
+                continue;
+
+            //get the tile from the sprite attributes
+            tileIndex = currentSprite.Fields.Tile;
+            t = GetTileFromIndex(tileIndex);
+
+            if(DEBUG_OUT) $display("Rendering Sprite: %d (Tile %d) on line: %d", i, tileIndex, currentLine);
+            if(DEBUG_OUT) $display("Sprite line: %b", t.rows[currentLine + lcdPosition.Data.ScrollY - currentSprite.Fields.YPosition]);
+
+            //for each pixel (of width) in the sprite...
+            for(int j = 0; j < TILE_SIZE; j++)
+            begin
+                //set the lcd pixel value
+                cntrl.lcd[currentLine][j + (currentSprite.Fields.XPosition - lcdPosition.Data.ScrollX)] = 
+                   getPixelColor(PALETTE_BACKGROUND,
+                        GetPixel(t, 
+                            (currentLine + lcdPosition.Data.ScrollY) - currentSprite.Fields.YPosition,
+                            currentSprite.Fields.XPosition + j)); 
+            end
+            spritesRendered++;
+        end
 
 	 endfunction
    
@@ -207,7 +250,7 @@ module whizgraphics(interface db,
       end
             
    
-      if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
+      //if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
 
 		//Function call to render background and sprites at this line
 		RenderLine(currentLine);
