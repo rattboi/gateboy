@@ -14,6 +14,7 @@ module whizgraphics(interface db,
 	 // unused in the design
     LcdStatus lcdStatus;
 
+    int lineDivider;
 
      union packed {
         bit [0:LCD_POS_SIZE-1] [0:7] Bits;
@@ -100,6 +101,7 @@ module whizgraphics(interface db,
    function void resetWhizgraphics();
       currentLine = 0;
       cntrl.renderComplete = 0;
+      lineDivider = 0;
       for (int i = 0; i < 3; i++)
         for(int j = 0; j < 4; j++)
         lcdPalletes.Data.indexedPalettes[i].indexedColors[j] = j;
@@ -163,6 +165,9 @@ module whizgraphics(interface db,
       end
    end
 
+   parameter CLOCKS_PER_LINE = 260;
+   parameter VBLANK_CLOCKS = 4560;
+   
    // RENDER THE CODEZ
    always_ff @(posedge cntrl.drawline)
      begin : renderer
@@ -171,13 +176,16 @@ module whizgraphics(interface db,
       automatic int tileY = (lcdPosition.Data.ScrollY + currentLine) / TILE_SIZE;
       automatic int tileOffsetX = lcdPosition.Data.ScrollX % TILE_SIZE;
       automatic int tileOffsetY = (lcdPosition.Data.ScrollY + currentLine) % TILE_SIZE;
-
+     
    
       if (cntrl.reset) begin
          resetWhizgraphics();
          disable renderer;
       end
-            
+
+      lineDivider++;
+      if(lineDivider < CLOCKS_PER_LINE) disable renderer;
+      lineDivider = 0;
    
       if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
 
