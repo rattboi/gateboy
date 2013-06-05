@@ -65,7 +65,7 @@ module tb_render();
         resetWhizgraphics();
 
 		  //Change the background map to something different
-		  ChangeBGMap(5,5,3);
+		  ChangeBGMap(0,0,1);
 		  $display("Tile compare: %b", BGTileCompare(5,5,3));
 
         //write data to tiles
@@ -84,7 +84,8 @@ module tb_render();
 
 	 	 //Uncomment these to see scrolling and palletes
     	 //DUT.lcdPosition.Data.ScrollX = 1;
-	 	 //DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'haa;
+		 //DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'he4;
+	 	 DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'h1b;
     end
 
 	initial forever #10 clk = ~clk;
