@@ -29,6 +29,7 @@ class w_mem_tb extends BaseTest;
    
    virtual task runTest(output int numPassed, numFailed);
       int p,f;
+      bit SuccessState;
       cntrl.resetDUT();      
       // Test the different sections of the graphics memory
       DebugPrint("Testing OAM...");
@@ -55,25 +56,19 @@ class w_mem_tb extends BaseTest;
       DebugPrint("Testing VRAM TILES...");
       tickleBus(VRAM_TILES_ADDR, VRAM_TILES_SIZE,p,f);
       numPassed +=p; numFailed+=f;
-      DebugPrint("Attempting to draw pretty picture...");
 
       // try to write out the image, but have a 900 cycle timeout
       cntrl.resetDUT();
-
-      fork : tmpfork
-         begin 
-            repeat(900)@(posedge db.clk); 
-            BaseTest::DebugPrint("aww... timeout."); 
-            disable tmpfork; 
-         end
-         begin 
-            wait(cntrl.renderComplete); 
-            BaseTest::DebugPrint("yay! art.");
-            writeLCD(cntrl.lcd, "out.pgm");
-            disable tmpfork; 
-         end
-      join
-          
+      
+      waitForImage(SuccessState);
+      if(SuccessState) begin
+         writeLCD(cntrl.lcd, "out.pgm");
+         numPassed++;
+      end
+      else begin
+         numFailed++;
+         DebugPrint("Could not Create Image");
+      end
    endtask
    
    virtual function string getName();
@@ -81,3 +76,8 @@ class w_mem_tb extends BaseTest;
    endfunction
 endclass
 `endif
+
+
+
+
+

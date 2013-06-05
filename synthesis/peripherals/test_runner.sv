@@ -24,7 +24,7 @@ module TestRunner();
       tests.push_front(wmem);
 
       // is logging enabled?
-      BaseTest::DebugLevel = LOG_ENABLED;
+      BaseTest::DebugLevel = LOG_DISABLED;
 
       // the meat of the simulation, and the beauty of the test runner
       // system. Each test get the following done to it:
