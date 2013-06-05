@@ -23,13 +23,60 @@ class tile_tb extends BaseTest;
                               "32222223",
                               "33333333"};
       bit    stat;
+      Lcd goodpic;
       writeTile(0, tmptile);
       cntrl.resetDUT();
+
+      // get the original image
       waitForImage(stat);
-      if (stat) begin
-        writeLCD(cntrl.lcd, "TileTest.pgm");
-         numPassed++;
-      end else numFailed++;
+      goodpic = cntrl.lcd;
+
+      db.write(4, 16'hff42);
+      waitForImage(stat);
+      assert(goodpic != cntrl.lcd)
+        numPassed++;
+      else begin
+         DebugPrint("Image scrolled in y dimension is not correct!");
+         writeLCD(cntrl.lcd, "TileTest.pgm");
+         writeLCD(goodpic, "TileTestGood.pgm");
+         numFailed++;
+      end
+      db.write(8, 16'hff42);
+      waitForImage(stat);
+      assert(goodpic == cntrl.lcd)
+        numPassed++;
+      else begin
+         DebugPrint("Image scrolled in y by tile multiple does not match!");
+         writeLCD(cntrl.lcd, "TileTest.pgm");
+         writeLCD(goodpic, "TileTestGood.pgm");
+         numFailed++;
+      end
+      db.write(0, 16'hff42);
+
+      
+      // Set the x to scroll up by half of a tile
+      db.write(4, 16'hff43);
+      waitForImage(stat);
+      // the pix must be different
+      assert(goodpic != cntrl.lcd)
+        numPassed++;
+      else begin
+         DebugPrint("Image scrolled in x dimension is not correct!");
+         writeLCD(cntrl.lcd, "TileTest.pgm");
+         writeLCD(goodpic, "TileTestGood.pgm");
+         numFailed++;
+      end
+      db.write(8, 16'hff43);
+      waitForImage(stat);
+      assert(goodpic == cntrl.lcd)
+        numPassed++;
+      else begin
+         DebugPrint("Image scrolled in x by tile multiple does not match!");
+         writeLCD(cntrl.lcd, "TileTest.pgm");
+         writeLCD(goodpic, "TileTestGood.pgm");
+         numFailed++;
+      end
+      
    endtask // runTest
 
    // called by test runner to get the name of the test. returns a

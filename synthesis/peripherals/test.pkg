@@ -30,11 +30,12 @@ package Test;
       task waitForImage(output bit Status);
          fork : tmpfork
             begin 
-               repeat(90000)@(posedge db.clk); 
+               repeat(100000)@(posedge db.clk); 
                Status = 0;
                disable tmpfork; 
             end
             begin 
+               wait(!cntrl.renderComplete);
                wait(cntrl.renderComplete);
                Status = 1;
                disable tmpfork; 

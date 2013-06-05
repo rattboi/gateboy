@@ -22,13 +22,13 @@ module TestRunner();
       automatic vblank_tb vb= new;
       automatic tile_tb tb = new;
       tests.push_front(tb);
-      // tests.push_front(vb);
-      // tests.push_front(wg);      
-      // tests.push_front(wmem);
+      tests.push_front(vb);
+      tests.push_front(wg);      
+      tests.push_front(wmem);
 
 
       // is logging enabled?
-      BaseTest::DebugLevel = LOG_DISABLED;
+      BaseTest::DebugLevel = LOG_ENABLED;
 
       // the meat of the simulation, and the beauty of the test runner
       // system. Each test get the following done to it:
