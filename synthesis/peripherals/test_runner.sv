@@ -40,6 +40,7 @@ module TestRunner();
          // connect the interfaces
          t.db = db;
          t.cntrl = cntrl;
+         cntrl.resetDUT();
          // display the name of the current test?
          // TODO: make this work better
          $display("Testing %s", t.getName());

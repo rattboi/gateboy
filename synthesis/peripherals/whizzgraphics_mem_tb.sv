@@ -30,7 +30,6 @@ class w_mem_tb extends BaseTest;
    virtual task runTest(output int numPassed, numFailed);
       int p,f;
       bit SuccessState;
-      cntrl.resetDUT();      
       // Test the different sections of the graphics memory
       DebugPrint("Testing OAM...");
       tickleBus(OAM_LOC, OAM_SIZE,  p,f);
