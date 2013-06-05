@@ -42,6 +42,37 @@ package Test;
          join
       endtask
 
+      task writeTile(input int tilenum, string pixmap[NUM_ROWS]);
+         
+         string zero,one,two,three;
+         int    code0, code1,code2,code3, tmpchar;
+         bit [0:ROW_SIZE-1] lowbit,hibit;
+         assert (tilenum < NUM_TILES && tilenum >= 0);
+         zero = "0";
+         one = "1";
+         two = "2";
+         three = "3";
+         code0 = zero.getc(0);
+         code1 = one.getc(0);
+         code2 = two.getc(0);
+         code3 = two.getc(0);
+         for (int r = 0; r < NUM_ROWS; r++) begin
+            lowbit = 0;
+            hibit = 0;
+            for (int p = 0; p < ROW_SIZE; p++) begin
+               tmpchar = pixmap[r].getc(p);
+               tmpchar -= code0;
+            
+               assert(tmpchar >= 0 && tmpchar < 4);
+               lowbit[p] = tmpchar >> 1;
+               hibit[p] = tmpchar & 1;
+            end
+
+            db.write(lowbit, VRAM_TILES_ADDR + 16*tilenum + 2*r);
+            db.write(hibit, VRAM_TILES_ADDR + 16*tilenum + 2*r + 1);
+         end
+      endtask
+      
       
       // override to have your test do something
       pure virtual task runTest(output int numPassed, int numFailed);
@@ -53,4 +84,5 @@ package Test;
    include "whizzgraphics_tb.sv";
    include "whizzgraphics_mem_tb.sv";
    include "vblank_tb.sv";
+   include "tile_tb.sv";
 endpackage

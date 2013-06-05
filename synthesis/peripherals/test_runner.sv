@@ -20,9 +20,11 @@ module TestRunner();
       automatic  whizzgraphics wg = new;
       automatic  w_mem_tb wmem = new;
       automatic vblank_tb vb= new;
-      tests.push_front(vb);
-      tests.push_front(wg);      
-      tests.push_front(wmem);
+      automatic tile_tb tb = new;
+      tests.push_front(tb);
+      // tests.push_front(vb);
+      // tests.push_front(wg);      
+      // tests.push_front(wmem);
 
 
       // is logging enabled?
