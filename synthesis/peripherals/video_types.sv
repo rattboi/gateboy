@@ -25,17 +25,19 @@ package video_types;
     localparam LCD_STAT_ADDR = 16'hff41;
     localparam LCD_STAT_SIZE = 1;
 
+    typedef enum bit [0:1] {RENDER_HBLANK, RENDER_VBLANK, RENDER_OAM, RENDER_BOTH} RenderMode;
     typedef union packed
     {
         bit [7:0] raw;
         struct packed
         {
+            bit     Unused1;
             bit CoincidenceInterrupt;
             bit Mode2Interrupt;
             bit Mode1Interrupt;
             bit Mode0Interrupt;
             bit Coincidence;
-            bit [2:0] Mode;
+            RenderMode Mode;
 
          } Fields;
      } LcdStatus;

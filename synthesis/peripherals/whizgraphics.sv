@@ -196,17 +196,20 @@ module whizgraphics(interface db,
         end
        //after rendering last line, render is complete, reset current line
         if (currentLine < LCD_LINES) begin
+           lcdStatus.Fields.Mode = RENDER_BOTH;
            cntrl.renderComplete = 0;
            currentLine++;
         end 
         else if(currentLine < LCD_LINES + VBLANK_LINES)
           begin
              cntrl.renderComplete = 1;
+             lcdStatus.Fields.Mode = RENDER_VBLANK;
              currentLine++;
           end
        else
        begin
           cntrl.renderComplete = 1;
+          lcdStatus.Fields.Mode = RENDER_VBLANK;
           currentLine = 0;
         end
    end
