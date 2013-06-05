@@ -111,16 +111,45 @@ module whizgraphics(interface db,
         {tiles.Data[tileIndex].rows[row][column], tiles.Data[tileIndex].rows[row][column+ ROW_SIZE]} = pixelval;
     endfunction
 
-	 function automatic void RenderLine(bit [0:LCD_LINES_BITS - 1] currentLine);
+	 function bit SpriteLineCheck(int line);
+	    for(int i=0; i < NUM_SPRITES; i++)
+		 begin
+		    int y = oam_table.Attributes[i].Fields.YPosition;
+			 //if there is a matching sprite, return success
+		    if((y >= line-16))  && (y <= line))
+			    return 0;
+		 end
+
+		 //if there were no matches, fail
+		 return 1;
+	 endfunction
+
+	 function automatic void RenderLine(bit [0:LCD_LINES_BITS - 1] line);
 		//Render the background for the current line
       for(int i = 0; i < LCD_LINEWIDTH; i++)
       begin
-        lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
+        lcd[line][i] = GetBackgroundPixelAtScreenPoint(i, line); 
       end
+
+		//If there are no sprites to render, simply exit
+		// else, render the sprites on the line
+		if(!SpriteLineCheck(line))
+			return;
+		else
+			SpriteLineRender(line);
 
 
 	 endfunction
    
+	 function automatic void SpriteLineRender(bit [0:LCD_LINES_BITS - 1] line);
+      for(int i = LCD_LINEWIDTH-1; i == 0; i--)
+      begin
+		  int x = oam_table.Attributes[i].Fields.XPosition;
+		  int y = oam_table.Attributes[i].Fields.YPosition;
+		end
+
+	 endfunction
+
     //rendering state
     bit [0:LCD_LINES_BITS - 1] currentLine;
 
