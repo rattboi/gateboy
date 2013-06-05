@@ -338,6 +338,11 @@ module tv80_alu (
                   F_Out[Flag_Z] = F_In[Flag_Z];
               end
           end // case: ROT
+          default: begin  // Invalid
+            //assert(0) else $warning("Invalid ALU operation %b", ALU_Op);
+            F_Out = '1;
+            Q_t =   '1;
+          end
           endcase // case(ALU_Op)
           Q = Q_t;
       end
