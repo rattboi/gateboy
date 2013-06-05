@@ -5,10 +5,8 @@ module w_mem_tb();
    import video_types::*;
    bit clk = 0;
    DataBus db(clk);
-   wire renderComplete;
-   Lcd lcd;
-   bit  reset = 1;
-   whizgraphics #(.DEBUG_OUT(0)) DUT(.*, .db(db.peripheral), .drawline(clk));
+   Control cntrl(clk);
+   whizgraphics #(.DEBUG_OUT(0)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;
@@ -17,10 +15,6 @@ module w_mem_tb();
    
    initial forever #10 clk = ~clk;
 
-   task resetWhizgraphics();
-      reset = 1;
-      @db.clk; reset = 0;
-   endtask   
 
    
    task tickleBus(int baseaddr, int size);
@@ -78,7 +72,7 @@ module w_mem_tb();
    endtask
 
    initial begin
-      resetWhizgraphics();
+      cntrl.resetDUT();
       // Test the different sections of the graphics memory
       $display("Testing OAM...");
       tickleBus(DUT.OAM_LOC, DUT.OAM_SIZE);
@@ -100,7 +94,7 @@ module w_mem_tb();
       $display("Attempting to draw pretty picture...");
 
       // try to write out the image, but have a 900 cycle timeout
-      resetWhizgraphics();
+      cntrl.resetDUT();
       fork : tmpfork
          begin 
             repeat(900)@(posedge clk); 
@@ -108,9 +102,9 @@ module w_mem_tb();
             disable tmpfork; 
          end
          begin 
-            wait(renderComplete); 
+            wait(cntrl.renderComplete); 
             $display("yay! art.");
-            writeLCD(lcd, "out.pgm");
+            writeLCD(cntrl.lcd, "out.pgm");
             disable tmpfork; 
          end
       join
