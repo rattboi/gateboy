@@ -2,11 +2,8 @@ module palette_tb();
    import video_types::*;
    bit clk = 0;
    DataBus db(clk);
-
-   wire renderComplete;
-   Lcd lcd;
-   bit  reset = 0;
-   whizgraphics #(.DEBUG_OUT(1)) DUT(.*, .db(db.peripheral), .drawline(clk));
+   Control cntrl(clk);
+   whizgraphics #(.DEBUG_OUT(1)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
    bit [db.DATA_SIZE-1:0] r;
    bit [db.ADDR_SIZE-1:0] address;
    int        numPassed = 0;
@@ -15,8 +12,8 @@ module palette_tb();
       
 
    task resetWhizgraphics();
-      reset = 1;
-      @db.clk; reset = 0;
+      cntrl.reset = 1;
+      @db.clk; cntrl.reset = 0;
    endtask   
 
    initial forever #10 clk = ~clk;

@@ -7,19 +7,16 @@ module tb_render();
 
 	bit clk = 0;
    DataBus db(clk);
-   logic drawline;
-   wire renderComplete;
-   bit  reset = 0;
-   Lcd lcd;
-	whizgraphics #(.DEBUG_OUT(0)) DUT(.*, .db(db.peripheral));
+   Control cntrl(clk);
+	whizgraphics #(.DEBUG_OUT(0)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
 
    // simple task to reset the whizgraphics hardware: necessary in
    // order to load the default palette.
    // TODO: This code is repro'd in palette_tb.sv
    // Code needs to by DRYer   
    task resetWhizgraphics();
-      reset = 1;
-      @db.clk; reset = 0;
+      cntrl.reset = 1;
+      @db.clk; cntrl.reset = 0;
    endtask
 
 
@@ -82,20 +79,15 @@ module tb_render();
         end
 
 
-	 	 //Uncomment these to see scrolling and palletes
-    	 //DUT.lcdPosition.Data.ScrollX = 1;
-	 	 //DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'haa;
     end
 
 	initial forever #10 clk = ~clk;
 
-	assign drawline = clk;
-
 	//Stuff to do after initial blocks
 	always @* begin
-		if(renderComplete)
+		if(cntrl.renderComplete)
         begin
-            writeLCD(lcd, "out1.pgm");
+            writeLCD(cntrl.lcd, "out1.pgm");
 			   $finish;
         end
 	end
