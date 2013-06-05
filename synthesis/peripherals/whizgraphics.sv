@@ -166,7 +166,7 @@ module whizgraphics(interface db,
    end
 
    parameter CLOCKS_PER_LINE = 260;
-   parameter VBLANK_CLOCKS = 4560;
+   parameter VBLANK_LINES = 18;
    
    // RENDER THE CODEZ
    always_ff @(posedge cntrl.drawline)
@@ -188,22 +188,26 @@ module whizgraphics(interface db,
       lineDivider = 0;
    
       if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
-
-      for(int i = 0; i < LCD_LINEWIDTH; i++)
-      begin
-        cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
-      end
-
+        if (currentLine < LCD_LINES) begin
+           for(int i = 0; i < LCD_LINEWIDTH; i++)
+             begin
+                cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
+             end
+        end
        //after rendering last line, render is complete, reset current line
-       if(currentLine > LCD_LINES)
-       begin
-           cntrl.renderComplete = 1;
-           currentLine = 0;
-       end
-       else
-       begin
+        if (currentLine < LCD_LINES) begin
            cntrl.renderComplete = 0;
            currentLine++;
+        end 
+        else if(currentLine < LCD_LINES + VBLANK_LINES)
+          begin
+             cntrl.renderComplete = 1;
+             currentLine++;
+          end
+       else
+       begin
+          cntrl.renderComplete = 1;
+          currentLine = 0;
         end
    end
 endmodule
