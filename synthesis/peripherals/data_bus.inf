@@ -41,14 +41,12 @@ interface DataBus (input bit clk);
       we = 1;
       oe = 1;
       enable = 0;
-      @cb;
       addr = a;
       @cb;
       we = 1;
       oe = 0;
       @cb;
       d = data;
-      @cb;
    endtask
 
    function bit selected(input bit [ADDR_SIZE-1:0] baseaddr, input bit [ADDR_SIZE-1:0] size);
