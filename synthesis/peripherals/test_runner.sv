@@ -9,7 +9,7 @@ module TestRunner();
    bit clk = 0;
    DataBus db(clk);
    Control cntrl(clk);
-   whizgraphics #(.DEBUG_OUT(1)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
+   whizgraphics #(.DEBUG_OUT(0)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
 
    // setup the clock
    initial forever #10 clk = ~clk;
@@ -19,12 +19,14 @@ module TestRunner();
       // and add it to this queue:
       automatic  whizzgraphics wg = new;
       automatic  w_mem_tb wmem = new;
-
+      automatic vblank_tb vb= new;
+      tests.push_front(vb);
       tests.push_front(wg);      
       tests.push_front(wmem);
 
+
       // is logging enabled?
-      BaseTest::DebugLevel = LOG_ENABLED;
+      BaseTest::DebugLevel = LOG_DISABLED;
 
       // the meat of the simulation, and the beauty of the test runner
       // system. Each test get the following done to it:

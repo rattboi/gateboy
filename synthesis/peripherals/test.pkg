@@ -52,4 +52,5 @@ package Test;
    // Each test's class must be included here
    include "whizzgraphics_tb.sv";
    include "whizzgraphics_mem_tb.sv";
+   include "vblank_tb.sv";
 endpackage
