@@ -37,7 +37,7 @@ module TestRunner();
          t.cntrl = cntrl;
          // display the name of the current test?
          // TODO: make this work better
-         $display("Testing %m", t);
+         $display("Testing %s", t.getName());
          // run the actual test
          t.runTest(numPassed, numFailed);
          // display the results of this test

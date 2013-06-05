@@ -21,6 +21,12 @@ class whizzgraphics extends BaseTest;
            numFailed++;
          end
       end
-   endtask
+   endtask // runTest
+
+   virtual function string getName();
+      getName = "SkeletonTest";
+   endfunction // getName
+
+
 endclass
 `endif //  `ifndef __WHIZZGRAPHICS_TB__
