@@ -108,6 +108,15 @@ module whizgraphics(interface db,
         {tiles.Data[tileIndex].rows[row][column], tiles.Data[tileIndex].rows[row][column+ ROW_SIZE]} = pixelval;
     endfunction
 
+	 function automatic void RenderLine(bit [0:LCD_LINES_BITS - 1] currentLine);
+		//Render the background for the current line
+      for(int i = 0; i < LCD_LINEWIDTH; i++)
+      begin
+        lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
+      end
+
+
+	 endfunction
    
     //rendering state
     bit [0:LCD_LINES_BITS - 1] currentLine;
@@ -200,10 +209,8 @@ module whizgraphics(interface db,
    
       if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
 
-      for(int i = 0; i < LCD_LINEWIDTH; i++)
-      begin
-        cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
-      end
+		//Function call to render background and sprites at this line
+		RenderLine(currentLine);
 
        //after rendering last line, render is complete, reset current line
        if(currentLine > LCD_LINES)
