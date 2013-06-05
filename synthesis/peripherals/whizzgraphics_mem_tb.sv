@@ -6,7 +6,7 @@
 class w_mem_tb extends BaseTest;
 
    
-   virtual task tickleBus(int baseaddr, int size, output int numPassed, int numFailed);
+   virtual task tickleBus(int baseaddr, int size, ref int numPassed, int numFailed);
       bit [15:0] address;
       bit [7:0] r,d;
 
@@ -28,33 +28,33 @@ class w_mem_tb extends BaseTest;
 
    
    virtual task runTest(output int numPassed, numFailed);
-      int p,f;
+
       bit SuccessState;
       // Test the different sections of the graphics memory
       DebugPrint("Testing OAM...");
-      tickleBus(OAM_LOC, OAM_SIZE,  p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(OAM_LOC, OAM_SIZE,  numPassed,numFailed);
+
       DebugPrint("Testing VRAM BGND1...");
-      tickleBus(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE, p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(VRAM_BACKGROUND1_ADDR, VRAM_BACKGROUND1_SIZE, numPassed, numFailed);
+
       DebugPrint("Testing VRAM BGND2...");
-      tickleBus(VRAM_BACKGROUND2_ADDR, VRAM_BACKGROUND2_SIZE,p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(VRAM_BACKGROUND2_ADDR, VRAM_BACKGROUND2_SIZE,numPassed,numFailed);
+
       DebugPrint("Testing LCD PALETTE...");
-      tickleBus(LCD_PALLETE_ADDR, LCD_PALLETE_SIZE,p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(LCD_PALLETE_ADDR, LCD_PALLETE_SIZE,numPassed,numFailed);
+
       DebugPrint("Testing LCD POS...");
-      tickleBus(LCD_POS_ADDR, LCD_POS_SIZE,p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(LCD_POS_ADDR, LCD_POS_SIZE,numPassed,numFailed);
+
       DebugPrint("Testing LCD CONTROL REGISTER...");
-      tickleBus(LCDC_ADDR, LCDC_SIZE,p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(LCDC_ADDR, LCDC_SIZE,numPassed,numFailed);
+
       DebugPrint("Testing LCD WIN...");
-      tickleBus(LCD_WIN_ADDR, LCD_WIN_SIZE,p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(LCD_WIN_ADDR, LCD_WIN_SIZE,numPassed,numFailed);
+
       DebugPrint("Testing VRAM TILES...");
-      tickleBus(VRAM_TILES_ADDR, VRAM_TILES_SIZE,p,f);
-      numPassed +=p; numFailed+=f;
+      tickleBus(VRAM_TILES_ADDR, VRAM_TILES_SIZE,numPassed,numFailed);
+
 
       // try to write out the image, but have a 900 cycle timeout
       cntrl.resetDUT();
