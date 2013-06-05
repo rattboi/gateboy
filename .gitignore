@@ -1,3 +1,5 @@
 synthesis/interconnect/work
 synthesis/peripherals/work
 *~
+vsim.wlf
+transcript
