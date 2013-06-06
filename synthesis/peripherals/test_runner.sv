@@ -49,8 +49,7 @@ module TestRunner();
          t.db = db;
          t.cntrl = cntrl;
          cntrl.resetDUT();
-         // display the name of the current test?
-         // TODO: make this work better
+         // display the name of the current test
          $display("Testing %s", t.getName());
          // run the actual test
          t.runTest(numPassed, numFailed);

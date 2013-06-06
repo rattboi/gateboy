@@ -31,7 +31,6 @@ package Test;
          fork : tmpfork
             begin 
                repeat(100000)@(posedge db.clk); 
-               //TODO: replace with assertion
                $error("Image was not rendered in 100000 clock ticks");
                disable tmpfork; 
             end
