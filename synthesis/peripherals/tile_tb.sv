@@ -1,16 +1,8 @@
-// This is an example test that uses the testrunner interface. Use it
-// as an example when writing your own tests.
-
-
-
-// Note that tests are included in the Test package, and therefore
-// need C-style include guards. This also means that the class can
-// access stuff in the Test namespace for free
 `ifndef __TILE_TB__
 `define __TILE_TB__
 
-//TODO: comments, say what this does
-// all tests extend Test::BaseTest
+// Tests that the background can be shifted in the x and y directions,
+// and that shift to its maximum value, the display wraps around
 class tile_tb extends BaseTest;
 
    // build a tile, and dump it out as the first tile
@@ -126,15 +118,13 @@ class tile_tb extends BaseTest;
          numFailed++;
       end
 
-   endtask // runTest
+   endtask
 
-   // called by test runner to get the name of the test. returns a
-   // string. is optional.
    virtual function string getName();
       getName = "TileTest";
    endfunction // getName
 
 
 endclass
-`endif //  `ifndef __WHIZZGRAPHICS_TB__ //TODO: <<<<<<<<<<-- this is wrong
+`endif
 
