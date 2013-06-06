@@ -62,6 +62,7 @@ module tb_render();
     int renderCount = 0;
     int renderDisable = 0;
     
+    //Test setup, call before every test
     task TestSetup();
         //reset graphics system
         resetWhizgraphics(); 
@@ -69,12 +70,14 @@ module tb_render();
         CreateTestTiles();
     endtask
 
+    //Test teardown, call after every test
     function void TestTeardown();
         testCount++;
         renderCount = 0;
         renderDisable = 0;
     endfunction
 
+    //Write output and update frame count every time the screen is finished rendering
     always @(posedge cntrl.renderComplete)
     begin
         if(!renderDisable)
