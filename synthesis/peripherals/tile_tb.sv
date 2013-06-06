@@ -14,6 +14,7 @@ class tile_tb extends BaseTest;
 
    // build a tile, and dump it out as the first tile
    virtual task runTest(output int numPassed, int numFailed);
+      // this tile is whit at the edges, and black in the middle
       string tmptile [8]  = '{"33333333",
                               "32222223",
                               "32111123",
@@ -76,7 +77,6 @@ class tile_tb extends BaseTest;
          writeLCD(goodpic, "TileTestGood.pgm");
          numFailed++;
       end
-      
    endtask // runTest
 
    // called by test runner to get the name of the test. returns a
