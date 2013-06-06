@@ -80,7 +80,7 @@ module tb_render();
         if(!renderDisable)
         begin
             //save file every time a render completes
-            writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
+            writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%1d_%03d.pgm", testCount, renderCount));
             renderCount++;
         end
     end
@@ -95,40 +95,40 @@ module tb_render();
     //=================================
     function void CreateTestTiles();
         static string checkerboardTileStr [8] = { "33330000",
-                                           "33330000",
-                                           "33330000",
-                                           "33330000",
-                                           "00003333",
-                                           "00003333",
-                                           "00003333",
-                                           "00003333"};
+                                                  "33330000",
+                                                  "33330000",
+                                                  "33330000",
+                                                  "00003333",
+                                                  "00003333",
+                                                  "00003333",
+                                                  "00003333"};
 
         static string crossTileStr [8]        = { "00033000",
-                                           "00033000",
-                                           "00033000",
-                                           "33333333",
-                                           "33333333",
-                                           "00033000",
-                                           "00033000",
-                                           "00033000"};
+                                                  "00033000",
+                                                  "00033000",
+                                                  "33333333",
+                                                  "33333333",
+                                                  "00033000",
+                                                  "00033000",
+                                                  "00033000"};
 
         static string vGradientTileStr [8]    = { "00000000",
-                                           "00000000",
-                                           "11111111",
-                                           "11111111",
-                                           "22222222",
-                                           "22222222",
-                                           "33333333",
-                                           "33333333"};
+                                                  "00000000",
+                                                  "11111111",
+                                                  "11111111",
+                                                  "22222222",
+                                                  "22222222",
+                                                  "33333333",
+                                                  "33333333"};
 
         static string hGradientTileStr [8]    = { "00112233",
-                                           "00112233",
-                                           "00112233",
-                                           "00112233",
-                                           "00112233",
-                                           "00112233",
-                                           "00112233",
-                                           "00112233"};
+                                                  "00112233",
+                                                  "00112233",
+                                                  "00112233",
+                                                  "00112233",
+                                                  "00112233",
+                                                  "00112233",
+                                                  "00112233"};
 
         static string outlineTileStr [8]     = { "11111111",
                                                  "10000001",
@@ -210,17 +210,6 @@ module tb_render();
         DUT.lcdControl.Fields.TileDataSelect = 1;
         DUT.lcdControl.Fields.SpriteEnable = 1;
 
-        //set background (since reset apparently isn't working)
-        for(int i = 0; i < BG_WIDTH; i++)
-        begin
-            for(int j = 0; j < BG_HEIGHT; j++)
-            begin
-                //DUT.vramBackground1.BackgroundMap[i][j] = 0;
-            end
-
-        end
-
-
         //create sprite
         DUT.oam_table.Attributes[0].Fields.Tile = 6;
         DUT.oam_table.Attributes[0].Fields.XPosition = 16;
@@ -231,7 +220,7 @@ module tb_render();
         begin
             @(posedge cntrl.renderComplete);
             DUT.oam_table.Attributes[0].Fields.XPosition++;
-            DUT.oam_table.Attributes[0].Fields.YPosition += 2;
+            DUT.oam_table.Attributes[0].Fields.YPosition++;
         end
 
     endtask
