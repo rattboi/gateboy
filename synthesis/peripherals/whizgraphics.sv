@@ -126,7 +126,6 @@ module whizgraphics(interface db,
         begin
             cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
         end
-
         //render sprites
         for(int i = 0; i < NUM_SPRITES; i++)
         begin

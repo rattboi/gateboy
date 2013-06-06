@@ -14,46 +14,11 @@ module tb_render();
    // order to load the default palette.
    task resetWhizgraphics();
        cntrl.resetDUT();
+       @(posedge clk);
    endtask
 
-
+    //Set free-running clock
     initial forever #10 clk = ~clk;
-
-   //TODO: delete these?
-	//Background corrolates to vramBackground1 data structure
-	function void ChangeBGMap(int x, int y, int TileNum);
-
-        assert(x <= 31 && y <= 31 && TileNum <= 384)
-		else
-		begin
-			DUT.vramBackground1.BackgroundMap[x][y] = TileNum;
- 		end
-
-	endfunction
-
-	//Window corrolates to vramBackground2 data structure
-	function void ChangeWindowMap(int x, int y, int TileNum);
-
-		if(x > 31 || y > 31 || TileNum > TILE_NUM)
-			return;
-		else
-			DUT.vramBackground2.BackgroundMap[x][y] = TileNum;
-
-	endfunction
-
-	//Check to see if ExpectedVal is equal to that of what is
-	//Stored at the x and y coordinates of of the BG map
-	function bit BGTileCompare(int x, int y, int ExpectedVal);
-		if(x > 31 || y > 31 || ExpectedVal > TILE_NUM)
-			return FAILED;
-		else if(DUT.vramBackground1.BackgroundMap[x][y] == ExpectedVal)
-			return PASSED;
-		else
-			return FAILED;
-
-	endfunction
-    
-
 
     //=================================
     //Testbench infrastructure
@@ -179,7 +144,7 @@ module tb_render();
         begin
             for(int j = 0; j < BG_HEIGHT; j++)
             begin
-                ChangeBGMap(j, i, j % 6);
+			    DUT.vramBackground1.BackgroundMap[j][i] = j % 6;
             end
         end
         @(posedge cntrl.renderComplete);
@@ -196,7 +161,7 @@ module tb_render();
         begin
             for(int j = 0; j < BG_HEIGHT; j++)
             begin
-                ChangeBGMap(j, i, j % 2);
+			    DUT.vramBackground1.BackgroundMap[j][i] = 2;
             end
 
         end
