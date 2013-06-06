@@ -59,8 +59,9 @@ module memory_controller(
   reg [7:0] jump_rom [0:9];
   
   initial begin
-    $readmemh("data/boot.rom", boot_rom, 0, 255);
-    $readmemh("data/jump.rom", jump_rom, 0, 9);
+
+    $readmemh("../../data/boot.rom", boot_rom, 0, 255);
+    $readmemh("../../data/jump.rom", jump_rom, 0, 9);
   end
   
   // High RAM
