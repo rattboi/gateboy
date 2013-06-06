@@ -62,9 +62,22 @@ module testbench(
     reset = 1;
     forever #100 coreclk = ~coreclk;
    end
+ 
+  integer file; 
   
-  initial
-    $readmemh("data/tetris.rom", cart_rom, 0, 32767);
+  initial 
+  begin
+    file = $fopen("../../../tests/01-special.gb","rb");  
+    if (!file)
+      $fatal("**** couldn't load cart rom into memory");
+    
+    else
+    begin
+      $display("**** loaded cart rom into memory");
+      $fread(file, cart_rom[0], 0, 32767);
+      $fclose(file);
+    end
+  end
 
   // create the germberh
   gameboy gameboy ( .*,
