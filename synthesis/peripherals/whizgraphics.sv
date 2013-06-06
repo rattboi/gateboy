@@ -154,7 +154,16 @@ module whizgraphics(interface db,
       currentLine = 0;
       cntrl.renderComplete = 0;
       lineDivider = 0;
+      lcdStatus = 0;
       lcdStatus.Fields.Mode = RENDER_VBLANK;
+      lcdPosition = 0;
+      lcdWindowPosition = 0;
+      tiles = 0;
+      vramBackground1 = 0;
+      vramBackground2 = 0;
+      oam_table = 0;
+
+      
       for (int i = 0; i < 3; i++)
         for(int j = 0; j < 4; j++)
         lcdPalletes.Data.indexedPalettes[i].indexedColors[j] = j;

@@ -14,7 +14,7 @@ interface Control(input bit drawline);
    
    task resetDUT;
       reset = 1;
-      @cntrl.drawline reset = 0;
+      @cb reset = 0;
    endtask
 
    modport TEST(import resetDUT, input renderComplete, lcd);

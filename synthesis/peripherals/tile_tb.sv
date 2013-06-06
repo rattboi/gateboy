@@ -25,8 +25,9 @@ class tile_tb extends BaseTest;
                               "33333333"};
       bit    stat;
       Lcd goodpic;
+      
       writeTile(0, tmptile);
-      cntrl.resetDUT();
+
 
       // get the original image
       waitForImage(stat);
@@ -42,6 +43,13 @@ class tile_tb extends BaseTest;
          writeLCD(goodpic, "TileTestGood.pgm");
          numFailed++;
       end
+
+      assert(cntrl.lcd[0][4] == 0) numPassed++;
+      else begin
+         DebugPrint("Didn't get black value on the top edge");
+         numFailed++;
+      end
+      
       db.write(8, 16'hff42);
       waitForImage(stat);
       assert(goodpic == cntrl.lcd)
@@ -53,6 +61,7 @@ class tile_tb extends BaseTest;
          numFailed++;
       end
       db.write(0, 16'hff42);
+
 
       
       // Set the x to scroll up by half of a tile
@@ -67,13 +76,24 @@ class tile_tb extends BaseTest;
          writeLCD(goodpic, "TileTestGood.pgm");
          numFailed++;
       end
+
+
+
+      assert(cntrl.lcd[5][0] == 0) numPassed++;
+      else begin
+         DebugPrint("Didn't get black value on the right edge");
+         numFailed++;
+      end
+      $display("0-1,4 is %0d %0d", cntrl.lcd[4][2], cntrl.lcd[4][3] );
+      writeLCD(cntrl.lcd, "TileTest.pgm");
+
       db.write(8, 16'hff43);
       waitForImage(stat);
       assert(goodpic == cntrl.lcd)
         numPassed++;
       else begin
          DebugPrint("Image scrolled in x by tile multiple does not match!");
-         writeLCD(cntrl.lcd, "TileTest.pgm");
+
          writeLCD(goodpic, "TileTestGood.pgm");
          numFailed++;
       end
