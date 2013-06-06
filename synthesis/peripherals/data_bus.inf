@@ -6,24 +6,32 @@ interface DataBus (input bit clk);
    logic [ADDR_SIZE-1:0] addr; 
    wire  [DATA_SIZE-1: 0] data;
    bit [DATA_SIZE-1: 0]   data_reg;
+
       // write enable, and output enable. All these signals are active low. 
    bit 			we;
    bit 			oe;
+
+   // enable bit for the tester's data transmitter
    bit      enable;
 
-   //TODO: add comments
+
+   // tristate buffer
    assign data = (enable) ? data_reg : 'z;
 
+   // clocking block for tester
    clocking cb @(posedge clk);
       output addr;
       inout  data;
    endclocking
 
+   // modport used by tester
    modport cpu(import read, import write, clocking cb);
 
+   // modport used by whizzgraphics
    modport peripheral(input addr, inout data, input we, input oe,
                 import selected, import writing, import reading, input clk);
 
+   // used by tests to write a byte to an arbitrary memory address
    task write(input bit[DATA_SIZE-1:0] d, input bit [ADDR_SIZE-1:0] a);
       @cb;
       we = 1;
@@ -37,6 +45,8 @@ interface DataBus (input bit clk);
       @cb;
    endtask
 
+
+   // used by tests to read a byte fram an arbitrary memory address
    task  read(input bit [ADDR_SIZE-1:0] a, output bit[DATA_SIZE-1:0] d);
       @cb;
       we = 1;
@@ -50,14 +60,18 @@ interface DataBus (input bit clk);
       d = data;
    endtask
 
+   // Implements a simple address decoder: if the address on the bus is
+   // between baseaddr and baseaddr+size, then returns 1
    function bit selected(input bit [ADDR_SIZE-1:0] baseaddr, input bit [ADDR_SIZE-1:0] size);
       selected = (addr >= baseaddr) && (addr < baseaddr+size);
    endfunction // selected
 
+   // true if the tester is writing
    function bit writing();
       writing = oe & !we;
    endfunction
 
+   // true if the tester is reading
    function bit reading();
       reading = !oe & we;
    endfunction
