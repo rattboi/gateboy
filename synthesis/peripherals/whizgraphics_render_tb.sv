@@ -266,9 +266,10 @@ module tb_render();
            DUT.oam_table.Attributes[0].Fields.Tile++;
            if (DUT.oam_table.Attributes[0].Fields.Tile > 10)
              DUT.oam_table.Attributes[0].Fields.Tile = 7;
-           if (!(i % 4) && i != 0)
+           if ((i % 4) == 3) begin
            DUT.oam_table.Attributes[0].Fields.XPosition++;
            DUT.oam_table.Attributes[0].Fields.YPosition++;
+           end
         end
 
       
@@ -323,6 +324,11 @@ module tb_render();
         output_spritemove();
        TestTeardown();
 
+       TestSetup();
+        output_glider();
+       TestTeardown();
+
+       
 		 TestSetup();
 		 vblank_test();
 		 TestTeardown();
