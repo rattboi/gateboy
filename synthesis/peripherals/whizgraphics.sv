@@ -8,45 +8,40 @@ module whizgraphics(interface db,
 
     import video_types::*;
     
+
+	 //Registers
     LcdControl lcdControl;
 
-	 //Instance of LCD status register
-	 // unused in the design
     LcdStatus lcdStatus;
 
-    int lineDivider;
+	 LcdPosition lcdPosition;
 
-     union packed {
-        bit [0:LCD_POS_SIZE-1] [0:7] Bits;
-        LcdPosition Data;
-     } lcdPosition;
+    LcdWindowPosition lcdWindowPosition;
 
-    union packed {
-        bit [0:LCD_WIN_SIZE-1] [0:7] Bits;
-        LcdWindowPosition Data;
-     } lcdWindowPosition;
-
-   
- 
-    union packed {
-      LcdPalletes Data;
-      bit [0:LCD_PALLETE_SIZE-1] [0:7] Bits;
-      } lcdPalletes;
-
- 
-    union packed {
-        bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
-       Tile [0:NUM_TILES-1] Data; 
-    } tiles;
-
+	 //Data Structures
     vram_background vramBackground1;
 
     vram_background vramBackground2;
 
     SpriteAttributesTable oam_table;
 
-    //rendering state
-    bit [0:LCD_LINES_BITS - 1] currentLine;
+    union packed 
+	 {
+      LcdPalletes Data;
+      bit [0:LCD_PALLETE_SIZE-1] [0:7] Bits;
+    } lcdPalletes;
+
+ 
+    union packed 
+	 {
+        bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
+       Tile [0:NUM_TILES-1] Data; 
+    } tiles;
+
+   //rendering state
+   int lineDivider;
+
+   bit [0:LCD_LINES_BITS - 1] currentLine;
 
    bit [db.DATA_SIZE-1:0] bus_reg;
    bit                    enable;
@@ -56,7 +51,7 @@ module whizgraphics(interface db,
     //helper functions
     function Pixel GetPixel(Tile t, int row, int pixel);
        automatic Pixel p; 
-       assert(row < 8 && pixel < 8) else $display("R: 0x%h, P: 0x%h", row, pixel);
+       assert(row < NUM_ROWS && pixel < ROW_SIZE) else $display("R: 0x%h, P: 0x%h", row, pixel);
        p = { t.rows[row][pixel], t.rows[row][pixel + ROW_SIZE] };
        return p;
     endfunction
@@ -66,12 +61,12 @@ module whizgraphics(interface db,
        automatic byte signedIndex = tileIndex;
        automatic int index;
        if (lcdControl.Fields.TileDataSelect) begin
-          assert(tileIndex >= 0 && tileIndex <= 255);
+          assert(tileIndex >= 0 && tileIndex <= MAX_UNSIGNED_TILE);
           index = tileIndex;
        end
        else begin
-          assert(signedIndex >=-128 && signedIndex <= 127);
-          index = 256+signedIndex;
+          assert(signedIndex >= MIN_SIGNED_TILE && signedIndex <= MAX_SIGNED_TILE);
+          index = SIGNED_TILE_OFFSET + signedIndex;
        end
         return tiles.Data[index];
     endfunction // GetTileFromIndex

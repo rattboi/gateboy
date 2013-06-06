@@ -46,21 +46,29 @@ package video_types;
     localparam LCD_POS_ADDR = 16'hff42; 
     localparam LCD_POS_SIZE = 4;
 
-    typedef struct packed
-    {
+    typedef union packed
+	 {
+      bit [0:LCD_POS_SIZE-1] [0:7] Bits;
+	 	struct packed
+    	{
         bit [0:7] ScrollY;
         bit [0:7] ScrollX;
         bit [0:7] LcdY;
         bit [0:7] LcdYCompare;
-    } LcdPosition;
+    	} Data;
+	} LcdPosition;
 
    localparam LCD_WIN_ADDR = 16'hff4a; 
    localparam LCD_WIN_SIZE = 2;
    
-   typedef struct packed {
-      bit [0:7]   WindowY;
-      bit [0:7]   WindowX;
-   } LcdWindowPosition;
+   typedef union packed
+	{
+        bit [0:LCD_WIN_SIZE-1] [0:7] Bits;
+		struct packed {
+      	bit [0:7]   WindowY;
+      	bit [0:7]   WindowX;
+   	} Data;
+	} LcdWindowPosition;
 
 
     localparam LCD_PALLETE_ADDR = 16'hff47;
@@ -101,6 +109,10 @@ package video_types;
     localparam ROW_SIZE = 8;
     localparam NUM_ROWS = 8;
     localparam NUM_TILES = 384;
+    localparam MAX_UNSIGNED_TILE = 255;
+    localparam MAX_SIGNED_TILE = 127;
+    localparam MIN_SIGNED_TILE = -128;
+    localparam SIGNED_TILE_OFFSET = 256;
     localparam VRAM_TILES_ADDR = 16'h8000;
     localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES / 8;
 
