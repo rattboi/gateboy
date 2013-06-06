@@ -77,11 +77,12 @@ module tb_render();
 
     always @(posedge cntrl.renderComplete)
     begin
-        if(renderDisable)
-            return;
-        //save file every time a render completes
-        writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
-        renderCount++;
+        if(!renderDisable)
+        begin
+            //save file every time a render completes
+            writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
+            renderCount++;
+        end
     end
 
 	final begin
