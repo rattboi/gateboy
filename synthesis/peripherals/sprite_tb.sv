@@ -1,20 +1,12 @@
-// This is an example test that uses the testrunner interface. Use it
-// as an example when writing your own tests.
-
-
-
-// Note that tests are included in the Test package, and therefore
-// need C-style include guards. This also means that the class can
-// access stuff in the Test namespace for free
 `ifndef __SPRITE_TB__
 `define __SPRITE_TB__
 
-// all tests extend Test::BaseTest
+// Bunch of tests to demonstrate the sprite flip registers work
 class sprite_tb extends BaseTest;
 
-   // build a tile, and dump it out as the first tile
    virtual task runTest(output int numPassed, int numFailed);
-      // this tile is whit at the edges, and black in the middle
+      // one quadrant of this tile is white: used to demonstrate that
+      // the sprite can be flipped
       string tmptile [8]  = '{"33330000",
                               "33330000",
                               "33330000",
@@ -25,9 +17,10 @@ class sprite_tb extends BaseTest;
                               "00000000"};
       
       Lcd goodpic;
-      
-      db.write(8'h82, 16'hff40);
+      // enable lcd and sprites
+      db.write(8'h82, LCDC_ADDR);
 
+      // load the tile number for the sprite
       db.write(1, OAM_LOC+2);
       writeTile(1, genTile(tmptile));
       
@@ -66,17 +59,12 @@ class sprite_tb extends BaseTest;
          numFailed++;
       end
 
-      
-
-   endtask // runTest
-
-   // called by test runner to get the name of the test. returns a
-   // string. is optional.
+   endtask
    virtual function string getName();
       getName = "SpriteTest";
-   endfunction // getName
+   endfunction
 
 
 endclass
-`endif //  `ifndef __WHIZZGRAPHICS_TB__ \\TODO: wat
+`endif
 
