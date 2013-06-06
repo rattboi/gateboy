@@ -24,28 +24,12 @@ class tile_tb extends BaseTest;
                               "32222223",
                               "33333333"};
 
-      string checkerboard_tile [8]  = '{"33330000",
-                                        "33330000",
-                                        "33330000",
-                                        "33330000",
-                                        "00003333",
-                                        "00003333",
-                                        "00003333",
-                                        "00003333"};
-
-      string zero_tile [8] = '{"33333333",
-                               "31111113",
-                               "31333313",
-                               "31333313",
-                               "31333313",
-                               "31333313",
-                               "31111113",
-                               "33333333"};
 
       
       bit    stat;
       Lcd goodpic;
-
+      
+      db.write(8'h90, 16'hff40);
       for (int i = 0; i < VRAM_BACKGROUND1_SIZE; i++) begin
          db.write(1,VRAM_BACKGROUND1_ADDR+i);
          end
@@ -57,7 +41,7 @@ class tile_tb extends BaseTest;
       goodpic = cntrl.lcd;
 
       // enable sprites
-      db.write(8'h2, 16'hFF40);
+      db.write(8'h92, 16'hff40);
       waitForImage(stat);
       assert(goodpic == cntrl.lcd) numPassed++;
       else begin
