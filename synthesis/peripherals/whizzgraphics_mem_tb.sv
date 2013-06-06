@@ -30,6 +30,8 @@ class w_mem_tb extends BaseTest;
    virtual task runTest(output int numPassed, numFailed);
 
       bit SuccessState;
+      // enable LCD
+      db.write(8'h80, 16'hff40);      
       // Test the different sections of the graphics memory
       DebugPrint("Testing OAM...");
       tickleBus(OAM_LOC, OAM_SIZE,  numPassed,numFailed);
@@ -57,8 +59,7 @@ class w_mem_tb extends BaseTest;
 
 
       // try to write out the image, but have a 900 cycle timeout
-      cntrl.resetDUT();
-      
+
       waitForImage(SuccessState);
       if(SuccessState) begin
          writeLCD(cntrl.lcd, "out.pgm");
