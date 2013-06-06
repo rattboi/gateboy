@@ -56,7 +56,7 @@ module whizgraphics(interface db,
     //helper functions
     function Pixel GetPixel(Tile t, int row, int pixel);
        automatic Pixel p; 
-       assert(row < 8 && pixel < 8) else $display("R: 0x%h, P: 0x%h", row, pixel);
+       assert(row < NUM_ROWS && pixel < ROW_SIZE) else $display("R: 0x%h, P: 0x%h", row, pixel);
        p = { t.rows[row][pixel], t.rows[row][pixel + ROW_SIZE] };
        return p;
     endfunction
@@ -66,12 +66,12 @@ module whizgraphics(interface db,
        automatic byte signedIndex = tileIndex;
        automatic int index;
        if (lcdControl.Fields.TileDataSelect) begin
-          assert(tileIndex >= 0 && tileIndex <= 255);
+          assert(tileIndex >= 0 && tileIndex <= MAX_UNSIGNED_TILE);
           index = tileIndex;
        end
        else begin
-          assert(signedIndex >=-128 && signedIndex <= 127);
-          index = 256+signedIndex;
+          assert(signedIndex >= MIN_SIGNED_TILE && signedIndex <= MAX_SIGNED_TILE);
+          index = SIGNED_TILE_OFFSET + signedIndex;
        end
         return tiles.Data[index];
     endfunction // GetTileFromIndex
@@ -126,6 +126,7 @@ module whizgraphics(interface db,
         begin
             cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
         end
+
         //render sprites
         for(int i = 0; i < NUM_SPRITES; i++)
         begin

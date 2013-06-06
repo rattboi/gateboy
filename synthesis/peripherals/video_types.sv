@@ -101,6 +101,10 @@ package video_types;
     localparam ROW_SIZE = 8;
     localparam NUM_ROWS = 8;
     localparam NUM_TILES = 384;
+    localparam MAX_UNSIGNED_TILE = 255;
+    localparam MAX_SIGNED_TILE = 127;
+    localparam MIN_SIGNED_TILE = -128;
+    localparam SIGNED_TILE_OFFSET = 256;
     localparam VRAM_TILES_ADDR = 16'h8000;
     localparam VRAM_TILES_SIZE = ROW_SIZE*NUM_ROWS*PIXEL_BITS*NUM_TILES / 8;
 
