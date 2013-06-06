@@ -114,14 +114,6 @@ module whizgraphics(interface db,
         int tileIndex = 0;
         Tile t;
 
-        //render all black if LCD disabled
-        if(!lcdControl.Fields.LCDEnable)
-        begin
-            if(DEBUG_OUT) $display("LCD Disabled");
-            cntrl.lcd[currentLine] = '0;
-            return;
-        end
-
         //render  background
         for(int i = 0; i < LCD_LINEWIDTH; i++)
         begin
@@ -279,6 +271,15 @@ module whizgraphics(interface db,
          disable renderer;
       end
 
+        //render all black if LCD disabled
+        if(!lcdControl.Fields.LCDEnable)
+        begin
+           if(DEBUG_OUT) $display("LCD Disabled");
+           cntrl.lcd =  '0;
+           currentLine = 0;
+        end
+
+        
       lineDivider++;
       if(lineDivider < CLOCKS_PER_LINE) disable renderer;
       lineDivider = 0;

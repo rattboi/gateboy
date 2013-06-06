@@ -17,6 +17,7 @@ class vblank_tb extends BaseTest;
    virtual task runTest(output int numPassed, int numFailed);
       LcdStatus status;
       bit retval;
+      db.write(8'h80, 16'hff40);
       waitForImage(retval);
       db.read(LCD_STAT_ADDR, status);
       if (status.Fields.Mode != RENDER_VBLANK) begin

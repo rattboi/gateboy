@@ -189,12 +189,11 @@ module tb_render();
 
 
 
-    /*
    initial 
    begin
 		  //This function needs to happen in order to
 		  // have whizgraphics module render
-          resetWhizgraphics();
+        resetWhizgraphics();
 
 		  //Change the background map to something different
 		  //ChangeBGMap(0,0,1);
@@ -242,8 +241,21 @@ module tb_render();
             $display("%d: %p", i, DUT.tiles.Data[i]);
          end
     end
-    */
 
 	initial forever #10 clk = ~clk;
+
+	//Stuff to do after initial blocks
+	always @* begin
+		if(cntrl.renderComplete)
+        begin
+            writeLCD(cntrl.lcd, "out1.pgm");
+			   $finish;
+        end
+	end
+
+	//Final block of the test bench
+	final begin
+		$display("tb_render is done");
+	end
 
 endmodule
