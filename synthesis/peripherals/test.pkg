@@ -73,4 +73,5 @@ package Test;
    include "whizzgraphics_mem_tb.sv";
    include "vblank_tb.sv";
    include "tile_tb.sv";
+   include "checkerboard_tb.sv";
 endpackage
