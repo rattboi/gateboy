@@ -65,8 +65,8 @@ module whizgraphics(interface db,
 
     function bit[0:7] GetTileIndexFromScreenPoint(int x, int y);
 
-        automatic int bgX = x + lcdPosition.Data.ScrollX;
-        automatic int bgY = y + lcdPosition.Data.ScrollY;
+        automatic int bgX = (x + lcdPosition.Data.ScrollX) % (BG_WIDTH*TILE_SIZE);
+        automatic int bgY = (y + lcdPosition.Data.ScrollY) % (BG_HEIGHT*TILE_SIZE);
         automatic int tileX = bgX / TILE_SIZE;
         automatic int tileY = bgY / TILE_SIZE;
 
