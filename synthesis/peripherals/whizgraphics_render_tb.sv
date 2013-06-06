@@ -99,6 +99,7 @@ module tb_render();
 	 	//DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'h1b;
 
         DUT.lcdControl.Fields.SpriteEnable = 1;
+        DUT.lcdControl.Fields.LCDEnable = 1;
 
          $display("Tile Data:");
          for(int i = 0; i < 4; i++)
