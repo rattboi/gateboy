@@ -14,12 +14,16 @@ module tb_render();
    // order to load the default palette.
    // TODO: This code is repro'd in palette_tb.sv
    // Code needs to by DRYer   
+   //TODO: replace with cntrl.resetDUT();
    task resetWhizgraphics();
       cntrl.reset = 1;
       @db.clk; cntrl.reset = 0;
    endtask
 
 
+	initial forever #10 clk = ~clk;
+
+   //TODO: delete these?
 	//Background corrolates to vramBackground1 data structure
 	function void ChangeBGMap(int x, int y, int TileNum);
 
@@ -65,6 +69,8 @@ module tb_render();
     task TestSetup();
         //reset graphics system
         resetWhizgraphics(); 
+        //create set of test tiles
+        CreateTestTiles();
     endtask
 
     function void TestTeardown();
@@ -124,6 +130,24 @@ module tb_render();
                                            "00112233",
                                            "00112233"};
 
+        static string outlineTileStr [8]     = { "11111111",
+                                                 "10000001",
+                                                 "10000001",
+                                                 "10000001",
+                                                 "10000001",
+                                                 "10000001",
+                                                 "10000001",
+                                                 "11111111"};
+
+        static string circleTileStr [8]      = { "00022000",
+                                                 "00211200",
+                                                 "02111120",
+                                                 "21111112",
+                                                 "21111112",
+                                                 "02111120",
+                                                 "00211200",
+                                                 "00022000"};
+
         //Tile 0 = black
         DUT.tiles.Data[0] = '0;
         //Tile 1 = checkerboard
@@ -134,6 +158,10 @@ module tb_render();
         DUT.tiles.Data[3] = genTile(vGradientTileStr);
         //Tile 4 = checkerboard
         DUT.tiles.Data[4] = genTile(hGradientTileStr);
+        //Tile 5 = outline
+        DUT.tiles.Data[5] = genTile(outlineTileStr);
+        //Tile 6 = circle
+        DUT.tiles.Data[6] = genTile(circleTileStr);
 
     endfunction
 
@@ -141,7 +169,6 @@ module tb_render();
     // Output background test image 
     //=================================
     task output_bgpattern();
-        CreateTestTiles();
         DUT.lcdControl.Fields.LCDEnable = 1;
         DUT.lcdControl.Fields.TileDataSelect = 1;
 
@@ -156,8 +183,6 @@ module tb_render();
     // Output scrolling animation
     //=================================
     task output_bgscroll();
-        $display("bgscroll");
-        CreateTestTiles();
         DUT.lcdControl.Fields.LCDEnable = 1;
         DUT.lcdControl.Fields.TileDataSelect = 1;
 
@@ -177,6 +202,37 @@ module tb_render();
         end
     endtask
 
+    task output_spritemove();
+        DUT.lcdControl.Fields.LCDEnable = 1;
+        DUT.lcdControl.Fields.TileDataSelect = 1;
+        DUT.lcdControl.Fields.SpriteEnable = 1;
+
+        //set background (since reset apparently isn't working)
+        for(int i = 0; i < BG_WIDTH; i++)
+        begin
+            for(int j = 0; j < BG_HEIGHT; j++)
+            begin
+                DUT.vramBackground1.BackgroundMap[i][j] = 0;
+            end
+
+        end
+
+        //create sprite
+        DUT.oam_table.Attributes[0].Fields.Tile = 6;
+        DUT.oam_table.Attributes[0].Fields.XPosition = 16;
+        DUT.oam_table.Attributes[0].Fields.YPosition = 16;
+
+        //move diagonally for 16 frames
+        for(int i = 0; i < 16; i++)
+        begin
+            @(posedge cntrl.renderComplete);
+            DUT.oam_table.Attributes[0].Fields.XPosition++;
+            DUT.oam_table.Attributes[0].Fields.YPosition += 2;
+        end
+
+    endtask
+    
+
     task do_tests();
         $display("do tests");
        TestSetup();
@@ -185,6 +241,10 @@ module tb_render();
 
        TestSetup();
         output_bgscroll();
+       TestTeardown();
+        
+       TestSetup();
+        output_spritemove();
        TestTeardown();
 
         $finish;
@@ -197,6 +257,5 @@ module tb_render();
     end
 
 
-	initial forever #10 clk = ~clk;
 
 endmodule

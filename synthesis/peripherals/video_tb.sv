@@ -5,7 +5,7 @@ import video_types::*;
 `define DebugPrint(x) if(DebugPrintEnable) $display("%p", x)
 int DebugPrintEnable = 1;
 
-
+//TODO: comments
 initial begin
 
     LcdControl  lcdc;

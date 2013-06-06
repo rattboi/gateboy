@@ -19,6 +19,7 @@ class whizzgraphics extends BaseTest;
       bit [0:15] address;
       numPassed = 0;
       numFailed = 0;
+      //TODO: use parameters
       for (int i = 0; i < 4*40; i++) begin 
          r = $urandom;
          address = i + 16'hfe00;

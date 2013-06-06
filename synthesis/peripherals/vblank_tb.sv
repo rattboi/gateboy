@@ -1,7 +1,7 @@
 // This is an example test that uses the testrunner interface. Use it
 // as an example when writing your own tests.
 
-
+//TODO: comments
 
 // Note that tests are included in the Test package, and therefore
 // need C-style include guards. This also means that the class can
@@ -34,4 +34,4 @@ class vblank_tb extends BaseTest;
 
 
 endclass
-`endif //  `ifndef __WHIZZGRAPHICS_TB__
+`endif //  `ifndef __WHIZZGRAPHICS_TB__ //TODO: this is also wrong, andy

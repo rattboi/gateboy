@@ -193,55 +193,9 @@ package video_types;
       $fclose(fd);
    endfunction
 
-   // read an LCD: much more complicated
-    function automatic Lcd readLCD(string path);
-       // open the file
-       int fd = $fopen(path, "r");
+   typedef string[NUM_ROWS] TileString;
 
-       // string that stores the current line  of the pixmap
-       string line;
-       // tmpword represents the ascii characters of the current pixel
-       string tmpword = "0";
-       // the count of the number of bytes in the current tmpword
-       int    tmploc = 0;
-       // counter
-       int    k = 0;
-       // ascii string of a space
-       string space = " ";
-       // ascii string of a newline
-       string newline = "\n";
-       // return code (bad programmers don't use it)
-       int    code;
-       // throw away image header: we assume it is a dgm sized picture
-       code = $fgets(line, fd);
-       code = $fgets(line, fd); 
-       code = $fgets(line, fd);
-       // for every line of the pgm
-      for (int i = 0; i < LCD_LINES; i++) begin
-         // get the line
-         code = $fgets(line, fd);
-         k = 0;
-         // for every character on the line:
-         for(int j = 0; j < line.len(); j++) begin
-            // if it is a space or a newline
-            if (line.getc(j) == space.getc(0)|| line.getc(j) == newline.getc(0)) begin
-               // check and see if we have a color code in tmpword. If
-               // we do, write it to the LCD
-               if (tmploc > 0) 
-                 readLCD[i][k++] = tmpword.atoi();
-               // reset the temporary word fields
-               tmpword = "0";
-               tmploc = 0;
-               // else, assume the character is a pixel code, and add it to the tmp word register
-            end else begin
-               tmpword.putc(tmploc++, line.getc(j));
-            end
-         end
-      end
-    endfunction
-
-
-      function Tile genTile(string pixmap[NUM_ROWS]);
+      function Tile genTile(TileString pixmap);
          string zero;
          int    code0, tmpchar;
          bit [0:ROW_SIZE-1] lowbit,hibit;

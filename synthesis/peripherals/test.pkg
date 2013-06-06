@@ -31,6 +31,7 @@ package Test;
          fork : tmpfork
             begin 
                repeat(100000)@(posedge db.clk); 
+               //TODO: replace with assertion
                Status = 0;
                disable tmpfork; 
             end

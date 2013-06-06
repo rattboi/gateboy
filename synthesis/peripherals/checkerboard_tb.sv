@@ -9,10 +9,13 @@
 `ifndef __CHECKERBOARD_TB__
 `define __CHECKERBOARD_TB__
 
+//TODO: fix all comments
+
 // all tests extend Test::BaseTest
 class checkerboard_tb extends BaseTest;
 
    // build a tile, and dump it out as the first tile
+   //TODO: wat
    virtual task runTest(output int numPassed, int numFailed);
 
       string checkerboard_tile [8]  = '{"33330000",

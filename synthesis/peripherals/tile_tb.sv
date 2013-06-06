@@ -9,6 +9,7 @@
 `ifndef __TILE_TB__
 `define __TILE_TB__
 
+//TODO: comments, say what this does
 // all tests extend Test::BaseTest
 class tile_tb extends BaseTest;
 
@@ -136,5 +137,5 @@ class tile_tb extends BaseTest;
 
 
 endclass
-`endif //  `ifndef __WHIZZGRAPHICS_TB__
+`endif //  `ifndef __WHIZZGRAPHICS_TB__ //TODO: <<<<<<<<<<-- this is wrong
 

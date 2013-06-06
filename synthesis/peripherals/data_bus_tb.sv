@@ -1,4 +1,5 @@
 // test the memory module by writing random values to memory locations.
+//TODO: comment, fix, make work
 module data_bus_tb();
 
    bit clk = 0;

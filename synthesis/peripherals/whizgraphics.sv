@@ -3,7 +3,7 @@ module whizgraphics(interface db,
 
 
     parameter DEBUG_OUT = 0;
-    `define DebugPrint(x) if(DEBUG_OUT) $display("%p", x);
+    `define DebugPrint(x) if(DEBUG_OUT) $display("%s", x);
 
 
     import video_types::*;
@@ -45,10 +45,13 @@ module whizgraphics(interface db,
 
     SpriteAttributesTable oam_table;
 
+    //rendering state
+    bit [0:LCD_LINES_BITS - 1] currentLine;
 
-    //internal structures
+   bit [db.DATA_SIZE-1:0] bus_reg;
+   bit                    enable;
+   assign db.data = enable ? bus_reg : 'z;
 
-    
 
     //helper functions
     function Pixel GetPixel(Tile t, int row, int pixel);
@@ -160,7 +163,7 @@ module whizgraphics(interface db,
                tmpcolor =  GetPixel(t, ypix, xpix);
                if (tmpcolor != 0)
                  cntrl.lcd[currentLine][j + (currentSprite.Fields.XPosition - lcdPosition.Data.ScrollX)] = 
-                                                                              getPixelColor(PALETTE_BACKGROUND, tmpcolor);
+                            getPixelColor(PALETTE_BACKGROUND, tmpcolor);
 
             end
             spritesRendered++;
@@ -168,12 +171,6 @@ module whizgraphics(interface db,
 
 	 endfunction
    
-    //rendering state
-    bit [0:LCD_LINES_BITS - 1] currentLine;
-
-   bit [db.DATA_SIZE-1:0] bus_reg;
-   bit                    enable;
-   assign db.data = enable ? bus_reg : 'z;
 
    function void resetWhizgraphics();
       lcdControl = 0;
@@ -190,17 +187,13 @@ module whizgraphics(interface db,
       oam_table = 0;
 
       
+      //TODO: andy, comment this
       for (int i = 0; i < 3; i++)
         for(int j = 0; j < 4; j++)
         lcdPalletes.Data.indexedPalettes[i].indexedColors[j] = j;
    endfunction
    
    
-    initial
-    begin
-        cntrl.renderComplete = '0;
-    end
-
    // functions as address decoder. 
    always_ff @(posedge db.clk) begin
       if(db.reading()) begin
@@ -253,19 +246,14 @@ module whizgraphics(interface db,
       end
    end
 
-   parameter CLOCKS_PER_LINE = 260;
-   parameter VBLANK_LINES = 18;
+   localparam CLOCKS_PER_LINE = 260;
+   localparam VBLANK_LINES = 18;
    
    // RENDER THE CODEZ
    always_ff @(posedge cntrl.drawline)
      begin : renderer
+         //TODO: you can do breaks
         
-      automatic int startTileX = lcdPosition.Data.ScrollX / TILE_SIZE;
-      automatic int tileY = (lcdPosition.Data.ScrollY + currentLine) / TILE_SIZE;
-      automatic int tileOffsetX = lcdPosition.Data.ScrollX % TILE_SIZE;
-      automatic int tileOffsetY = (lcdPosition.Data.ScrollY + currentLine) % TILE_SIZE;
-     
-   
       if (cntrl.reset) begin
          resetWhizgraphics();
          disable renderer;
@@ -281,9 +269,11 @@ module whizgraphics(interface db,
 
         
       lineDivider++;
+        //TODO: comment this 
       if(lineDivider < CLOCKS_PER_LINE) disable renderer;
       lineDivider = 0;
    
+      //TODO: delete this line
       //if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
 
 		//Function call to render background and sprites at this line

@@ -1,5 +1,5 @@
 // Represents a piece of memory attached to the bus
-
+//TODO: add comments
 module Memory (interface db);
    parameter SIZE_BITS = 4;
    parameter BASE_ADDR = 16'h5000;

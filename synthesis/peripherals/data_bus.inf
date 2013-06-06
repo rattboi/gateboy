@@ -11,6 +11,7 @@ interface DataBus (input bit clk);
    bit 			oe;
    bit      enable;
 
+   //TODO: add comments
    assign data = (enable) ? data_reg : 'z;
 
    clocking cb @(posedge clk);

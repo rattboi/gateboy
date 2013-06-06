@@ -3,6 +3,8 @@
 `ifndef __MEM_TB__
 `define __MEM_TB__
 
+//TODO: comments
+
 class w_mem_tb extends BaseTest;
 
    
