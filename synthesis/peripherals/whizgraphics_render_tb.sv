@@ -8,7 +8,7 @@ module tb_render();
 	bit clk = 0;
    DataBus db(clk);
    Control cntrl(clk);
-	whizgraphics #(.DEBUG_OUT(1)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
+	whizgraphics #(.DEBUG_OUT(0)) DUT(.db(db.peripheral), .cntrl(cntrl.DUT));
 
    // simple task to reset the whizgraphics hardware: necessary in
    // order to load the default palette.
@@ -138,9 +138,9 @@ module tb_render();
     endfunction
 
     //=================================
-    // Simple background test
+    // Output background test image 
     //=================================
-    task test_background1();
+    task output_bgpattern();
         CreateTestTiles();
         DUT.lcdControl.Fields.LCDEnable = 1;
         DUT.lcdControl.Fields.TileDataSelect = 1;
@@ -153,29 +153,38 @@ module tb_render();
     endtask 
 
     //=================================
-    // Scrolling background test
+    // Output scrolling animation
     //=================================
-    task test_move_background();
+    task output_bgscroll();
+        $display("bgscroll");
         CreateTestTiles();
         DUT.lcdControl.Fields.LCDEnable = 1;
+        DUT.lcdControl.Fields.TileDataSelect = 1;
 
-        DUT.vramBackground1.BackgroundMap[0][0] = 2;
-        DUT.vramBackground1.BackgroundMap[1][0] = 2;
+        for(int i = 0; i < BG_WIDTH; i++)
+        begin
+            for(int j = 0; j < BG_HEIGHT; j++)
+            begin
+                DUT.vramBackground1.BackgroundMap[i][j] = 2;
+            end
+
+        end
         for(int i = 0; i < 8; i++)
         begin
             @(posedge cntrl.renderComplete);
             DUT.lcdPosition.Data.ScrollX++;
+            DUT.lcdPosition.Data.ScrollY++;
         end
-        @(posedge cntrl.renderComplete);
     endtask
 
     task do_tests();
+        $display("do tests");
        TestSetup();
-        test_background1();
+        output_bgpattern();
        TestTeardown();
 
        TestSetup();
-        test_move_background();
+        output_bgscroll();
        TestTeardown();
 
         $finish;
@@ -188,74 +197,6 @@ module tb_render();
     end
 
 
-
-   initial 
-   begin
-		  //This function needs to happen in order to
-		  // have whizgraphics module render
-        resetWhizgraphics();
-
-		  //Change the background map to something different
-		  //ChangeBGMap(0,0,1);
-		  $display("Tile compare: %b", BGTileCompare(5,5,3));
-
-        //write data to tiles
-        for(int i = 0; i < 32; i++)
-        begin
-            DUT.SetTilePixelValue(0, 0, i, 2'b00);
-            DUT.SetTilePixelValue(0, 1, i, 2'b01);
-            DUT.SetTilePixelValue(0, 2, i, 2'b10);
-            DUT.SetTilePixelValue(0, 3, i, 2'b11);
-            DUT.SetTilePixelValue(0, 4, i, 2'b00);
-            DUT.SetTilePixelValue(0, 5, i, 2'b01);
-            DUT.SetTilePixelValue(0, 6, i, 2'b10);
-            DUT.SetTilePixelValue(0, 7, i, 2'b11);
-        end
-
-        //write test sprite tile
-        DUT.SetTilePixelValue(1, 0, 0, 2'b10);
-        DUT.SetTilePixelValue(1, 1, 0, 2'b10);
-        DUT.SetTilePixelValue(1, 2, 0, 2'b10);
-        DUT.SetTilePixelValue(1, 0, 1, 2'b10);
-        DUT.SetTilePixelValue(1, 1, 1, 2'b10);
-        DUT.SetTilePixelValue(1, 2, 1, 2'b10);
-        DUT.SetTilePixelValue(1, 0, 2, 2'b10);
-        DUT.SetTilePixelValue(1, 1, 2, 2'b10);
-        DUT.SetTilePixelValue(1, 2, 2, 2'b10);
-
-        DUT.oam_table.Attributes[0].Fields.Tile = 1;
-        DUT.oam_table.Attributes[0].Fields.XPosition = 10;
-        DUT.oam_table.Attributes[0].Fields.YPosition = 10;
-
-        //DUT.lcdPosition.Data.ScrollX = 250;
-
-
-	 	//DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'h1b;
-
-        DUT.lcdControl.Fields.SpriteEnable = 1;
-        DUT.lcdControl.Fields.LCDEnable = 1;
-
-         $display("Tile Data:");
-         for(int i = 0; i < 4; i++)
-         begin
-            $display("%d: %p", i, DUT.tiles.Data[i]);
-         end
-    end
-
 	initial forever #10 clk = ~clk;
-
-	//Stuff to do after initial blocks
-	always @* begin
-		if(cntrl.renderComplete)
-        begin
-            writeLCD(cntrl.lcd, "out1.pgm");
-			   $finish;
-        end
-	end
-
-	//Final block of the test bench
-	final begin
-		$display("tb_render is done");
-	end
 
 endmodule
