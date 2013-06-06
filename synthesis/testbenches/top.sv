@@ -52,15 +52,17 @@ module testbench(
 
   assign Di = A[14] ? Di_wram : cart_rom[A];
 
-  initial begin 
+  initial 
+    forever #100 coreclk = ~coreclk;
+   
+   initial begin 
     coreclk = 0;
-    reset_init = 0;
-    reset = 0;
-    #100 
-    coreclk = 1;
     reset_init = 1;
     reset = 1;
-    forever #100 coreclk = ~coreclk;
+    #300 
+    coreclk = 1;
+    reset_init = 0;
+    reset = 0;
    end
  
   integer file; 
