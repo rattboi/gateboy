@@ -69,7 +69,7 @@ package Test;
 
    // include the tests naow.
    // Each test's class must be included here
-   include "whizzgraphics_tb.sv";
+   include "skel_tb.sv";
    include "whizzgraphics_mem_tb.sv";
    include "vblank_tb.sv";
    include "tile_tb.sv";
