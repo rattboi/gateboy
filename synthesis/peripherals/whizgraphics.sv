@@ -145,7 +145,7 @@ module whizgraphics(interface db,
             tileIndex = currentSprite.Fields.Tile;
             t = GetSpriteTileFromIndex(tileIndex);
 
-            if(DEBUG_OUT) $display("Rendering Sprite: %d (Tile %d) on line: %d", i, tileIndex, currentLine);
+            if(DEBUG_OUT) $display("Rendering Sprite: %0d (Tile %0d) on line: %0d", i, tileIndex, currentLine);
             if(DEBUG_OUT) $display("Sprite line: %b", t.rows[currentLine + lcdPosition.Data.ScrollY - currentSprite.Fields.YPosition]);
 
             //for each pixel (of width) in the sprite...
