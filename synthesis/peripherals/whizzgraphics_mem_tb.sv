@@ -62,15 +62,9 @@ class w_mem_tb extends BaseTest;
 
       // try to write out the image, but have a 900 cycle timeout
 
-      waitForImage(SuccessState);
-      if(SuccessState) begin
-         writeLCD(cntrl.lcd, "out.pgm");
-         numPassed++;
-      end
-      else begin
-         numFailed++;
-         DebugPrint("Could not Create Image");
-      end
+      waitForImage();
+      writeLCD(cntrl.lcd, "out.pgm");
+
    endtask
    
    virtual function string getName();

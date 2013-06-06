@@ -93,7 +93,7 @@ module tb_render();
     //=================================
     // Common test helper functions
     //=================================
-    function CreateTestTiles();
+    function void CreateTestTiles();
         static string checkerboardTileStr [8] = { "33330000",
                                                   "33330000",
                                                   "33330000",

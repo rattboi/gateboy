@@ -36,7 +36,7 @@ class checkerboard_tb extends BaseTest;
                                         "31111113",
                                         "33333333"};
 
-      bit    stat;
+
       Lcd firstpic;
 
       for (int i = 0; i < VRAM_BACKGROUND1_SIZE; i++) begin
@@ -45,13 +45,13 @@ class checkerboard_tb extends BaseTest;
       writeTile(0, genTile(checkerboard_tile));
       writeTile(256, genTile(zero_tile));
       db.write(8'h80, 16'hFF40);
-      waitForImage(stat);
-      waitForImage(stat);
+      waitForImage();
+      waitForImage();
       firstpic = cntrl.lcd;
 
       db.write(8'h90, 16'hFF40);
 
-      waitForImage(stat);
+      waitForImage();
       assert(cntrl.lcd != firstpic) numPassed++; 
       else begin
          DebugPrint("Resultant images are the same!");
