@@ -43,30 +43,34 @@ package Test;
          join
       endtask
 
-      task writeTile(input int tilenum, string pixmap[NUM_ROWS]);
-         
-         string zero,one,two,three;
-         int    code0, code1,code2,code3, tmpchar;
+
+      function Tile genTile(string pixmap[NUM_ROWS]);
+         string zero;
+         int    code0, tmpchar;
          bit [0:ROW_SIZE-1] lowbit,hibit;
-         assert (tilenum < NUM_TILES && tilenum >= 0);
          zero = "0";
-         one = "1";
-         two = "2";
-         three = "3";
          code0 = zero.getc(0);
-         code1 = one.getc(0);
-         code2 = two.getc(0);
-         code3 = two.getc(0);
          for (int r = 0; r < NUM_ROWS; r++) begin
             lowbit = 0;
             hibit = 0;
             for (int p = 0; p < ROW_SIZE; p++) begin
                tmpchar = pixmap[r].getc(p);
                tmpchar -= code0;
-            
                assert(tmpchar >= 0 && tmpchar < 4);
-               lowbit[p] = tmpchar >> 1;
-               hibit[p] = tmpchar & 1;
+               {genTile.rows[r][p], genTile.rows[r][p + ROW_SIZE]} = tmpchar;
+            end
+         end
+      endfunction
+      
+      task writeTile(input int tilenum, Tile t);
+         bit [0:ROW_SIZE-1] lowbit,hibit;
+         assert (tilenum < NUM_TILES && tilenum >= 0);
+         for (int r = 0; r < NUM_ROWS; r++) begin
+            lowbit = 0;
+            hibit = 0;
+            for (int p = 0; p < ROW_SIZE; p++) begin
+               hibit[p] = t.rows[r][p];
+               lowbit[p] = t.rows[r][p + ROW_SIZE];
             end
 
             db.write(lowbit, VRAM_TILES_ADDR + 16*tilenum + 2*r);

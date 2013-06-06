@@ -29,7 +29,7 @@ class tile_tb extends BaseTest;
       for (int i = 0; i < VRAM_BACKGROUND1_SIZE; i++) begin
          db.write(1,VRAM_BACKGROUND1_ADDR+i);
          end
-      writeTile(1, tmptile);
+      writeTile(1, genTile(tmptile));
 
 
       // get the original image
