@@ -8,45 +8,40 @@ module whizgraphics(interface db,
 
     import video_types::*;
     
+
+	 //Registers
     LcdControl lcdControl;
 
-	 //Instance of LCD status register
-	 // unused in the design
     LcdStatus lcdStatus;
 
-    int lineDivider;
+	 LcdPosition lcdPosition;
 
-     union packed {
-        bit [0:LCD_POS_SIZE-1] [0:7] Bits;
-        LcdPosition Data;
-     } lcdPosition;
+    LcdWindowPosition lcdWindowPosition;
 
-    union packed {
-        bit [0:LCD_WIN_SIZE-1] [0:7] Bits;
-        LcdWindowPosition Data;
-     } lcdWindowPosition;
-
-   
- 
-    union packed {
-      LcdPalletes Data;
-      bit [0:LCD_PALLETE_SIZE-1] [0:7] Bits;
-      } lcdPalletes;
-
- 
-    union packed {
-        bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
-       Tile [0:NUM_TILES-1] Data; 
-    } tiles;
-
+	 //Data Structures
     vram_background vramBackground1;
 
     vram_background vramBackground2;
 
     SpriteAttributesTable oam_table;
 
-    //rendering state
-    bit [0:LCD_LINES_BITS - 1] currentLine;
+    union packed 
+	 {
+      LcdPalletes Data;
+      bit [0:LCD_PALLETE_SIZE-1] [0:7] Bits;
+    } lcdPalletes;
+
+ 
+    union packed 
+	 {
+        bit [0:VRAM_TILES_SIZE-1] [0:7] Bits;
+       Tile [0:NUM_TILES-1] Data; 
+    } tiles;
+
+   //rendering state
+   int lineDivider;
+
+   bit [0:LCD_LINES_BITS - 1] currentLine;
 
    bit [db.DATA_SIZE-1:0] bus_reg;
    bit                    enable;
