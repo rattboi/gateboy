@@ -1,0 +1,50 @@
+overall:
+	- clear TODOs for all files
+	- paramaterize ALL of the things
+	- Comment ALL of the things
+	- SAME NUMBER OF FUCKING Z'S IN THE FILE NAMES!!!
+	- Rename files for their actual purpose, AT THE FUCKING END OF EVERYTHING
+	
+video_types.sv:
+	- reorder content
+	- SPELL CHECK (e.g. palete)
+	- comment!
+
+whizgraphics.sv:
+	- cleanup debug print
+	- make it less java-y (shit.stuff.shit.omg.why.is.it.so.long[0].godammit)
+	- clean up union placement
+	- asserts on helper funcitons
+	- Check helper function usage, cut out unused ones
+	- cleanup one liners and instead use intermediates
+	- get rid of automatic variables
+	- split rendering into separate functions (background and sprite)
+	- check fir unused variables and things that don't work
+	- get the fuck rid of FIXMEs
+	- rid thyself of commented code
+
+databus.inf:
+	- comment modports
+
+control.inf:
+	- COMMENT!
+
+test.pkg:
+	- Check TODO's
+
+whizzgraphics_tb.sv:
+	- paramaterize!
+
+test_runner.sv
+	- TODOs!
+
+whizgraphics_render_tb.sv
+	- TODOs!
+	- fix indentation, Andy...
+
+memort and dut_test:
+	-make work
+
+
+
+

@@ -219,6 +219,7 @@ module tb_render();
 
         end
 
+
         //create sprite
         DUT.oam_table.Attributes[0].Fields.Tile = 6;
         DUT.oam_table.Attributes[0].Fields.XPosition = 16;
@@ -234,6 +235,20 @@ module tb_render();
 
     endtask
     
+    //=================================
+	 //Tests vblank functionality
+    //=================================
+	 task vblank_test();
+	     DUT.lcdControl.raw = 8'h80;
+		  @(posedge cntrl.renderComplete)
+		  begin
+		     if(DUT.lcdStatus.Fields.Mode != RENDER_VBLANK)
+			     $display("Device does not VBlank at end of render");
+			  else
+			     $display("Device successfully VBlanks at end of render");
+						
+		  end
+    endtask
 
     task do_tests();
         $display("do tests");
@@ -249,6 +264,9 @@ module tb_render();
         output_spritemove();
        TestTeardown();
 
+		 TestSetup();
+		 vblank_test();
+		 TestTeardown();
         $finish;
 
     endtask 
@@ -257,7 +275,5 @@ module tb_render();
     begin
         do_tests();
     end
-
-
 
 endmodule
