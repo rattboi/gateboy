@@ -148,6 +148,42 @@ module tb_render();
                                                  "00211200",
                                                  "00022000"};
 
+        static string glider0 [8]            = { "00000000",
+                                                 "00000000",
+                                                 "00003000",
+                                                 "00303000",
+                                                 "00033000",
+                                                 "00000000",
+                                                 "00000000",
+                                                 "00000000"};
+       
+       static string glider1 [8]             = { "00000000",
+                                                 "00000000",
+                                                 "00300000",
+                                                 "00033000",
+                                                 "00330000",
+                                                 "00000000",
+                                                 "00000000",
+                                                 "00000000"};
+       
+        static string glider2 [8]            = { "00000000",
+                                                 "00000000",
+                                                 "00003000",
+                                                 "00000300",
+                                                 "00033300",
+                                                 "00000000",
+                                                 "00000000",
+                                                 "00000000"};
+
+       static string  glider3 [8]            = { "00000000",
+                                                 "00000000",
+                                                 "00000000",
+                                                 "00030300",
+                                                 "00003300",
+                                                 "00003000",
+                                                 "00000000",
+                                                 "00000000"};
+
         //Tile 0 = black
         DUT.tiles.Data[0] = '0;
         //Tile 1 = checkerboard
@@ -162,6 +198,14 @@ module tb_render();
         DUT.tiles.Data[5] = genTile(outlineTileStr);
         //Tile 6 = circle
         DUT.tiles.Data[6] = genTile(circleTileStr);
+        //Tile 7 = glider0
+        DUT.tiles.Data[7] = genTile(glider0);
+       //Tile 8 = glider1
+        DUT.tiles.Data[8] = genTile(glider1);
+       //Tile 9 = glider2
+        DUT.tiles.Data[9] = genTile(glider2);
+       //Tile 10 = glider3
+        DUT.tiles.Data[10] = genTile(glider3);
 
     endfunction
 
@@ -204,6 +248,31 @@ module tb_render();
             DUT.lcdPosition.Data.ScrollY++;
         end
     endtask
+
+   task output_glider();
+        DUT.lcdControl.Fields.LCDEnable = 1;
+        DUT.lcdControl.Fields.TileDataSelect = 1;
+        DUT.lcdControl.Fields.SpriteEnable = 1;
+      
+      //create sprite
+        DUT.oam_table.Attributes[0].Fields.Tile = 7;
+        DUT.oam_table.Attributes[0].Fields.XPosition = 16;
+        DUT.oam_table.Attributes[0].Fields.YPosition = 16;
+
+      //move diagonally for 16 frames
+      for(int i = 0; i < 16; i++)
+        begin
+           @(posedge cntrl.renderComplete);
+           DUT.oam_table.Attributes[0].Fields.Tile++;
+           if (DUT.oam_table.Attributes[0].Fields.Tile > 10)
+             DUT.oam_table.Attributes[0].Fields.Tile = 7;
+           if (!(i % 4) && i != 0)
+           DUT.oam_table.Attributes[0].Fields.XPosition++;
+           DUT.oam_table.Attributes[0].Fields.YPosition++;
+        end
+
+      
+   endtask
 
     task output_spritemove();
         DUT.lcdControl.Fields.LCDEnable = 1;
