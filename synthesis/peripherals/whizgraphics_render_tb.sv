@@ -53,6 +53,136 @@ module tb_render();
 			return FAILED;
 
 	endfunction
+    
+
+
+    //=================================
+    //Testbench infrastructure
+    //=================================
+    int testCount = 0;
+    int renderCount = 0;
+    
+    task TestSetup();
+        //reset graphics system
+        resetWhizgraphics(); 
+    endtask
+
+    function void TestTeardown();
+        testCount++;
+        renderCount = 0;
+    endfunction
+
+    //save file every time a render completes
+    always @(posedge cntrl.renderComplete)
+    begin
+        writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
+        renderCount++;
+    end
+
+	final begin
+        $display("Finished %d tests in tb_render", testCount);
+	end
+
+
+    //=================================
+    // Common test helper functions
+    //=================================
+    function CreateTestTiles();
+        static string checkerboardTileStr [8] = { "33330000",
+                                           "33330000",
+                                           "33330000",
+                                           "33330000",
+                                           "00003333",
+                                           "00003333",
+                                           "00003333",
+                                           "00003333"};
+
+        static string crossTileStr [8]        = { "00033000",
+                                           "00033000",
+                                           "00033000",
+                                           "33333333",
+                                           "33333333",
+                                           "00033000",
+                                           "00033000",
+                                           "00033000"};
+
+        static string vGradientTileStr [8]    = { "00000000",
+                                           "00000000",
+                                           "11111111",
+                                           "11111111",
+                                           "22222222",
+                                           "22222222",
+                                           "33333333",
+                                           "33333333"};
+
+        static string hGradientTileStr [8]    = { "00112233",
+                                           "00112233",
+                                           "00112233",
+                                           "00112233",
+                                           "00112233",
+                                           "00112233",
+                                           "00112233",
+                                           "33112233"};
+
+        //Tile 0 = black
+        DUT.tiles.Data[0] = '0;
+        //Tile 1 = checkerboard
+        DUT.tiles.Data[1] = genTile(checkerboardTileStr);
+        //Tile 2 = checkerboard
+        DUT.tiles.Data[2] = genTile(crossTileStr);
+        //Tile 3 = checkerboard
+        DUT.tiles.Data[3] = genTile(vGradientTileStr);
+        //Tile 4 = checkerboard
+        DUT.tiles.Data[4] = genTile(hGradientTileStr);
+
+    endfunction
+
+    //=================================
+    // Simple background test
+    //=================================
+    task test_background1();
+        CreateTestTiles();
+        DUT.lcdControl.Fields.LCDEnable = 1;
+        DUT.lcdControl.Fields.TileDataSelect = 1;
+
+        DUT.vramBackground1.BackgroundMap[0][0] = 1;
+        DUT.vramBackground1.BackgroundMap[0][1] = 2;
+        DUT.vramBackground1.BackgroundMap[0][2] = 3;
+        DUT.vramBackground1.BackgroundMap[0][3] = 4;
+        @(posedge cntrl.renderComplete);
+    endtask 
+
+    task test_move_background();
+        CreateTestTiles();
+        DUT.lcdControl.Fields.LCDEnable = 1;
+
+        DUT.vramBackground1.BackgroundMap[0][0] = 1;
+        for(int i = 0; i < 8; i++)
+        begin
+            @(posedge cntrl.renderComplete);
+            DUT.lcdPosition.Data.ScrollX++;
+        end
+        @(posedge cntrl.renderComplete);
+    endtask
+
+    task do_tests();
+       TestSetup();
+        test_background1();
+       TestTeardown();
+
+       TestSetup();
+        test_move_background();
+       TestTeardown();
+
+        $finish;
+
+    endtask 
+
+    initial
+    begin
+        do_tests();
+    end
+
 
 
    initial 
