@@ -16,7 +16,7 @@ module async_mem (/*AUTOARG*/
   inout [7:0]     rd_data;
   input           rd_cs;
 
-  logic [7:0]     mem [0:depth-1];
+  bit [7:0]       mem [0:depth-1];
 
   always @(posedge wr_clk)
     begin

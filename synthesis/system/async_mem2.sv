@@ -28,7 +28,7 @@ module async_mem2(
   output wire     [7:0] rd_dataA;
   output wire     [7:0] rd_dataB;
 
-  reg [7:0] mem [0:depth-1];
+  bit [7:0] mem [0:depth-1];
   
   always @(posedge clkA) begin
     if (wr_csA)

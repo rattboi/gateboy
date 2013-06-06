@@ -54,6 +54,12 @@ module testbench(
 
   initial begin 
     coreclk = 0;
+    reset_init = 0;
+    reset = 0;
+    #100 
+    coreclk = 1;
+    reset_init = 1;
+    reset = 1;
     forever #100 coreclk = ~coreclk;
    end
   
@@ -61,12 +67,54 @@ module testbench(
     $readmemh("data/tetris.rom", cart_rom, 0, 32767);
 
   // create the germberh
-  gameboy gameboy (.*);
+  gameboy gameboy ( .*,
+                    .clock(coreclk),
+                    .cpu_clock(coreclk)
+                    );
+                    
+  // gameboy gameboy (
+  //   .clock(clock),
+  //   .cpu_clock(cpu_clock),
+  //   .reset(reset),
+  //   .reset_init(reset_init),
+  //   .A(A),
+  //   .Di(Di),
+  //   .Do(Do),
+  //   .wr_n(wr_n),
+  //   .rd_n(rd_n),
+  //   .cs_n(cs_n),
+  //   .A_vram(A_vram),
+  //   .Di_vram(Di_vram),
+  //   .Do_vram(Do_vram),
+  //   .wr_vram_n(wr_vram_n),
+  //   .rd_vram_n(rd_vram_n),
+  //   .cs_vram_n(cs_vram_n),
+  //   .pixel_data(pixel_data),
+  //   .pixel_clock(pixel_clock),
+  //   .pixel_latch(pixel_latch),
+  //   .hsync(hsync),
+  //   .vsync(vsync),
+  //   .joypad_data(joypad_data),
+  //   .joypad_sel(joypad_sel),
+  //   .audio_left(audio_left),
+  //   .audio_right(audio_right),
+  //   // debug output
+  //   .dbg_led(LED),
+  //   .PC(PC),
+  //   .SP(SP),
+  //   .AF(AF),
+  //   .BC(BC),
+  //   .DE(DE),
+  //   .HL(HL),
+  //   .A_cpu(A_cpu),
+  //   .Di_cpu(Di_cpu),
+  //   .Do_cpu(Do_cpu)
+  // );                    
   
   // WRAM
   async_mem #(.asz(16), .depth(8192)) wram (
     .rd_data(Di_wram),
-    .wr_clk(clock),
+    .wr_clk(coreclk),
     .wr_data(Do),
     .wr_cs(!cs_n && !wr_n),
     .addr(A),
@@ -76,7 +124,7 @@ module testbench(
   // VRAM
   async_mem #(.asz(16), .depth(8192)) vram (
     .rd_data(Di_vram),
-    .wr_clk(clock),
+    .wr_clk(coreclk),
     .wr_data(Do_vram),
     .wr_cs(!cs_vram_n && !wr_vram_n),
     .addr(A_vram),
