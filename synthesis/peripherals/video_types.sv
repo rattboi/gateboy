@@ -193,9 +193,7 @@ package video_types;
       $fclose(fd);
    endfunction
 
-   typedef string[NUM_ROWS] TileString;
-
-      function Tile genTile(TileString pixmap);
+      function Tile genTile(string pixmap [NUM_ROWS]);
          string zero;
          int    code0, tmpchar;
          bit [0:ROW_SIZE-1] lowbit,hibit;
