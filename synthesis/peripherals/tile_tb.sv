@@ -79,12 +79,11 @@ class tile_tb extends BaseTest;
 
 
 
-      assert(cntrl.lcd[5][0] == 0) numPassed++;
+      assert(cntrl.lcd[3][0] == 0) numPassed++;
       else begin
          DebugPrint("Didn't get black value on the right edge");
          numFailed++;
       end
-      $display("0-1,4 is %0d %0d", cntrl.lcd[4][2], cntrl.lcd[4][3] );
       writeLCD(cntrl.lcd, "TileTest.pgm");
 
       db.write(8, 16'hff43);

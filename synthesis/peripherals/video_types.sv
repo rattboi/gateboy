@@ -48,8 +48,8 @@ package video_types;
 
     typedef struct packed
     {
-        bit [0:7] ScrollX;
         bit [0:7] ScrollY;
+        bit [0:7] ScrollX;
         bit [0:7] LcdY;
         bit [0:7] LcdYCompare;
     } LcdPosition;
