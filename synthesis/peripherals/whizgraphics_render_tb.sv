@@ -12,23 +12,18 @@ module tb_render();
 
    // simple task to reset the whizgraphics hardware: necessary in
    // order to load the default palette.
-   // TODO: This code is repro'd in palette_tb.sv
-   // Code needs to by DRYer   
-   //TODO: replace with cntrl.resetDUT();
    task resetWhizgraphics();
-      cntrl.reset = 1;
-      @db.clk; cntrl.reset = 0;
+       cntrl.resetDUT();
    endtask
 
 
-	initial forever #10 clk = ~clk;
+    initial forever #10 clk = ~clk;
 
    //TODO: delete these?
 	//Background corrolates to vramBackground1 data structure
 	function void ChangeBGMap(int x, int y, int TileNum);
 
-		if(x > 31 || y > 31 || TileNum > 384)
-			return;
+        assert(x <= 31 && y <= 31 && TileNum <= 384)
 		else
 		begin
 			DUT.vramBackground1.BackgroundMap[x][y] = TileNum;
@@ -65,6 +60,7 @@ module tb_render();
     //=================================
     int testCount = 0;
     int renderCount = 0;
+    int renderDisable = 0;
     
     task TestSetup();
         //reset graphics system
@@ -76,10 +72,13 @@ module tb_render();
     function void TestTeardown();
         testCount++;
         renderCount = 0;
+        renderDisable = 0;
     endfunction
 
     always @(posedge cntrl.renderComplete)
     begin
+        if(renderDisable)
+            return;
         //save file every time a render completes
         writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
         renderCount++;
@@ -172,10 +171,13 @@ module tb_render();
         DUT.lcdControl.Fields.LCDEnable = 1;
         DUT.lcdControl.Fields.TileDataSelect = 1;
 
-        DUT.vramBackground1.BackgroundMap[0][0] = 1;
-        DUT.vramBackground1.BackgroundMap[0][1] = 2;
-        DUT.vramBackground1.BackgroundMap[0][2] = 3;
-        DUT.vramBackground1.BackgroundMap[0][3] = 4;
+        for(int i = 0; i < BG_WIDTH; i++)
+        begin
+            for(int j = 0; j < BG_HEIGHT; j++)
+            begin
+                ChangeBGMap(j, i, j % 6);
+            end
+        end
         @(posedge cntrl.renderComplete);
     endtask 
 
@@ -190,7 +192,7 @@ module tb_render();
         begin
             for(int j = 0; j < BG_HEIGHT; j++)
             begin
-                DUT.vramBackground1.BackgroundMap[i][j] = 2;
+                ChangeBGMap(j, i, j % 2);
             end
 
         end
@@ -212,7 +214,7 @@ module tb_render();
         begin
             for(int j = 0; j < BG_HEIGHT; j++)
             begin
-                DUT.vramBackground1.BackgroundMap[i][j] = 0;
+                //DUT.vramBackground1.BackgroundMap[i][j] = 0;
             end
 
         end

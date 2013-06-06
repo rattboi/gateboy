@@ -1,6 +1,6 @@
 #!/bin/sh
 export PATH=/pkgs/mentor/questa/current/questasim/bin:$PATH
-MODULES="pgm_tb tb_render TestRunner"
+MODULES="tb_render TestRunner"
 
 # if the user supplied testbenches to run, run them instead
 echo "$@"

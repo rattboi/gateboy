@@ -102,7 +102,11 @@ module whizgraphics(interface db,
     function Pixel GetBackgroundPixelAtScreenPoint(int x, int y);
         automatic int tileIndex = GetTileIndexFromScreenPoint(x, y);
         automatic Tile t = GetBackgroundTileFromIndex(tileIndex);
-        return getPixelColor(PALETTE_BACKGROUND, GetPixel(t, (y + lcdPosition.Data.ScrollY) % TILE_SIZE, (x + lcdPosition.Data.ScrollX) % TILE_SIZE));
+        automatic int xPixel, yPixel;
+
+        xPixel = (x + lcdPosition.Data.ScrollX) % TILE_SIZE;
+        yPixel = (y + lcdPosition.Data.ScrollY) % TILE_SIZE;
+        return getPixelColor(PALETTE_BACKGROUND, GetPixel(t, yPixel, xPixel));
     endfunction
 
     function automatic void SetTilePixelValue(int tileIndex, int column, int row, bit[0:1] pixelval);
@@ -148,8 +152,8 @@ module whizgraphics(interface db,
             tileIndex = currentSprite.Fields.Tile;
             t = GetSpriteTileFromIndex(tileIndex);
 
-            if(DEBUG_OUT) $display("Rendering Sprite: %0d (Tile %0d) on line: %0d", i, tileIndex, currentLine);
-            if(DEBUG_OUT) $display("Sprite line: %b", t.rows[currentLine + lcdPosition.Data.ScrollY - currentSprite.Fields.YPosition]);
+            `DebugPrint($psprintf("Renderling Sprite %0d (Tile %0d) on line %0d", i, tileIndex, currentLine));
+            `DebugPrint($psprintf("Sprite line: %b", t.rows[currentLine + lcdPosition.Data.ScrollY - currentSprite.Fields.YPosition]));
 
             //for each pixel (of width) in the sprite...
             for(int j = 0; j < TILE_SIZE; j++)
@@ -262,7 +266,7 @@ module whizgraphics(interface db,
         //render all black if LCD disabled
         if(!lcdControl.Fields.LCDEnable)
         begin
-           if(DEBUG_OUT) $display("LCD Disabled");
+           `DebugPrint("LCD Disabled");
            cntrl.lcd =  '0;
            currentLine = 0;
         end
@@ -273,9 +277,6 @@ module whizgraphics(interface db,
       if(lineDivider < CLOCKS_PER_LINE) disable renderer;
       lineDivider = 0;
    
-      //TODO: delete this line
-      //if(DEBUG_OUT) $display("Rendering Line: %d", currentLine);
-
 		//Function call to render background and sprites at this line
 		RenderLine(currentLine);
 
