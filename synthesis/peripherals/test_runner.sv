@@ -22,7 +22,10 @@ module TestRunner();
       automatic vblank_tb vb= new;
       automatic tile_tb tb = new;
       automatic checkerboard_tb cb = new;
+      automatic sprite_tb sb = new;
       
+
+      tests.push_front(sb);
       tests.push_front(cb);
       tests.push_front(tb);
       tests.push_front(vb);

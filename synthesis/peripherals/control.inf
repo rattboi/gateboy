@@ -13,7 +13,7 @@ interface Control(input bit drawline);
    endclocking
    
    task resetDUT;
-      reset = 1;
+      @cb reset = 1;
       @cb reset = 0;
    endtask
 
