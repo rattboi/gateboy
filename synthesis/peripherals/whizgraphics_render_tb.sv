@@ -80,7 +80,7 @@ module tb_render();
         if(!renderDisable)
         begin
             //save file every time a render completes
-            writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
+            writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%1d_%03d.pgm", testCount, renderCount));
             renderCount++;
         end
     end
@@ -220,7 +220,7 @@ module tb_render();
         begin
             @(posedge cntrl.renderComplete);
             DUT.oam_table.Attributes[0].Fields.XPosition++;
-            DUT.oam_table.Attributes[0].Fields.YPosition += 2;
+            DUT.oam_table.Attributes[0].Fields.YPosition++;
         end
 
     endtask
