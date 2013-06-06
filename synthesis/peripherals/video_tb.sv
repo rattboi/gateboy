@@ -5,7 +5,7 @@ import video_types::*;
 `define DebugPrint(x) if(DebugPrintEnable) $display("%p", x)
 int DebugPrintEnable = 1;
 
-//TODO: comments
+//This test verifies that the bit ordering in data structures is correct
 initial begin
 
     LcdControl  lcdc;
@@ -14,7 +14,6 @@ initial begin
 
 
     `DebugPrint("LCD Control Register Tests");
-    //LcdControl register structure test
     lcdc.raw = 8'b00000001;
     `DebugPrint(lcdc);
     assert(lcdc.Fields.BackgroundDisplay);
