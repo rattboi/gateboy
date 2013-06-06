@@ -25,7 +25,7 @@ class tile_tb extends BaseTest;
                               "33333333"};
       bit    stat;
       Lcd goodpic;
-      db.write(8'h2, 16'hFF40);
+
       for (int i = 0; i < VRAM_BACKGROUND1_SIZE; i++) begin
          db.write(1,VRAM_BACKGROUND1_ADDR+i);
          end
@@ -37,6 +37,15 @@ class tile_tb extends BaseTest;
       waitForImage(stat);
       goodpic = cntrl.lcd;
 
+      // enable sprites
+      db.write(8'h2, 16'hFF40);
+      waitForImage(stat);
+      assert(goodpic == cntrl.lcd) numPassed++;
+      else begin
+         DebugPrint("Sprites are not transparent for color 0!");
+         numFailed++;
+      end
+      
       db.write(4, 16'hff42);
       waitForImage(stat);
       assert(goodpic != cntrl.lcd)
