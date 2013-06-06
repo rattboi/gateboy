@@ -3,11 +3,12 @@
 `ifndef __MEM_TB__
 `define __MEM_TB__
 
-//TODO: comments
 
 class w_mem_tb extends BaseTest;
 
-   
+
+   // helper function: takes a region of memory and verifies that
+   // values written to it show up
    virtual task tickleBus(int baseaddr, int size, ref int numPassed, int numFailed);
       bit [15:0] address;
       bit [7:0] r,d;
@@ -33,7 +34,7 @@ class w_mem_tb extends BaseTest;
 
       bit SuccessState;
       // enable LCD
-      db.write(8'h80, 16'hff40);      
+      db.write(8'h80, LCDC_ADDR);      
       // Test the different sections of the graphics memory
       DebugPrint("Testing OAM...");
       tickleBus(OAM_LOC, OAM_SIZE,  numPassed,numFailed);
@@ -58,12 +59,6 @@ class w_mem_tb extends BaseTest;
 
       DebugPrint("Testing VRAM TILES...");
       tickleBus(VRAM_TILES_ADDR, VRAM_TILES_SIZE,numPassed,numFailed);
-
-
-      // try to write out the image, but have a 900 cycle timeout
-
-      waitForImage();
-      writeLCD(cntrl.lcd, "out.pgm");
 
    endtask
    

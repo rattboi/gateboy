@@ -186,7 +186,7 @@ module whizgraphics(interface db,
       oam_table = 0;
 
       
-      //TODO: andy, comment this
+      //Initialize the palettes
       for (int i = 0; i < 3; i++)
         for(int j = 0; j < 4; j++)
         lcdPalletes.Data.indexedPalettes[i].indexedColors[j] = j;
@@ -251,7 +251,6 @@ module whizgraphics(interface db,
    // RENDER THE CODEZ
    always_ff @(posedge cntrl.drawline)
      begin : renderer
-         //TODO: you can do breaks
         
       if (cntrl.reset) begin
          resetWhizgraphics();
@@ -266,9 +265,9 @@ module whizgraphics(interface db,
            currentLine = 0;
         end
 
-        
-      lineDivider++;
-        //TODO: comment this 
+
+      // Only actually render a line every CLOCKS_PER_LINE cycles
+      lineDivider++;        
       if(lineDivider < CLOCKS_PER_LINE) disable renderer;
       lineDivider = 0;
    

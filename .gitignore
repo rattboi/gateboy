@@ -3,3 +3,5 @@ synthesis/peripherals/work
 *~
 vsim.wlf
 transcript
+outputs
+*pgm
