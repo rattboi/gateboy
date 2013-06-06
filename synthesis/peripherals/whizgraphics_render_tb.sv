@@ -72,15 +72,15 @@ module tb_render();
         renderCount = 0;
     endfunction
 
-    //save file every time a render completes
     always @(posedge cntrl.renderComplete)
     begin
+        //save file every time a render completes
         writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
         renderCount++;
     end
 
 	final begin
-        $display("Finished %d tests in tb_render", testCount);
+        $display("Finished %0d tests in tb_render", testCount);
 	end
 
 
@@ -122,7 +122,7 @@ module tb_render();
                                            "00112233",
                                            "00112233",
                                            "00112233",
-                                           "33112233"};
+                                           "00112233"};
 
         //Tile 0 = black
         DUT.tiles.Data[0] = '0;
@@ -152,11 +152,15 @@ module tb_render();
         @(posedge cntrl.renderComplete);
     endtask 
 
+    //=================================
+    // Scrolling background test
+    //=================================
     task test_move_background();
         CreateTestTiles();
         DUT.lcdControl.Fields.LCDEnable = 1;
 
-        DUT.vramBackground1.BackgroundMap[0][0] = 1;
+        DUT.vramBackground1.BackgroundMap[0][0] = 2;
+        DUT.vramBackground1.BackgroundMap[1][0] = 2;
         for(int i = 0; i < 8; i++)
         begin
             @(posedge cntrl.renderComplete);
