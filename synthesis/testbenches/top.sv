@@ -68,7 +68,7 @@ module testbench(
   
   initial 
   begin
-    file = $fopen("../../../tests/01-special.gb","rb");  
+    file = $fopen("../tests/01-special.gb","rb");  
     if (!file)
       $fatal("**** couldn't load cart rom into memory");
     
