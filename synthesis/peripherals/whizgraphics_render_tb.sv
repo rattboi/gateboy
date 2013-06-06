@@ -53,13 +53,124 @@ module tb_render();
 			return FAILED;
 
 	endfunction
+    
 
 
+    //=================================
+    //Testbench infrastructure
+    //=================================
+    int testCount = 0;
+    int renderCount = 0;
+    
+    task TestSetup();
+        //reset graphics system
+        resetWhizgraphics(); 
+    endtask
+
+    function void TestTeardown();
+        testCount++;
+        renderCount = 0;
+    endfunction
+
+    //save file every time a render completes
+    always @(posedge cntrl.renderComplete)
+    begin
+        writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
+        renderCount++;
+        if(renderCount > 2)
+            $finish;
+    end
+
+	final begin
+        $display("Finished %d tests in tb_render", testCount);
+	end
+
+
+    //=================================
+    // Common test helper functions
+    //=================================
+    function CreateTestTiles();
+        static string checkerboardTileStr [8] = { "33330000",
+                                           "33330000",
+                                           "33330000",
+                                           "33330000",
+                                           "00003333",
+                                           "00003333",
+                                           "00003333",
+                                           "00003333"};
+
+        static string crossTileStr [8]        = { "00033000",
+                                           "00033000",
+                                           "00033000",
+                                           "33333333",
+                                           "33333333",
+                                           "00033000",
+                                           "00033000",
+                                           "00033000"};
+
+        static string vGradientTileStr [8]    = { "00000000",
+                                           "00000000",
+                                           "11111111",
+                                           "11111111",
+                                           "22222222",
+                                           "22222222",
+                                           "33333333",
+                                           "33333333"};
+
+        static string hGradientTileStr [8]    = { "00112233",
+                                           "00112233",
+                                           "11112233",
+                                           "11112233",
+                                           "22112233",
+                                           "22112233",
+                                           "33112233",
+                                           "33112233"};
+
+        //Tile 0 = black
+        DUT.tiles.Data[0] = '0;
+        //Tile 1 = checkerboard
+        DUT.tiles.Data[1] = genTile(checkerboardTileStr);
+        //Tile 2 = checkerboard
+        DUT.tiles.Data[2] = genTile(crossTileStr);
+        //Tile 3 = checkerboard
+        DUT.tiles.Data[3] = genTile(vGradientTileStr);
+        //Tile 4 = checkerboard
+        DUT.tiles.Data[4] = genTile(hGradientTileStr);
+
+    endfunction
+
+    //=================================
+    // Simple background test
+    //=================================
+    task test_background1();
+        $display("Test 1");
+        CreateTestTiles();
+        DUT.lcdControl.Fields.LCDEnable = 1;
+        DUT.vramBackground1.BackgroundMap[0][0] = 1;
+        DUT.vramBackground1.BackgroundMap[0][1] = 2;
+        DUT.vramBackground1.BackgroundMap[0][2] = 3;
+        DUT.vramBackground1.BackgroundMap[0][3] = 4;
+    endtask 
+
+    task do_tests();
+       TestSetup();
+        test_background1();
+       TestTeardown();
+    endtask 
+
+    initial
+    begin
+        do_tests();
+    end
+
+
+
+    /*
    initial 
    begin
 		  //This function needs to happen in order to
 		  // have whizgraphics module render
-        resetWhizgraphics();
+          resetWhizgraphics();
 
 		  //Change the background map to something different
 		  //ChangeBGMap(0,0,1);
@@ -107,21 +218,8 @@ module tb_render();
             $display("%d: %p", i, DUT.tiles.Data[i]);
          end
     end
+    */
 
 	initial forever #10 clk = ~clk;
-
-	//Stuff to do after initial blocks
-	always @* begin
-		if(cntrl.renderComplete)
-        begin
-            writeLCD(cntrl.lcd, "out1.pgm");
-			   $finish;
-        end
-	end
-
-	//Final block of the test bench
-	final begin
-		$display("tb_render is done");
-	end
 
 endmodule
