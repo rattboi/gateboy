@@ -77,8 +77,6 @@ module tb_render();
     begin
         writeLCD(cntrl.lcd, $psprintf("outputs/render_tb_out_%0d_%0d.pgm", testCount, renderCount));
         renderCount++;
-        if(renderCount > 2)
-            $finish;
     end
 
 	final begin
@@ -119,11 +117,11 @@ module tb_render();
 
         static string hGradientTileStr [8]    = { "00112233",
                                            "00112233",
-                                           "11112233",
-                                           "11112233",
-                                           "22112233",
-                                           "22112233",
-                                           "33112233",
+                                           "00112233",
+                                           "00112233",
+                                           "00112233",
+                                           "00112233",
+                                           "00112233",
                                            "33112233"};
 
         //Tile 0 = black
@@ -143,19 +141,41 @@ module tb_render();
     // Simple background test
     //=================================
     task test_background1();
-        $display("Test 1");
         CreateTestTiles();
         DUT.lcdControl.Fields.LCDEnable = 1;
+        DUT.lcdControl.Fields.TileDataSelect = 1;
+
         DUT.vramBackground1.BackgroundMap[0][0] = 1;
         DUT.vramBackground1.BackgroundMap[0][1] = 2;
         DUT.vramBackground1.BackgroundMap[0][2] = 3;
         DUT.vramBackground1.BackgroundMap[0][3] = 4;
+        @(posedge cntrl.renderComplete);
     endtask 
+
+    task test_move_background();
+        CreateTestTiles();
+        DUT.lcdControl.Fields.LCDEnable = 1;
+
+        DUT.vramBackground1.BackgroundMap[0][0] = 1;
+        for(int i = 0; i < 8; i++)
+        begin
+            @(posedge cntrl.renderComplete);
+            DUT.lcdPosition.Data.ScrollX++;
+        end
+        @(posedge cntrl.renderComplete);
+    endtask
 
     task do_tests();
        TestSetup();
         test_background1();
        TestTeardown();
+
+       TestSetup();
+        test_move_background();
+       TestTeardown();
+
+        $finish;
+
     endtask 
 
     initial
