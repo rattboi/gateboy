@@ -26,11 +26,11 @@ module TestRunner();
       
 
       tests.push_front(sb);
-      // tests.push_front(cb);
-      // tests.push_front(tb);
-      // tests.push_front(vb);
-      // tests.push_front(wg);      
-      // tests.push_front(wmem);
+      tests.push_front(cb);
+      tests.push_front(tb);
+      tests.push_front(vb);
+      tests.push_front(wg);      
+      tests.push_front(wmem);
 
 
       // is logging enabled?

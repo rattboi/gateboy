@@ -158,11 +158,14 @@ module whizgraphics(interface db,
 
             //for each pixel (of width) in the sprite...
             for(int j = 0; j < TILE_SIZE; j++)
-            begin
+              begin
+                 int xpix, ypix;
+                 Color tmpcolor;
+                 xpix = currentSprite.Fields.Flags.Fields.XFlip ? (TILE_SIZE-j-1) : j;
+                 ypix = (currentLine + lcdPosition.Data.ScrollY) - currentSprite.Fields.YPosition;
+                 ypix = currentSprite.Fields.Flags.Fields.YFlip ? (TILE_SIZE-ypix-1) : ypix;
                 //set the lcd pixel value
-               Color tmpcolor =  GetPixel(t, 
-                                          (currentLine + lcdPosition.Data.ScrollY) - currentSprite.Fields.YPosition,
-                                          j);
+               tmpcolor =  GetPixel(t, ypix, xpix);
                if (tmpcolor != 0)
                  cntrl.lcd[currentLine][j + (currentSprite.Fields.XPosition - lcdPosition.Data.ScrollX)] = 
                                                                               getPixelColor(PALETTE_BACKGROUND, tmpcolor);
