@@ -62,7 +62,7 @@ module tb_render();
         resetWhizgraphics();
 
 		  //Change the background map to something different
-		  ChangeBGMap(0,0,1);
+		  //ChangeBGMap(0,0,1);
 		  $display("Tile compare: %b", BGTileCompare(5,5,3));
 
         //write data to tiles
@@ -93,8 +93,12 @@ module tb_render();
         DUT.oam_table.Attributes[0].Fields.XPosition = 10;
         DUT.oam_table.Attributes[0].Fields.YPosition = 10;
 
-	 	DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'h1b;
+        //DUT.lcdPosition.Data.ScrollX = 250;
 
+
+	 	//DUT.lcdPalletes.Data.indexedPalettes[PALETTE_BACKGROUND].raw = 8'h1b;
+
+        DUT.lcdControl.Fields.SpriteEnable = 1;
 
          $display("Tile Data:");
          for(int i = 0; i < 4; i++)

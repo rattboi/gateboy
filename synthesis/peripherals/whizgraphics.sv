@@ -98,7 +98,7 @@ module whizgraphics(interface db,
         int tileIndex = 0;
         Tile t;
 
-         //render  background
+        //render  background
         for(int i = 0; i < LCD_LINEWIDTH; i++)
         begin
             cntrl.lcd[currentLine][i] = GetBackgroundPixelAtScreenPoint(i, currentLine); 
@@ -138,7 +138,7 @@ module whizgraphics(interface db,
                 //set the lcd pixel value
                Color tmpcolor =  GetPixel(t, 
                                           (currentLine + lcdPosition.Data.ScrollY) - currentSprite.Fields.YPosition,
-                                          currentSprite.Fields.XPosition + j);
+                                          j);
                if (tmpcolor != 0)
                  cntrl.lcd[currentLine][j + (currentSprite.Fields.XPosition - lcdPosition.Data.ScrollX)] = 
                                                                               getPixelColor(PALETTE_BACKGROUND, tmpcolor);
