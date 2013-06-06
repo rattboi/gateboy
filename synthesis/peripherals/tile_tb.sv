@@ -25,11 +25,15 @@ class tile_tb extends BaseTest;
                               "33333333"};
       bit    stat;
       Lcd goodpic;
-      
-      writeTile(0, tmptile);
+      db.write(8'h2, 16'hFF40);
+      for (int i = 0; i < VRAM_BACKGROUND1_SIZE; i++) begin
+         db.write(1,VRAM_BACKGROUND1_ADDR+i);
+         end
+      writeTile(1, tmptile);
 
 
       // get the original image
+      waitForImage(stat);
       waitForImage(stat);
       goodpic = cntrl.lcd;
 
