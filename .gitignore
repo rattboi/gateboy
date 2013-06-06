@@ -1,1 +1,8 @@
 gbdk/
+
+synthesis/gateboy_run_msim_rtl_verilog.do
+synthesis/modelsim.ini
+synthesis/msim_transcript
+synthesis/rtl_work/
+synthesis/testbenches/01-special.gb
+synthesis/vsim.wlf
