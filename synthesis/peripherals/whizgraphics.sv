@@ -58,7 +58,22 @@ module whizgraphics(interface db,
        return p;
     endfunction
 
-    function Tile GetTileFromIndex(int tileIndex);
+    function Tile GetBackgroundTileFromIndex(int tileIndex);
+       automatic Tile t;
+       automatic byte signedIndex = tileIndex;
+       automatic int index;
+       if (lcdControl.Fields.TileDataSelect) begin
+          assert(tileIndex >= 0 && tileIndex <= 255);
+          index = tileIndex;
+       end
+       else begin
+          assert(signedIndex >=-128 && signedIndex <= 127);
+          index = 256+signedIndex;
+       end
+        return tiles.Data[index];
+    endfunction // GetTileFromIndex
+
+   function Tile GetSpriteTileFromIndex(int tileIndex);
         automatic Tile t;
         t = tiles.Data[tileIndex];
         return t;
@@ -83,7 +98,7 @@ module whizgraphics(interface db,
    
     function Pixel GetBackgroundPixelAtScreenPoint(int x, int y);
         automatic int tileIndex = GetTileIndexFromScreenPoint(x, y);
-        automatic Tile t = GetTileFromIndex(tileIndex);
+        automatic Tile t = GetBackgroundTileFromIndex(tileIndex);
         return getPixelColor(PALETTE_BACKGROUND, GetPixel(t, (y + lcdPosition.Data.ScrollY) % TILE_SIZE, (x + lcdPosition.Data.ScrollX) % TILE_SIZE));
     endfunction
 
@@ -136,7 +151,7 @@ module whizgraphics(interface db,
 
             //get the tile from the sprite attributes
             tileIndex = currentSprite.Fields.Tile;
-            t = GetTileFromIndex(tileIndex);
+            t = GetSpriteTileFromIndex(tileIndex);
 
             if(DEBUG_OUT) $display("Rendering Sprite: %d (Tile %d) on line: %d", i, tileIndex, currentLine);
             if(DEBUG_OUT) $display("Sprite line: %b", t.rows[currentLine + lcdPosition.Data.ScrollY - currentSprite.Fields.YPosition]);

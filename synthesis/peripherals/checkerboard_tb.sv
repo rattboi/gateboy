@@ -41,16 +41,21 @@ class checkerboard_tb extends BaseTest;
          end
       writeTile(0, genTile(checkerboard_tile));
       writeTile(256, genTile(zero_tile));
+      db.write(8'h80, 16'hFF40);
       waitForImage(stat);
       waitForImage(stat);
       firstpic = cntrl.lcd;
-      db.write(8'h10, 16'hFF40);
+
+      db.write(8'h90, 16'hFF40);
+
       waitForImage(stat);
       assert(cntrl.lcd != firstpic) numPassed++; 
       else begin
          DebugPrint("Resultant images are the same!");
          numFailed++;
       end
+         writeLCD(firstpic, "out1.pgm");
+         writeLCD(cntrl.lcd, "out2.pgm");
         
    endtask // runTest
 
