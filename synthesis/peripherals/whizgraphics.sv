@@ -53,6 +53,7 @@ module whizgraphics(interface db,
     //helper functions
     function Pixel GetPixel(Tile t, int row, int pixel);
        automatic Pixel p; 
+       assert(row < 8 && pixel < 8) else $display("R: 0x%h, P: 0x%h", row, pixel);
        p = { t.rows[row][pixel], t.rows[row][pixel + ROW_SIZE] };
        return p;
     endfunction
@@ -117,7 +118,7 @@ module whizgraphics(interface db,
             currentSprite = oam_table.Attributes[i];
             //reject sprites that are not on the current line
             if(currentSprite.Fields.YPosition > currentLine + lcdPosition.Data.ScrollY
-                || currentSprite.Fields.YPosition + TILE_SIZE < currentLine + lcdPosition.Data.ScrollY)
+                || currentSprite.Fields.YPosition + TILE_SIZE <= currentLine + lcdPosition.Data.ScrollY)
                 continue;
 
             //reject sprites that are left or right of the current lcd drawing region
