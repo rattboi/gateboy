@@ -87,7 +87,7 @@ module tv80s (  // Inputs
     .A (A),
     .dinst (di),
     .di (di_reg),
-    .dout (dout),
+    .Do (dout),
     .mc (mcycle),
     .ts (tstate),
     .intcycle_n (intcycle_n),
