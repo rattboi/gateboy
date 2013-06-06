@@ -46,21 +46,29 @@ package video_types;
     localparam LCD_POS_ADDR = 16'hff42; 
     localparam LCD_POS_SIZE = 4;
 
-    typedef struct packed
-    {
+    typedef union packed
+	 {
+      bit [0:LCD_POS_SIZE-1] [0:7] Bits;
+	 	struct packed
+    	{
         bit [0:7] ScrollY;
         bit [0:7] ScrollX;
         bit [0:7] LcdY;
         bit [0:7] LcdYCompare;
-    } LcdPosition;
+    	} Data;
+	} LcdPosition;
 
    localparam LCD_WIN_ADDR = 16'hff4a; 
    localparam LCD_WIN_SIZE = 2;
    
-   typedef struct packed {
-      bit [0:7]   WindowY;
-      bit [0:7]   WindowX;
-   } LcdWindowPosition;
+   typedef union packed
+	{
+        bit [0:LCD_WIN_SIZE-1] [0:7] Bits;
+		struct packed {
+      	bit [0:7]   WindowY;
+      	bit [0:7]   WindowX;
+   	} Data;
+	} LcdWindowPosition;
 
 
     localparam LCD_PALLETE_ADDR = 16'hff47;
