@@ -239,4 +239,23 @@ package video_types;
          end
       end
     endfunction
+
+
+      function Tile genTile(string pixmap[NUM_ROWS]);
+         string zero;
+         int    code0, tmpchar;
+         bit [0:ROW_SIZE-1] lowbit,hibit;
+         zero = "0";
+         code0 = zero.getc(0);
+         for (int r = 0; r < NUM_ROWS; r++) begin
+            lowbit = 0;
+            hibit = 0;
+            for (int p = 0; p < ROW_SIZE; p++) begin
+               tmpchar = pixmap[r].getc(p);
+               tmpchar -= code0;
+               assert(tmpchar >= 0 && tmpchar < 4);
+               {genTile.rows[r][p], genTile.rows[r][p + ROW_SIZE]} = tmpchar;
+            end
+         end
+      endfunction
 endpackage
