@@ -24,7 +24,6 @@ class sprite_tb extends BaseTest;
                               "00000000",
                               "00000000"};
       
-      bit    stat;
       Lcd goodpic;
       
       db.write(8'h82, 16'hff40);
@@ -33,13 +32,13 @@ class sprite_tb extends BaseTest;
       writeTile(1, genTile(tmptile));
       
       // get the original image
-      waitForImage(stat);
-      waitForImage(stat);
+      waitForImage();
+      waitForImage();
       goodpic = cntrl.lcd;
 
       // yflip
       db.write(8'h02, OAM_LOC+3);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic != cntrl.lcd) numPassed++;
       else begin
          DebugPrint("yflipped image is same!");
@@ -49,7 +48,7 @@ class sprite_tb extends BaseTest;
 
       // xflip
       db.write(8'h02, OAM_LOC+3);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic != cntrl.lcd) numPassed++;
       else begin
          DebugPrint("xflipped image is same!");
@@ -59,7 +58,7 @@ class sprite_tb extends BaseTest;
 
       // xy flip
       db.write(8'h06, OAM_LOC+3);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic != cntrl.lcd) numPassed++;
       else begin
          DebugPrint("x and yflipped image is same!");

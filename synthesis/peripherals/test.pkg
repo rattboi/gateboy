@@ -27,18 +27,17 @@ package Test;
       endfunction // getName
 
       // wait for the whizzgraphics to generate an image
-      task waitForImage(output bit Status);
+      task waitForImage();
          fork : tmpfork
             begin 
                repeat(100000)@(posedge db.clk); 
                //TODO: replace with assertion
-               Status = 0;
+               $error("Image was not rendered in 100000 clock ticks");
                disable tmpfork; 
             end
             begin 
                wait(!cntrl.renderComplete);
                wait(cntrl.renderComplete);
-               Status = 1;
                disable tmpfork; 
             end
          join
@@ -70,7 +69,7 @@ package Test;
 
    // include the tests naow.
    // Each test's class must be included here
-   include "whizzgraphics_tb.sv";
+   include "skel_tb.sv";
    include "whizzgraphics_mem_tb.sv";
    include "vblank_tb.sv";
    include "tile_tb.sv";

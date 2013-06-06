@@ -1,16 +1,8 @@
-// This is an example test that uses the testrunner interface. Use it
-// as an example when writing your own tests.
-
-
-
-// Note that tests are included in the Test package, and therefore
-// need C-style include guards. This also means that the class can
-// access stuff in the Test namespace for free
 `ifndef __TILE_TB__
 `define __TILE_TB__
 
-//TODO: comments, say what this does
-// all tests extend Test::BaseTest
+// Tests that the background can be shifted in the x and y directions,
+// and that shift to its maximum value, the display wraps around
 class tile_tb extends BaseTest;
 
    // build a tile, and dump it out as the first tile
@@ -27,7 +19,6 @@ class tile_tb extends BaseTest;
 
 
       
-      bit    stat;
       Lcd goodpic;
       
       db.write(8'h90, 16'hff40);
@@ -37,13 +28,13 @@ class tile_tb extends BaseTest;
       writeTile(1, genTile(tmptile));
       
       // get the original image
-      waitForImage(stat);
-      waitForImage(stat);
+      waitForImage();
+      waitForImage();
       goodpic = cntrl.lcd;
 
       // enable sprites
       db.write(8'h92, 16'hff40);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic == cntrl.lcd) numPassed++;
       else begin
          DebugPrint("Sprites are not transparent for color 0!");
@@ -51,7 +42,7 @@ class tile_tb extends BaseTest;
       end
       
       db.write(4, 16'hff42);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic != cntrl.lcd)
         numPassed++;
       else begin
@@ -68,7 +59,7 @@ class tile_tb extends BaseTest;
       end
       
       db.write(8, 16'hff42);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic == cntrl.lcd)
         numPassed++;
       else begin
@@ -83,7 +74,7 @@ class tile_tb extends BaseTest;
       
       // Set the x to scroll up by half of a tile
       db.write(4, 16'hff43);
-      waitForImage(stat);
+      waitForImage();
       // the pix must be different
       assert(goodpic != cntrl.lcd)
         numPassed++;
@@ -104,7 +95,7 @@ class tile_tb extends BaseTest;
 
 
       db.write(8, 16'hff43);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic == cntrl.lcd)
         numPassed++;
       else begin
@@ -117,7 +108,7 @@ class tile_tb extends BaseTest;
       // wrapped ALL THE WAY!
       db.write(248, 16'hff42);
       db.write(248, 16'hff43);
-      waitForImage(stat);
+      waitForImage();
       assert(goodpic == cntrl.lcd)
         numPassed++;
       else begin
@@ -127,15 +118,13 @@ class tile_tb extends BaseTest;
          numFailed++;
       end
 
-   endtask // runTest
+   endtask
 
-   // called by test runner to get the name of the test. returns a
-   // string. is optional.
    virtual function string getName();
       getName = "TileTest";
    endfunction // getName
 
 
 endclass
-`endif //  `ifndef __WHIZZGRAPHICS_TB__ //TODO: <<<<<<<<<<-- this is wrong
+`endif
 

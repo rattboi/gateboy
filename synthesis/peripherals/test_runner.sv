@@ -17,7 +17,7 @@ module TestRunner();
    initial begin
       // for each test that you create, you need to create an instance
       // and add it to this queue:
-      automatic  whizzgraphics wg = new;
+      automatic  skel_tb skb = new;
       automatic  w_mem_tb wmem = new;
       automatic vblank_tb vb= new;
       automatic tile_tb tb = new;
@@ -29,7 +29,7 @@ module TestRunner();
       tests.push_front(cb);
       tests.push_front(tb);
       tests.push_front(vb);
-      tests.push_front(wg);      
+      tests.push_front(skb);      
       tests.push_front(wmem);
 
 
