@@ -21,10 +21,13 @@ module TestRunner();
       automatic  w_mem_tb wmem = new;
       automatic vblank_tb vb= new;
       automatic tile_tb tb = new;
+      automatic checkerboard_tb cb = new;
+      
+      tests.push_front(cb);
       tests.push_front(tb);
-      // tests.push_front(vb);
-      // tests.push_front(wg);      
-      // tests.push_front(wmem);
+      tests.push_front(vb);
+      tests.push_front(wg);      
+      tests.push_front(wmem);
 
 
       // is logging enabled?

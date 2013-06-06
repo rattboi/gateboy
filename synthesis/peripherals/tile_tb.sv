@@ -23,6 +23,26 @@ class tile_tb extends BaseTest;
                               "32111123",
                               "32222223",
                               "33333333"};
+
+      string checkerboard_tile [8]  = '{"33330000",
+                                        "33330000",
+                                        "33330000",
+                                        "33330000",
+                                        "00003333",
+                                        "00003333",
+                                        "00003333",
+                                        "00003333"};
+
+      string zero_tile [8] = '{"33333333",
+                               "31111113",
+                               "31333313",
+                               "31333313",
+                               "31333313",
+                               "31333313",
+                               "31111113",
+                               "33333333"};
+
+      
       bit    stat;
       Lcd goodpic;
 
@@ -30,8 +50,7 @@ class tile_tb extends BaseTest;
          db.write(1,VRAM_BACKGROUND1_ADDR+i);
          end
       writeTile(1, genTile(tmptile));
-
-
+      
       // get the original image
       waitForImage(stat);
       waitForImage(stat);
