@@ -110,6 +110,10 @@ module whizgraphics(interface db,
             if(spritesRendered >= MAX_SPRITES_PER_LINE)
                 break;
 
+           // if sprites are not enabled, we need to turn them off
+           if (!lcdControl.Fields.SpriteEnable)
+             break;
+           
             currentSprite = oam_table.Attributes[i];
             //reject sprites that are not on the current line
             if(currentSprite.Fields.YPosition > currentLine + lcdPosition.Data.ScrollY
@@ -151,6 +155,7 @@ module whizgraphics(interface db,
    assign db.data = enable ? bus_reg : 'z;
 
    function void resetWhizgraphics();
+      lcdControl = 0;
       currentLine = 0;
       cntrl.renderComplete = 0;
       lineDivider = 0;

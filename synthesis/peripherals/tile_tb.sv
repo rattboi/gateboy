@@ -84,7 +84,7 @@ class tile_tb extends BaseTest;
          DebugPrint("Didn't get black value on the right edge");
          numFailed++;
       end
-      writeLCD(cntrl.lcd, "TileTest.pgm");
+
 
       db.write(8, 16'hff43);
       waitForImage(stat);
@@ -92,10 +92,24 @@ class tile_tb extends BaseTest;
         numPassed++;
       else begin
          DebugPrint("Image scrolled in x by tile multiple does not match!");
-
+         writeLCD(cntrl.lcd, "TileTest.pgm");
          writeLCD(goodpic, "TileTestGood.pgm");
          numFailed++;
       end
+
+      // wrapped ALL THE WAY!
+      db.write(248, 16'hff42);
+      db.write(248, 16'hff43);
+      waitForImage(stat);
+      assert(goodpic == cntrl.lcd)
+        numPassed++;
+      else begin
+         DebugPrint("Image scrolled all the way in both directions does not match!");
+         writeLCD(cntrl.lcd, "TileTest.pgm");
+         writeLCD(goodpic, "TileTestGood.pgm");
+         numFailed++;
+      end
+
    endtask // runTest
 
    // called by test runner to get the name of the test. returns a

@@ -22,9 +22,9 @@ module TestRunner();
       automatic vblank_tb vb= new;
       automatic tile_tb tb = new;
       tests.push_front(tb);
-      tests.push_front(vb);
-      tests.push_front(wg);      
-      tests.push_front(wmem);
+      // tests.push_front(vb);
+      // tests.push_front(wg);      
+      // tests.push_front(wmem);
 
 
       // is logging enabled?
