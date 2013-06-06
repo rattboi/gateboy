@@ -64,6 +64,7 @@ module testbench(
    end
  
   integer file; 
+  int dontcare;
   
   initial 
   begin
@@ -74,7 +75,7 @@ module testbench(
     else
     begin
       $display("**** loaded cart rom into memory");
-      $fread(file, cart_rom[0], 0, 32767);
+      dontcare = $fread(cart_rom[0], file, 0, 32767);
       $fclose(file);
     end
   end
@@ -83,7 +84,7 @@ module testbench(
   gameboy gameboy ( .*,
                     .clock(coreclk),
                     .cpu_clock(coreclk)
-                    );
+                  );
                     
   // gameboy gameboy (
   //   .clock(clock),
