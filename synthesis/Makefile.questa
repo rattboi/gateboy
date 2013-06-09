@@ -1,0 +1,8 @@
+testbench_src=testbenches/top.sv
+peripherals_src=$(wildcard peripherals/*.sv)
+processor_src=processor/tv80_alu.sv processor/tv80_core.sv processor/tv80_mcode.sv processor/tv80s.sv processor/tv80_reg.sv
+system_src=$(wildcard system/*.sv)
+
+all:
+	vlog $(testbench_src) $(system_src) $(processor_src) $(peripherals_src) 
+	vsim -c -do "run -all; quit" testbench

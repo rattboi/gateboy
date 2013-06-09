@@ -14,3 +14,6 @@ output_files
 *.dpf
 *.jdi
 *.bak*
+# questa stuff
+work
+transcript
