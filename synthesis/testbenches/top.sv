@@ -4,7 +4,9 @@
 // Main board module.
 module testbench(
 );
-  bit coreclk, cpu_clock;
+  bit [2:0] clock_divider;
+  bit coreclk; 
+  bit cpu_clock;
   bit reset, reset_init;
   
   // GB <-> Cartridge + WRAM
@@ -56,15 +58,23 @@ module testbench(
     forever #100 coreclk = ~coreclk;
    
    initial begin 
+    clock_divider = '0;
     coreclk = 0;
+    cpu_clock = 0;
     reset_init = 1;
     reset = 1;
-    #300 
-    coreclk = 1;
+    #3000
     reset_init = 0;
     reset = 0;
    end
  
+
+  always @(posedge coreclk)
+  begin
+    clock_divider <= clock_divider + 1;
+    cpu_clock <= clock_divider[2];
+  end
+
   integer file; 
   int dontcare;
   
@@ -85,7 +95,7 @@ module testbench(
   // create the germberh
   gameboy gameboy ( .*,
                     .clock(coreclk),
-                    .cpu_clock(coreclk)
+                    .cpu_clock(cpu_clock)
                   );
                     
   // gameboy gameboy (
@@ -128,7 +138,7 @@ module testbench(
   // );                    
   
   // WRAM
-  async_mem #(.asz(16), .depth(8192)) wram (
+  async_mem #(.asz(8), .depth(8192)) wram (
     .rd_data(Di_wram),
     .wr_clk(coreclk),
     .wr_data(Do),
@@ -138,7 +148,7 @@ module testbench(
   );
   
   // VRAM
-  async_mem #(.asz(16), .depth(8192)) vram (
+  async_mem #(.asz(8), .depth(8192)) vram (
     .rd_data(Di_vram),
     .wr_clk(coreclk),
     .wr_data(Do_vram),

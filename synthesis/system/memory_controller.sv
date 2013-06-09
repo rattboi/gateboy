@@ -65,7 +65,7 @@ module memory_controller(
   end
   
   // High RAM
-  async_mem #(.asz(8), .depth(127)) high_ram (
+  async_mem #(.asz(7), .depth(127)) high_ram (
     .rd_data(Do_high_ram),
     .wr_clk(clock),
     .wr_data(Di_cpu),
@@ -89,7 +89,13 @@ module memory_controller(
           begin
             // TODO: DMA
           end
-          16'hFF50: if (Di == 8'h01) boot_rom_enable <= 1'b0;
+          16'hFF50: 
+          begin
+            $stop;
+            $display("Wrote to end boot rom");
+            if (Di_cpu == 8'h01) 
+              boot_rom_enable <= 1'b0;
+          end
         endcase
       end
     end
