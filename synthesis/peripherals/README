@@ -1,0 +1,31 @@
+This directory implements the graphics of the original gameboy.
+
+USAGE
+==========
+run the command
+
+vlib work
+
+to initialize a questa working directory.
+
+Then execute the runsim.sh shell script in this directory to build the
+project and run its tests.
+
+Individual testbench names can be passed on the command line in order
+to limit the number of tests executed. 
+
+DOCUMENTATION
+=============
+Gateboy Video.pdf contains a copy of our presentation.
+
+
+CONTACT INFORMATION
+===================
+Andy Goetz - andy@andygoetz.org
+Phil Lamb - phil.lamb04@gmail.com
+Kevin Riedl - kevinlriedl@gmail.com
+
+SOURCE LOCATION
+===================
+Our code can be found on github at 
+https://github.com/rattboi/gateboy/tree/whizzgraphics/synthesis/peripherals
