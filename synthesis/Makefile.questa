@@ -4,5 +4,10 @@ processor_src=processor/tv80_alu.sv processor/tv80_core.sv processor/tv80_mcode.
 system_src=$(wildcard system/*.sv)
 
 all:
-	vlog $(testbench_src) $(system_src) $(processor_src) $(peripherals_src) 
-	vsim -c -do "run -all; quit" testbench
+	vlog -O5 +cover $(testbench_src) $(system_src) $(processor_src) $(peripherals_src) 
+	vsim -c -do questa.tcl -coverage -voptargs="+cover=bcfst" testbench
+report: 
+	vsim -c -do report.tcl
+once:
+	vlib work
+
