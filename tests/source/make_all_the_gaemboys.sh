@@ -33,3 +33,6 @@ wlalink linkfile "10-bit ops.gb"
 wla -o "11-op a,(hl).s" test.o
 wlalink linkfile "11-op a,(hl).gb"
 
+[[ -d roms ]] || mkdir roms
+
+mv *.gb roms
