@@ -68,10 +68,6 @@ module testbench(
    end
  
   always @(posedge coreclk)
-  if (PC == 16'h206)
-    $display("BALLS");
-  
-  always @(posedge coreclk)
   begin
     clock_divider <= clock_divider + 1;
     cpu_clock <= clock_divider[2];
@@ -86,22 +82,9 @@ module testbench(
         $display("PC = %h  DE = %h  HL = %h  BC = %h", PC, DE, HL, BC);
       end
 
-  integer file; 
-  int dontcare;
-  
-  initial 
-  begin
-    file = $fopen("../tests/01-special.gb","rb");  
-    if (!file)
-      $fatal("**** couldn't load cart rom into memory");
-    
-    else
-    begin
-      $display("**** loaded cart rom into memory");
-      dontcare = $fread(cart_rom[0], file, 0, 32767);
-      $fclose(file);
-    end
-  end
+  always @(posedge coreclk)
+  if (PC == 16'h206)
+    $display("BALLS");
 
   // create the germberh
   gameboy gameboy ( .*,
