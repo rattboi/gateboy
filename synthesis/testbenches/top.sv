@@ -52,7 +52,7 @@ module testbench(
   wire  [3:0] joypad_data;
   wire  [1:0] joypad_sel;
 
-  assign Di = A[14] ? Di_wram : cart_rom[A];
+  assign Di = A[15] ? Di_wram : cart_rom[A];
 
   initial 
     forever #100 coreclk = ~coreclk;
@@ -68,12 +68,23 @@ module testbench(
     reset = 0;
    end
  
-
+ 
+  always @(posedge coreclk)
+  if (PC == 16'h206)
+    $display("BALLS");
+  
   always @(posedge coreclk)
   begin
     clock_divider <= clock_divider + 1;
     cpu_clock <= clock_divider[2];
   end
+
+  always
+    #10000 if (PC > 255)
+      if (DE > 16'hC000)
+      begin
+        $display("PC = %h  DE = %h  HL = %h  BC = %h", PC, DE, HL, BC);
+      end
 
   integer file; 
   int dontcare;
@@ -138,22 +149,22 @@ module testbench(
   // );                    
   
   // WRAM
-  async_mem #(.asz(8), .depth(8192)) wram (
+  async_mem #(.asz(13), .depth(8192)) wram (
     .rd_data(Di_wram),
     .wr_clk(coreclk),
     .wr_data(Do),
     .wr_cs(!cs_n && !wr_n),
-    .addr(A),
+    .addr(A[12:0]),
     .rd_cs(!cs_n && !rd_n)
   );
   
   // VRAM
-  async_mem #(.asz(8), .depth(8192)) vram (
+  async_mem #(.asz(13), .depth(8192)) vram (
     .rd_data(Di_vram),
     .wr_clk(coreclk),
     .wr_data(Do_vram),
     .wr_cs(!cs_vram_n && !wr_vram_n),
-    .addr(A_vram),
+    .addr(A_vram[12:0]),
     .rd_cs(!cs_vram_n && !rd_vram_n)
   );
  endmodule
