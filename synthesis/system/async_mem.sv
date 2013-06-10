@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module async_mem (/*AUTOARG*/
   // Outputs
   rd_data,

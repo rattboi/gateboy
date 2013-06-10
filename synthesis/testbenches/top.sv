@@ -1,12 +1,11 @@
 // `default_nettype none
-// `timescale 1ns / 1ps
+`timescale 1ns / 1ps
 
 // Main board module.
 module testbench(
 );
+  bit coreclk, cpu_clock;
   bit [2:0] clock_divider;
-  bit coreclk; 
-  bit cpu_clock;
   bit reset, reset_init;
   
   // GB <-> Cartridge + WRAM
@@ -52,7 +51,7 @@ module testbench(
   wire  [3:0] joypad_data;
   wire  [1:0] joypad_sel;
 
-  assign Di = A[14] ? Di_wram : cart_rom[A];
+  assign Di = A[15] ? Di_wram : cart_rom[A];
 
   initial 
     forever #100 coreclk = ~coreclk;
@@ -68,92 +67,48 @@ module testbench(
     reset = 0;
    end
  
-
   always @(posedge coreclk)
   begin
     clock_divider <= clock_divider + 1;
     cpu_clock <= clock_divider[2];
   end
 
-  integer file; 
-  int dontcare;
-  
-  initial 
-  begin
-    file = $fopen("../tests/01-special.gb","rb");  
-    if (!file)
-      $fatal("**** couldn't load cart rom into memory");
-    
-    else
-    begin
-      $display("**** loaded cart rom into memory");
-      dontcare = $fread(cart_rom[0], file, 0, 32767);
-      $fclose(file);
-    end
-  end
+  top_program tp(cpu_clock, reset, cart_rom);
+
+  always
+    #10000 if (PC > 255)
+      if (DE > 16'hC000)
+      begin
+        $display("PC = %h  DE = %h  HL = %h  BC = %h", PC, DE, HL, BC);
+      end
+
+  always @(posedge coreclk)
+  if (PC == 16'h206)
+    $display("BALLS");
 
   // create the germberh
   gameboy gameboy ( .*,
                     .clock(coreclk),
                     .cpu_clock(cpu_clock)
                   );
-                    
-  // gameboy gameboy (
-  //   .clock(clock),
-  //   .cpu_clock(cpu_clock),
-  //   .reset(reset),
-  //   .reset_init(reset_init),
-  //   .A(A),
-  //   .Di(Di),
-  //   .Do(Do),
-  //   .wr_n(wr_n),
-  //   .rd_n(rd_n),
-  //   .cs_n(cs_n),
-  //   .A_vram(A_vram),
-  //   .Di_vram(Di_vram),
-  //   .Do_vram(Do_vram),
-  //   .wr_vram_n(wr_vram_n),
-  //   .rd_vram_n(rd_vram_n),
-  //   .cs_vram_n(cs_vram_n),
-  //   .pixel_data(pixel_data),
-  //   .pixel_clock(pixel_clock),
-  //   .pixel_latch(pixel_latch),
-  //   .hsync(hsync),
-  //   .vsync(vsync),
-  //   .joypad_data(joypad_data),
-  //   .joypad_sel(joypad_sel),
-  //   .audio_left(audio_left),
-  //   .audio_right(audio_right),
-  //   // debug output
-  //   .dbg_led(LED),
-  //   .PC(PC),
-  //   .SP(SP),
-  //   .AF(AF),
-  //   .BC(BC),
-  //   .DE(DE),
-  //   .HL(HL),
-  //   .A_cpu(A_cpu),
-  //   .Di_cpu(Di_cpu),
-  //   .Do_cpu(Do_cpu)
-  // );                    
-  
+ 
   // WRAM
-  async_mem #(.asz(8), .depth(8192)) wram (
+  async_mem #(.asz(13), .depth(8192)) wram (
     .rd_data(Di_wram),
     .wr_clk(coreclk),
     .wr_data(Do),
     .wr_cs(!cs_n && !wr_n),
-    .addr(A),
+    .addr(A[12:0]),
     .rd_cs(!cs_n && !rd_n)
   );
   
   // VRAM
-  async_mem #(.asz(8), .depth(8192)) vram (
+  async_mem #(.asz(13), .depth(8192)) vram (
     .rd_data(Di_vram),
     .wr_clk(coreclk),
     .wr_data(Do_vram),
     .wr_cs(!cs_vram_n && !wr_vram_n),
-    .addr(A_vram),
+    .addr(A_vram[12:0]),
     .rd_cs(!cs_vram_n && !rd_vram_n)
   );
  endmodule
