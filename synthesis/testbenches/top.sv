@@ -51,18 +51,63 @@ module testbench(
   wire  [3:0] joypad_data;
   wire  [1:0] joypad_sel;
 
-  assign Di = A[14] ? Di_wram : cart_rom[A];
+  assign Di = A[15] ? Di_wram : cart_rom[A];
 
   initial 
     forever #100 coreclk = ~coreclk;
    
+<<<<<<< HEAD
+=======
+   initial begin 
+    clock_divider = '0;
+    coreclk = 0;
+    cpu_clock = 0;
+    reset_init = 1;
+    reset = 1;
+    #3000
+    reset_init = 0;
+    reset = 0;
+   end
+ 
+ 
+  always @(posedge coreclk)
+  if (PC == 16'h206)
+    $display("BALLS");
+  
+>>>>>>> 52e31cea1c16587dc249a998036b774ea932e9cb
   always @(posedge coreclk)
   begin
     clock_divider <= clock_divider + 1;
     cpu_clock <= clock_divider[2];
   end
 
+<<<<<<< HEAD
   top_program tp(cpu_clock, reset, cart_rom);
+=======
+  always
+    #10000 if (PC > 255)
+      if (DE > 16'hC000)
+      begin
+        $display("PC = %h  DE = %h  HL = %h  BC = %h", PC, DE, HL, BC);
+      end
+
+  integer file; 
+  int dontcare;
+  
+  initial 
+  begin
+    file = $fopen("../tests/01-special.gb","rb");  
+    if (!file)
+      $fatal("**** couldn't load cart rom into memory");
+    
+    else
+    begin
+      $display("**** loaded cart rom into memory");
+      dontcare = $fread(cart_rom[0], file, 0, 32767);
+      $fclose(file);
+    end
+  end
+>>>>>>> 52e31cea1c16587dc249a998036b774ea932e9cb
 
   // create the germberh
   gameboy gameboy ( .*,
@@ -76,7 +121,7 @@ module testbench(
     .wr_clk(coreclk),
     .wr_data(Do),
     .wr_cs(!cs_n && !wr_n),
-    .addr(A),
+    .addr(A[12:0]),
     .rd_cs(!cs_n && !rd_n)
   );
   
@@ -86,7 +131,7 @@ module testbench(
     .wr_clk(coreclk),
     .wr_data(Do_vram),
     .wr_cs(!cs_vram_n && !wr_vram_n),
-    .addr(A_vram),
+    .addr(A_vram[12:0]),
     .rd_cs(!cs_vram_n && !rd_vram_n)
   );
  endmodule
