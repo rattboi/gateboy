@@ -56,8 +56,6 @@ module testbench(
   initial 
     forever #100 coreclk = ~coreclk;
    
-<<<<<<< HEAD
-=======
    initial begin 
     clock_divider = '0;
     coreclk = 0;
@@ -69,21 +67,18 @@ module testbench(
     reset = 0;
    end
  
- 
   always @(posedge coreclk)
   if (PC == 16'h206)
     $display("BALLS");
   
->>>>>>> 52e31cea1c16587dc249a998036b774ea932e9cb
   always @(posedge coreclk)
   begin
     clock_divider <= clock_divider + 1;
     cpu_clock <= clock_divider[2];
   end
 
-<<<<<<< HEAD
   top_program tp(cpu_clock, reset, cart_rom);
-=======
+
   always
     #10000 if (PC > 255)
       if (DE > 16'hC000)
@@ -107,7 +102,6 @@ module testbench(
       $fclose(file);
     end
   end
->>>>>>> 52e31cea1c16587dc249a998036b774ea932e9cb
 
   // create the germberh
   gameboy gameboy ( .*,
