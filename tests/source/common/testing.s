@@ -50,6 +50,10 @@ init_testing:
 tests_passed:
      call print_newline
      print_str "Passed"
+     ld   a,$DE
+     ld   a,$AD
+     ld   a,$BE
+     ld   a,$EF
      ld   a,0
      jp   exit
 

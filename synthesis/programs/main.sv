@@ -48,11 +48,12 @@ program top_program(clock, reset, romdata);
         $display("Loading Testroms");
         filename = getenv("ROMFILE");
         if(filename == "") begin
-            $warning("No ROM file defined returning");
+            $warning("No ROM file defined using default");
             filename = "../tests/01-special.gb";
-        end
+        end else
+            $display("Found ROM file %s", filename); 
 
-        load_rom("../tests/01-special.gb", romdata);
+        load_rom(filename, romdata);
 
         reset_system();
         @(fin) $display("finished");
